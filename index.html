@@ -1125,19 +1125,19 @@
     display:flex;
     flex-direction:row;
     align-items:stretch;
-    gap:8px;
+    gap:0;
     margin:4px 0 4px;
   }
   .mbti-card{
     flex:1 1 0;
     min-width:0;
     text-align:center;
-    padding:16px 8px 16px;
-    background:#FFFDF6;
-    box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
+    padding:10px 16px 6px;
+    background:none;
+    box-shadow:none;
   }
-  .mbti-card.groom{ box-shadow:0 -3px 0 #EC1C24,0 3px 0 #EC1C24,-3px 0 0 #EC1C24,3px 0 0 #EC1C24; }
-  .mbti-card.bride{ box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818; }
+  /* 박스 테두리 대신, 두 사람 사이에만 얇은 도트 세로 구분선을 넣는다 */
+  .mbti-card:first-child{ border-right:1.5px dotted #cbb692; }
   .mbti-card-label{
     display:inline-block;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -1160,12 +1160,14 @@
     font-size:11px;
     line-height:1.5;
     color:#5a3e2b;
+    word-break:keep-all;
   }
   .mbti-card-desc{
     margin-top:8px;
     font-size:10px;
     color:#8b5e3c;
     line-height:1.6;
+    word-break:keep-all;
   }
   @media (max-width:360px){
     .mbti-card-type{ font-size:18px; }
