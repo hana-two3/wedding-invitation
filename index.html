@@ -53,9 +53,9 @@
 
   /* ---------- 팀별 동적 테마 스킨 ---------- */
   body.home-theme{
-    /* 신부팀: kt wiz 화이트 유니폼 컨셉 — 순백 배경 + 블랙/레드 포인트 */
-    --theme-acc:#EC1C24;
-    --theme-acc-dark:#181818;
+    /* 신부팀: kt wiz 화이트 유니폼 컨셉 — 순백 배경 + 블랙 메인 포인트 (레드는 신랑팀 전용) */
+    --theme-acc:#181818;
+    --theme-acc-dark:#3A3A3A;
     --theme-bg:#FFFFFF;
     --theme-nav-bg:#181818;
     --theme-page-bg:#FFFFFF;
@@ -156,7 +156,7 @@
     align-items:center;
     background:#FFFDF6;
     padding:16px;
-    margin:0 4px 30px;
+    margin:0 4px 60px;
     box-shadow:0 -4px 0 #000,0 4px 0 #000,-4px 0 0 #000,4px 0 0 #000,0 9px 0 rgba(0,0,0,.22);
   }
   .profile-thumb{
@@ -515,11 +515,13 @@
     background:#fff;
     color:#5a3e2b;
     font-size:9.5px;
-    line-height:1.4;
+    line-height:1.5;
     padding:6px 8px;
     box-shadow:0 -2px 0 #5a3e2b,0 2px 0 #5a3e2b,-2px 0 0 #5a3e2b,2px 0 0 #5a3e2b;
     white-space:normal;
-    word-break:keep-all;
+    word-break:break-all;
+    overflow-wrap:break-word;
+    text-align:center;
     z-index:3;
   }
   .seat-card .bubble::after{
@@ -559,7 +561,7 @@
     color:#fff;
     box-shadow:2px 2px 0 #000;
   }
-  .gb-side-home .gb-side-label{ background:#EC1C24; }
+  .gb-side-home .gb-side-label{ background:#181818; }
   .gb-side-away .gb-side-label{ background:#EC1C24; }
 
   /* 좌석 타일 - 팀(사이드)별 색상 구분 */
@@ -1365,7 +1367,7 @@
         </div>
       </div>
 
-      <p class="invite-msg">오랜 시간 같은 팀에서 뛰던 두 사람이<br>드디어 <b>9회 말 끝내기 홈런</b>을 치고<br>평생 한 팀이 되려 합니다.<br>가장 든든한 응원단이 되어주세요.<br>여러분의 박수가 저희의 승리입니다.</p>
+      <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절은<br>매번 빠르게 흘러갔습니다.<br>든든한 단단함과 세심하고 따뜻한 마음으로<br>평생의 계절을 함께 걸어가려 합니다.<br>저희의 첫 걸음에 소중한 분들을 모십니다.</p>
 
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
       <div class="content-block" id="blockLineup">
@@ -1592,7 +1594,7 @@
             </div>
             <label class="gb-field">
               <span class="gb-field-label px">닉네임</span>
-              <input type="text" id="gbNickname" maxlength="10" placeholder="민지">
+              <input type="text" id="gbNickname" maxlength="10" placeholder="관중석에 기록되어요">
             </label>
             <label class="gb-field">
               <span class="gb-field-label px">실명</span>
@@ -1600,7 +1602,7 @@
             </label>
             <label class="gb-field">
               <span class="gb-field-label px">두 사람에게 전할 말</span>
-              <textarea id="gbMsg" maxlength="50" rows="2" placeholder="결혼 축하해요! 행복하세요 :)"></textarea>
+              <textarea id="gbMsg" maxlength="50" rows="2" placeholder="소중히 간직하겠습니다"></textarea>
               <span class="gb-char-counter" id="gbMsgCounter">0 / 50자</span>
             </label>
             <button class="gb-cta gb-cta-done" id="gbDoneBtn" type="button">
@@ -1610,7 +1612,7 @@
         </div>
       </div>
 
-      <div class="content-block" id="blockAccount" style="margin-bottom:24px;">
+      <div class="content-block" id="blockAccount" style="margin-bottom:64px;">
         <h2 class="blk-h2">마음 전하실 곳</h2>
         <div class="fan-acc groom" id="accGroom">
           <button class="fan-h" type="button" aria-expanded="false">신랑측 계좌번호 <span class="fan-ic"></span></button>
