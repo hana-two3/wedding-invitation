@@ -463,16 +463,30 @@
     padding:0 6px;
   }
 
-  /* 관중석(스탠드) 배경: 따뜻한 픽셀 도트 톤의 좌석 그리드 */
+  /* 관중석(스탠드) 배경: 실제 야구장 콘크리트 스탠드 느낌
+     - 밝은 회색 계단 라인(가로 밴드) + 은은한 콘크리트 블록 세로 줄눈
+     - 맨 아래엔 얇은 그라운드(잔디) 라인으로 스탠드/그라운드 경계 표현 */
   .stand{
+    position:relative;
     display:flex;
     flex-wrap:wrap;
     gap:10px;
     margin:12px 4px 18px;
-    padding:82px 12px 16px;
+    padding:82px 12px 20px;
     background:
-      repeating-linear-gradient(180deg,#fbe9d0 0 26px,#f6dcb2 26px 52px);
-    box-shadow:0 -4px 0 #8b5e3c,0 4px 0 #8b5e3c,-4px 0 0 #8b5e3c,4px 0 0 #8b5e3c,0 8px 0 rgba(139,94,60,.22);
+      repeating-linear-gradient(90deg, rgba(0,0,0,.055) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(180deg, rgba(0,0,0,.05) 0 2px, transparent 2px 28px),
+      repeating-linear-gradient(180deg,#CBD0D3 0 28px,#BFC4C8 28px 56px);
+    box-shadow:0 -4px 0 #6b7278,0 4px 0 #6b7278,-4px 0 0 #6b7278,4px 0 0 #6b7278,0 8px 0 rgba(60,66,71,.25);
+  }
+  /* 스탠드 맨 아래 그라운드(잔디) 라인 */
+  .stand::after{
+    content:'';
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:7px;
+    background:linear-gradient(180deg,#5CB85C 0 3px,#3E8E41 3px 7px);
+    box-shadow:0 -1px 0 rgba(0,0,0,.15);
   }
   .seat-card{
     position:relative;
@@ -514,7 +528,7 @@
     image-rendering:pixelated;
     filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));
   }
-  .seat-card .seat-label{ font-size:8.5px; color:#8b5e3c; }
+  .seat-card .seat-label{ font-size:8.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); }
   .seat-card.filled{
     background:none;
     opacity:1;
@@ -522,7 +536,8 @@
   }
   .seat-card .seat-name{
     font-size:9px;
-    color:#5a3e2b;
+    color:#fff;
+    text-shadow:0 1px 2px rgba(0,0,0,.4);
     max-width:100%;
     overflow:hidden;
     text-overflow:ellipsis;
