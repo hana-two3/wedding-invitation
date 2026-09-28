@@ -630,6 +630,7 @@
     margin:0;
     padding:48px 8px 10px;
     gap:60px 8px;
+    min-height:260px;
   }
   .gb-all-stand .seat-card{ width:calc(25% - 6px); min-width:0; }
   .gb-all-stand .seat-card .seat-label{ font-size:6.5px; }
@@ -638,15 +639,18 @@
   @media (max-width:360px){
     .gb-all-stand .seat-card{ width:calc(33.333% - 6px); }
   }
+  /* 부모(.gb-all-stand)의 상하 패딩이 비대칭이라도 항상 박스 전체 기준으로
+     정확히 정중앙에 오도록, 패딩 영역까지 덮는 절대 위치 + flex 중앙 정렬을 사용한다 */
   .gb-all-empty-note{
-    width:100%;
-    min-height:220px;
+    position:absolute;
+    inset:0;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:34px 12px;
+    margin:0;
+    padding:12px;
   }
   .gb-all-empty-note .icon{ font-size:30px; display:block; margin-bottom:10px; }
   .gb-all-empty-note .msg{
@@ -1193,7 +1197,7 @@
     justify-content:center;
     gap:6px;
     flex-wrap:wrap;
-    margin:10px 0 4px;
+    margin:28px 0 4px;
   }
   .hc-legend-item{
     font-size:9px;
