@@ -835,6 +835,9 @@
   .gb-modal-back:active{ transform:translateY(2px); }
   .gb-modal-back[hidden]{ display:none; }
   .gb-modal-box .gb-q{ margin-top:6px; }
+  /* 응원하기 모달: 뒤로/닫기 버튼이 절대 위치로 떠 있으므로, 2단계(성별/닉네임 입력) 진입 시
+     첫 입력 박스가 버튼과 겹치지 않도록 상단 여백을 넉넉히 확보 */
+  #gbModal .gb-modal-box{ padding-top:50px; }
   .gb-gender-btns{ display:flex; gap:8px; }
   .gb-gender-btn{
     flex:1;
@@ -1114,18 +1117,33 @@
   .hobby-result-text{ color:#5a3e2b; font-size:12px; text-align:center; line-height:1.6; }
   .mbti-card-wrap{
     display:flex;
-    flex-direction:column;
-    gap:14px;
+    flex-direction:row;
+    align-items:stretch;
+    gap:8px;
     margin:4px 0 4px;
   }
   .mbti-card{
+    flex:1 1 0;
+    min-width:0;
     text-align:center;
-    padding:20px 12px 18px;
+    padding:16px 8px 16px;
     background:#FFFDF6;
     box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
   }
+  .mbti-card.groom{ box-shadow:0 -3px 0 #EC1C24,0 3px 0 #EC1C24,-3px 0 0 #EC1C24,3px 0 0 #EC1C24; }
+  .mbti-card.bride{ box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818; }
+  .mbti-card-label{
+    display:inline-block;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:9.5px;
+    color:#fff;
+    padding:3px 10px;
+    margin-bottom:9px;
+  }
+  .mbti-card.groom .mbti-card-label{ background:#EC1C24; }
+  .mbti-card.bride .mbti-card-label{ background:#181818; }
   .mbti-card-type{
-    font-size:26px;
+    font-size:21px;
     font-weight:700;
     color:#5a3e2b;
     letter-spacing:1px;
@@ -1133,14 +1151,19 @@
   .mbti-card-nick{
     margin-top:6px;
     font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:12.5px;
-    color:#3E8E5A;
+    font-size:11px;
+    line-height:1.5;
+    color:#5a3e2b;
   }
   .mbti-card-desc{
     margin-top:8px;
-    font-size:10.5px;
+    font-size:10px;
     color:#8b5e3c;
     line-height:1.6;
+  }
+  @media (max-width:360px){
+    .mbti-card-type{ font-size:18px; }
+    .mbti-card-desc{ font-size:9.5px; }
   }
   @media (max-width:360px){
     .hc-wrap{ flex-direction:column; gap:22px; }
@@ -1526,12 +1549,14 @@
             <div class="stat-board-title px">MBTI SCOUTING REPORT</div>
 
             <div class="mbti-card-wrap">
-              <div class="mbti-card">
+              <div class="mbti-card groom">
+                <div class="mbti-card-label px">신랑 최광현</div>
                 <div class="mbti-card-type px">ISTP</div>
                 <div class="mbti-card-nick">차분하고 확실한 문제 해결사</div>
                 <div class="mbti-card-desc">무심한 듯 놓치는 감정의 빈틈을<br>ESFJ의 세심한 다정함으로 채우는 중</div>
               </div>
-              <div class="mbti-card">
+              <div class="mbti-card bride">
+                <div class="mbti-card-label px">신부 박하나</div>
                 <div class="mbti-card-type px">ESFJ</div>
                 <div class="mbti-card-nick">다정한 보살핌의 아이콘</div>
                 <div class="mbti-card-desc">남 챙기다 지칠 때가 많지만,<br>ISTP의 든든한 해결책에 위로받는 중</div>
@@ -1546,7 +1571,7 @@
       </div>
 
       <div class="content-block" id="blockHotCold">
-        <h2 class="blk-h2">🔥 HOT &amp; COLD ZONE 🧊</h2>
+        <h2 class="blk-h2">HOT &amp; COLD ZONE</h2>
         
         <div class="hc-legend px">
           <span class="hc-legend-item hot">HOT · 강점</span>
@@ -1657,11 +1682,11 @@
         </div>
 
         <div class="gb-side gb-side-home" id="gbSideHome" data-side="home" hidden>
-          <div class="gb-side-label px">⚾ 신부팀 관중석</div>
+          <div class="gb-side-label px">신부팀 관중석</div>
           <div class="stand stand-home" id="standHome"></div>
         </div>
         <div class="gb-side gb-side-away" id="gbSideAway" data-side="away" hidden>
-          <div class="gb-side-label px">⚾ 신랑팀 관중석</div>
+          <div class="gb-side-label px">신랑팀 관중석</div>
           <div class="stand stand-away" id="standAway"></div>
         </div>
 
@@ -1678,7 +1703,7 @@
       <div class="gb-modal-backdrop gb-all-backdrop" id="gbAllModal" hidden>
         <div class="gb-modal-box gb-all-box">
           <button class="gb-modal-close" id="gbAllClose" type="button" aria-label="닫기">×</button>
-          <div class="gb-all-title px">🏟️ 전체 관중석</div>
+          <div class="gb-all-title px">전체 관중석</div>
           <div class="stand gb-all-stand" id="gbAllStand"></div>
         </div>
       </div>
@@ -1706,19 +1731,19 @@
             </div>
             <label class="gb-field">
               <span class="gb-field-label px">닉네임</span>
-              <input type="text" id="gbNickname" maxlength="10" placeholder="관중석에 기록되어요">
+              <input type="text" id="gbNickname" maxlength="10" placeholder="모두가 볼 수 있어요">
             </label>
             <label class="gb-field">
               <span class="gb-field-label px">실명</span>
-              <input type="text" id="gbRealName" maxlength="10" placeholder="신랑 신부에게만 보여요">
+              <input type="text" id="gbRealName" maxlength="10" placeholder="신랑 신부만 볼 수 있어요">
             </label>
             <label class="gb-field">
               <span class="gb-field-label px">두 사람에게 전할 말</span>
-              <textarea id="gbMsg" maxlength="25" rows="2" placeholder="소중히 간직하겠습니다"></textarea>
-              <span class="gb-char-counter" id="gbMsgCounter">0 / 25자</span>
+              <textarea id="gbMsg" maxlength="30" rows="2" placeholder="소중히 간직하겠습니다"></textarea>
+              <span class="gb-char-counter" id="gbMsgCounter">0 / 30자</span>
             </label>
             <button class="gb-cta gb-cta-done" id="gbDoneBtn" type="button">
-              <span>착석하기</span>
+              <span>응원하기</span>
             </button>
           </div>
         </div>
@@ -2364,7 +2389,7 @@
       if(allRecords.length === 0){
         const note = document.createElement('div');
         note.className = 'gb-all-empty-note';
-        note.innerHTML = '<span class="icon">🪑</span><span class="msg px">첫 관중이 되어보세요!</span>';
+        note.innerHTML = '<span class="msg px">첫 관중이 되어보세요!</span>';
         allStand.appendChild(note);
         return;
       }
@@ -2507,10 +2532,10 @@
     function updateMsgCounter(){
       if(!msgCounter) return;
       const len = msgInput.value.length;
-      msgCounter.textContent = `${len} / 25자`;
-      if(len >= 25){
+      msgCounter.textContent = `${len} / 30자`;
+      if(len >= 30){
         msgCounter.classList.add('gb-char-warn');
-        msgCounter.textContent = `${len} / 25자 (글자 수 초과)`;
+        msgCounter.textContent = `${len} / 30자 (글자 수 초과)`;
       }else{
         msgCounter.classList.remove('gb-char-warn');
       }
