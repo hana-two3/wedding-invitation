@@ -640,6 +640,11 @@
   }
   .gb-all-empty-note{
     width:100%;
+    min-height:220px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
     text-align:center;
     padding:34px 12px;
   }
@@ -1717,7 +1722,7 @@
       <div class="gb-modal-backdrop gb-all-backdrop" id="gbAllModal" hidden>
         <div class="gb-modal-box gb-all-box">
           <button class="gb-modal-close" id="gbAllClose" type="button" aria-label="닫기">×</button>
-          <div class="gb-all-title px">전체 관중석</div>
+          <div class="gb-all-title px">전체 응원석</div>
           <div class="stand gb-all-stand" id="gbAllStand"></div>
         </div>
       </div>
@@ -2403,7 +2408,7 @@
       if(allRecords.length === 0){
         const note = document.createElement('div');
         note.className = 'gb-all-empty-note';
-        note.innerHTML = '<span class="msg px">첫 관중이 되어보세요!</span>';
+        note.innerHTML = '<span class="msg px">첫번째 응원을 남겨 보세요!</span>';
         allStand.appendChild(note);
         return;
       }
