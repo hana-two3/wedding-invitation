@@ -166,7 +166,7 @@
   /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 (D-Day 스코어보드 상단 배치) ---------- */
   .wm-section{
     text-align:center;
-    padding:40px 22px 46px;
+    padding:40px 22px 30px;
   }
   .dday-badge{
     display:block;
@@ -177,6 +177,33 @@
     color:#4a3b32;
     margin-bottom:28px;
     font-variant-numeric:tabular-nums;
+  }
+  /* 인삿말과 라인업 섹션 사이의 경계를 자연스럽게 이어주는 스크롤 유도 + 구분선 + 서브 태그 */
+  .wm-scroll-cue{
+    margin-top:26px;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:9px;
+    letter-spacing:1.5px;
+    line-height:1.9;
+    color:#c9b8a0;
+    animation:wm-bob 1.8s ease-in-out infinite;
+  }
+  @keyframes wm-bob{
+    0%,100%{ transform:translateY(0); opacity:.7; }
+    50%{ transform:translateY(4px); opacity:1; }
+  }
+  .wm-divider{
+    height:1px;
+    margin:6px 28px 22px;
+    background-image:repeating-linear-gradient(to right,#c9b8a0 0 5px,transparent 5px 10px);
+  }
+  .wm-subtag{
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:#8b5e3c;
+    text-align:center;
+    margin:0 0 22px;
   }
 
   /* ---------- Hero (배경 + 캐릭터) ---------- */
@@ -875,14 +902,6 @@
   }
   .blk-h2::before{ content:'♥ '; color:var(--theme-acc,#C8102E); }
   .blk-h2::after{ content:' ♥'; color:var(--theme-acc,#C8102E); }
-  .blk-h2.has-sub{ margin-bottom:6px; }
-  .blk-subdate{
-    font-family:inherit; /* 사계절 인삿말 본문과 동일한 서체(Pretendard) */
-    font-size:13px;
-    color:#5a3e2b;
-    text-align:center;
-    margin:0 0 22px;
-  }
 
   /* 레트로 미니홈피 감성: 섹션 넘버링 태그 & 픽셀 점선 구분선 */
   .sec-tag{
@@ -1227,40 +1246,43 @@
     gap:4px;
   }
   .tl-h-box{
-    width:30px;
-    height:30px;
+    width:34px;
+    height:34px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:13px;
+    font-size:15px;
     /* 4개 아이콘 박스 모두 동일한 픽셀 베이지/골드 톤으로 통일 (이전엔 1·4번째만 분홍이라 이질감 있었음) */
     background:#FFD166;
     box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
   }
-  .tl-h-time{ font-family:'Galmuri9'; color:#8b5e3c; font-size:9.5px; margin-top:2px; white-space:nowrap; }
-  .tl-h-sub{ font-family:'Galmuri9'; font-size:8px; color:#800020; white-space:nowrap; }
-  .tl-h-detail{ font-size:9.5px; color:#5a3e2b; line-height:1.35; word-break:keep-all; padding:0 1px; }
+  .tl-h-time{ font-family:'Galmuri9'; color:#8b5e3c; font-size:11.5px; margin-top:3px; white-space:nowrap; }
+  .tl-h-sub{ font-family:'Galmuri9'; font-size:10.5px; color:#800020; white-space:nowrap; }
+  .tl-h-detail{ font-size:11.5px; font-weight:600; color:#5a3e2b; line-height:1.4; word-break:keep-all; padding:0 1px; }
   .tl-h-dots{
     flex:0 1 16px;
     min-width:6px;
     height:3px;
-    margin-top:15px;
+    margin-top:17px;
     background-image:repeating-linear-gradient(to right, #8b5e3c 0 4px, transparent 4px 8px);
   }
   .tl-note{ margin:10px 4px 0; font-size:11px; color:#a08662; text-align:center; }
   .tl-venue{
     font-family:inherit; /* 사계절 인삿말 본문과 동일한 서체(Pretendard) */
-    font-size:13px;
+    font-size:16.5px;
+    font-weight:600;
+    letter-spacing:.2px;
     color:#5a3e2b;
     text-align:center;
-    margin:18px 4px 0;
+    margin:22px 4px 0;
   }
   @media (max-width:360px){
-    .tl-h-box{ width:26px; height:26px; font-size:11.5px; }
-    .tl-h-time{ font-size:8.5px; }
-    .tl-h-sub{ font-size:7.5px; }
-    .tl-h-detail{ font-size:8.5px; }
-    .tl-h-dots{ flex-basis:8px; margin-top:13px; }
+    .tl-h-box{ width:30px; height:30px; font-size:13.5px; }
+    .tl-h-time{ font-size:10.5px; }
+    .tl-h-sub{ font-size:9.5px; }
+    .tl-h-detail{ font-size:10.5px; }
+    .tl-h-dots{ flex-basis:8px; margin-top:15px; }
+    .tl-venue{ font-size:15px; }
   }
 
   /* Noti & Event */
@@ -1510,7 +1532,11 @@
         <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
+        <div class="wm-scroll-cue px" aria-hidden="true">SCROLL<br>▼</div>
       </div>
+
+      <div class="wm-divider" aria-hidden="true"></div>
+      <div class="wm-subtag px">[ TODAY'S LINEUP ]</div>
 
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
       <div class="content-block" id="blockLineup">
@@ -1750,8 +1776,7 @@
       </div>
 
       <div class="content-block" id="blockTimeline">
-        <h2 class="blk-h2 has-sub">INNING TIMELINE</h2>
-        <div class="blk-subdate">2027년 5월 22일 토요일</div>
+        <h2 class="blk-h2">INNING TIMELINE</h2>
         <div class="tl-h-wrap">
           <div class="tl-h">
             <div class="tl-h-item">
@@ -1783,7 +1808,7 @@
             </div>
           </div>
         </div>
-        <div class="tl-venue">장소: 드까르멜릿</div>
+        <div class="tl-venue">2027년 5월 22일 토요일 | 드까르멜릿</div>
       </div>
 
       <div class="content-block" id="blockNoti">
