@@ -166,7 +166,27 @@
   /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 (D-Day 스코어보드 상단 배치) ---------- */
   .wm-section{
     text-align:center;
-    padding:40px 22px 30px;
+    padding:40px 22px 60px;
+  }
+  /* 사계절 인삿말 스토리(야구 → 웨이크보드/물결 → 스노우보드/눈꽃)를 표현하는 픽셀 아이콘 순환 */
+  .wm-season-icons{
+    position:relative;
+    height:32px;
+    margin-bottom:8px;
+  }
+  .season-icon{
+    position:absolute;
+    left:50%;
+    top:0;
+    transform:translate(-50%,6px);
+    font-size:26px;
+    line-height:32px;
+    opacity:0;
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .season-icon.active{
+    opacity:1;
+    transform:translate(-50%,0);
   }
   .dday-badge{
     display:block;
@@ -185,15 +205,16 @@
   .wm-scroll-cue{
     margin-top:84px;
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:9px;
+    font-size:14px;
     letter-spacing:1.5px;
     line-height:1.9;
-    color:#c9b8a0;
+    color:#8b5e3c; /* 다른 서브 타이틀과 동일한 브라운 톤으로 시인성 확보 */
     animation:wm-bob 1.8s ease-in-out infinite;
   }
   #blockLineup::before{ content:none; }
-  /* PLAY BALL ▼ 아래 여백이 과도하게 비어 보이지 않도록, 첫 번째 콘텐츠 블록(라인업)만
-     공통 .content-block 여백(margin-top:118px + padding-top:100px)보다 훨씬 좁게 조정 */
+  /* PLAY BALL ▼ 상하 여백을 1:1 대칭으로 맞추기 위해, 첫 번째 콘텐츠 블록(라인업)만
+     공통 .content-block 여백(margin-top:118px + padding-top:100px) 대신 이 값을 사용한다.
+     (wm-section의 하단 padding 60px + 여기 padding-top 24px = 84px → 위쪽 margin-top:84px와 대칭) */
   #blockLineup{ margin-top:0; padding-top:24px; }
   @keyframes wm-bob{
     0%,100%{ transform:translateY(0); opacity:.7; }
@@ -1523,6 +1544,11 @@
   <section id="content" class="content" hidden>
     <div class="content-inner">
       <div class="wm-section">
+        <div class="wm-season-icons" id="seasonIcons" aria-hidden="true">
+          <span class="season-icon active">⚾</span>
+          <span class="season-icon">🏄</span>
+          <span class="season-icon">❄️</span>
+        </div>
         <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
@@ -2153,6 +2179,55 @@
       const observer = new MutationObserver(() => {
         if(!content.hidden){
           playCountdown();
+          observer.disconnect();
+        }
+      });
+      observer.observe(content, { attributes: true, attributeFilter: ['hidden'] });
+    }
+  })();
+
+  /* ===== 사계절 인삿말 스토리 픽셀 아이콘 순환(야구 → 웨이크보드/물결 → 스노우보드/눈꽃) =====
+     D-Day 카운트다운과 동일하게, #content가 실제로 노출되는 시점에 맞춰 재생을 시작한다.
+     처음엔 카운트다운과 비슷한 속도로 빠르게 세 아이콘을 훑고, 이후에는 은은하게 계속 순환한다. */
+  (function(){
+    const icons = Array.from(document.querySelectorAll('#seasonIcons .season-icon'));
+    if(icons.length === 0) return;
+
+    function setActive(i){
+      icons.forEach((el, j) => el.classList.toggle('active', j === i));
+    }
+
+    let played = false;
+    function playCycle(){
+      if(played) return;
+      played = true;
+      let idx = 0;
+      let step = 0;
+      const introDelay = 420; // 초반 전환 간격(D-Day 카운트다운 재생 시간과 비슷하게 맞춤)
+      function introTick(){
+        step++;
+        idx = step % icons.length;
+        setActive(idx);
+        if(step < icons.length - 1){
+          setTimeout(introTick, introDelay);
+        } else {
+          // 세 아이콘을 다 훑고 나면 이후엔 은은하게 계속 순환
+          setInterval(() => {
+            idx = (idx + 1) % icons.length;
+            setActive(idx);
+          }, 2200);
+        }
+      }
+      setTimeout(introTick, introDelay);
+    }
+
+    const content = document.getElementById('content');
+    if(!content || !content.hidden){
+      playCycle();
+    } else {
+      const observer = new MutationObserver(() => {
+        if(!content.hidden){
+          playCycle();
           observer.disconnect();
         }
       });
