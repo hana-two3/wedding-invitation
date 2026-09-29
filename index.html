@@ -179,9 +179,11 @@
     font-variant-numeric:tabular-nums;
   }
   /* 인삿말과 라인업 섹션 사이의 경계를 자연스럽게 이어주는 스크롤 유도 문구.
-     구분선은 아래 .content-block::before(전 섹션 공통 픽셀 점선)가 담당하므로 여기서는 중복으로 추가하지 않는다. */
+     구분선은 아래 .content-block::before(전 섹션 공통 픽셀 점선)가 담당하므로 여기서는 중복으로 추가하지 않는다.
+     단, blockLineup 바로 위쪽만은 예외적으로 그 공통 구분선을 꺼서(#blockLineup::before) 이 문구 아래에
+     점선이 남지 않도록 한다(다른 섹션들의 구분선은 그대로 유지). */
   .wm-scroll-cue{
-    margin-top:26px;
+    margin-top:64px;
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
     font-size:9px;
     letter-spacing:1.5px;
@@ -189,6 +191,7 @@
     color:#c9b8a0;
     animation:wm-bob 1.8s ease-in-out infinite;
   }
+  #blockLineup::before{ content:none; }
   @keyframes wm-bob{
     0%,100%{ transform:translateY(0); opacity:.7; }
     50%{ transform:translateY(4px); opacity:1; }
@@ -528,9 +531,11 @@
     animation:seat-pop .35s steps(5) both;
   }
   .seat-card .seat-name{
-    font-size:9px;
+    font-size:10px; /* 9px→10px: 외곽선이 작은 픽셀 글리프를 뒤덮어 뭉개져 보이던 문제 완화 */
+    letter-spacing:.5px; /* 자음/모음 사이 여백을 확보해 외곽선끼리 서로 침범하지 않도록 함 */
     color:#ffffff;
-    /* 블러 없는 4방향 픽셀 외곽선: blur 값을 0으로 고정해 뿌옇게 번지지 않고 또렷하게 보이도록 함 */
+    /* 블러 없는 4방향 1px 픽셀 외곽선만 사용(-webkit-text-stroke는 사용하지 않음): blur 값을 0으로 고정해
+       뿌옇게 번지지도, 두꺼운 스트로크가 글자 안쪽을 침범해 뭉개지지도 않도록 함 */
     text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
     -webkit-font-smoothing:none;
     font-smoothing:none;
@@ -632,7 +637,7 @@
   }
   .gb-all-stand .seat-card{ width:calc(25% - 6px); min-width:0; }
   .gb-all-stand .seat-card .seat-label{ font-size:6.5px; }
-  .gb-all-stand .seat-card .seat-name{ font-size:7px; }
+  .gb-all-stand .seat-card .seat-name{ font-size:8px; letter-spacing:.3px; }
   .gb-all-stand .seat-card .bubble{ font-size:7.5px; max-width:82px; padding:4px 6px; }
   @media (max-width:360px){
     .gb-all-stand .seat-card{ width:calc(33.333% - 6px); }
@@ -1215,6 +1220,7 @@
   .tl-h-wrap{
     width:100%;
     overflow:visible;
+    margin-top:28px; /* 타이틀과 식순 아이콘 사이 간격 확대 */
   }
   .tl-h{
     display:flex;
@@ -1261,7 +1267,7 @@
     letter-spacing:normal;
     color:#6b5a49; /* 본문보다 살짝 차분한 브라운/그레이 톤 — 과한 강조 없이 단정하게 */
     text-align:center;
-    margin:16px 4px 0;
+    margin:44px 4px 0; /* 식순 영역과의 간격을 넉넉하게 확대 */
   }
   @media (max-width:360px){
     .tl-h-box{ width:30px; height:30px; font-size:13.5px; }
@@ -1274,7 +1280,7 @@
 
   /* Noti & Event */
   .noti-box{ text-align:center; }
-  .noti-box p{ font-size:14px; color:#5a3e2b; margin-bottom:18px; line-height:1.7; }
+  .noti-box p{ font-size:14px; color:#5a3e2b; margin-bottom:36px; line-height:1.7; }
   .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#F2D98A; color:#5a3e2b; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
 
   /* 오시는 길 */
@@ -1519,7 +1525,7 @@
         <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
-        <div class="wm-scroll-cue px" aria-hidden="true">SCROLL<br>▼</div>
+        <div class="wm-scroll-cue px" aria-hidden="true">PLAY BALL<br>▼</div>
       </div>
 
       <!-- 섹션 구분선은 .content-block::before(전 섹션 공통 픽셀 점선)가 담당 -->
@@ -1804,7 +1810,7 @@
         </div>
       </div>
 
-      <div class="content-block" id="blockAccount" style="margin-bottom:64px;">
+      <div class="content-block" id="blockAccount" style="margin-bottom:116px;">
         <h2 class="blk-h2">SENDING YOUR WISHES</h2>
         <div class="acc-tabs">
           <button class="acc-tab groom active px" id="accTabGroom" type="button">신랑측</button>
