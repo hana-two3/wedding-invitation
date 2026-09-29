@@ -183,7 +183,7 @@
      단, blockLineup 바로 위쪽만은 예외적으로 그 공통 구분선을 꺼서(#blockLineup::before) 이 문구 아래에
      점선이 남지 않도록 한다(다른 섹션들의 구분선은 그대로 유지). */
   .wm-scroll-cue{
-    margin-top:64px;
+    margin-top:84px;
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
     font-size:9px;
     letter-spacing:1.5px;
@@ -192,6 +192,9 @@
     animation:wm-bob 1.8s ease-in-out infinite;
   }
   #blockLineup::before{ content:none; }
+  /* PLAY BALL ▼ 아래 여백이 과도하게 비어 보이지 않도록, 첫 번째 콘텐츠 블록(라인업)만
+     공통 .content-block 여백(margin-top:118px + padding-top:100px)보다 훨씬 좁게 조정 */
+  #blockLineup{ margin-top:0; padding-top:24px; }
   @keyframes wm-bob{
     0%,100%{ transform:translateY(0); opacity:.7; }
     50%{ transform:translateY(4px); opacity:1; }
@@ -531,18 +534,16 @@
     animation:seat-pop .35s steps(5) both;
   }
   .seat-card .seat-name{
-    font-size:10px; /* 9px→10px: 외곽선이 작은 픽셀 글리프를 뒤덮어 뭉개져 보이던 문제 완화 */
-    letter-spacing:.5px; /* 자음/모음 사이 여백을 확보해 외곽선끼리 서로 침범하지 않도록 함 */
-    color:#ffffff;
-    /* 블러 없는 4방향 1px 픽셀 외곽선만 사용(-webkit-text-stroke는 사용하지 않음): blur 값을 0으로 고정해
-       뿌옇게 번지지도, 두꺼운 스트로크가 글자 안쪽을 침범해 뭉개지지도 않도록 함 */
-    text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+    font-size:10px;
+    letter-spacing:.5px; /* 자음/모음 사이 여백을 확보해 픽셀 글자가 선명하게 읽히도록 함 */
+    font-weight:500;
+    color:#1a1a1a; /* 외곽선 없이 단색 짙은 검정으로 또렷하게 표시 */
+    text-shadow:none; /* 외곽선(스트로크) 완전 제거 */
+    -webkit-text-stroke:0;
     -webkit-font-smoothing:none;
     font-smoothing:none;
     line-height:1.5;
     max-width:100%;
-    /* overflow:hidden + text-overflow:ellipsis 조합이 외곽선 가장자리를 잘라내던 원인이었음 →
-       overflow:visible + 여백 확보로 외곽선이 잘리지 않게 함 */
     overflow:visible;
     white-space:nowrap;
     padding:2px;
