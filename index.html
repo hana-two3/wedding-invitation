@@ -157,8 +157,9 @@
     background:#FFFDF6;
     padding:16px;
     margin:0 4px 60px;
-    box-shadow:0 -4px 0 #000,0 4px 0 #000,-4px 0 0 #000,4px 0 0 #000,0 9px 0 rgba(0,0,0,.22);
+    box-shadow:0 -4px 0 var(--profile-border,#000),0 4px 0 var(--profile-border,#000),-4px 0 0 var(--profile-border,#000),4px 0 0 var(--profile-border,#000),0 9px 0 rgba(0,0,0,.22);
   }
+  body.away-theme .profile-card{ --profile-border:#EC1C24; }
   .profile-thumb{
     flex:none;
     width:76px;
@@ -698,10 +699,10 @@
     text-align:center;
     font-size:13px;
     color:#5a3e2b;
-    background:#FFF6E0;
+    background:none;
     padding:10px 8px;
     margin-bottom:12px;
-    box-shadow:0 -3px 0 #e8d5b5,0 3px 0 #e8d5b5,-3px 0 0 #e8d5b5,3px 0 0 #e8d5b5;
+    box-shadow:none;
   }
   .gb-cat-grid{
     display:grid;
@@ -1009,7 +1010,7 @@
     text-align:center;
     font-size:12px;
     color:#5a3e2b;
-    margin:14px 0 7px;
+    margin:14px 0 3px;
   }
   .hobby-title:first-of-type{ margin-top:2px; }
   .stat-side-label{
@@ -1022,7 +1023,7 @@
     gap:1px;
   }
   .stat-sub{
-    font-size:7px;
+    font-size:9px;
     color:#8b5e3c;
     white-space:nowrap;
   }
@@ -1528,9 +1529,9 @@
               <div class="stat-side-label away"><span class="stat-val away">40%</span><span class="stat-sub">무서워요</span></div>
               <div class="stat-track">
                 <div class="stat-half l"><div class="stat-fill away" style="width:40%"></div></div>
-                <div class="stat-half r"><div class="stat-fill home" style="width:90%"></div></div>
+                <div class="stat-half r"><div class="stat-fill home" style="width:95%"></div></div>
               </div>
-              <div class="stat-side-label home"><span class="stat-val home">90%</span><span class="stat-sub">태권도 5단</span></div>
+              <div class="stat-side-label home"><span class="stat-val home">95%</span><span class="stat-sub">태권도 5단</span></div>
             </div>
 
             <div class="hobby-title px">🏓 탁구 &amp; 배드민턴 승률 🏸</div>
@@ -1700,16 +1701,16 @@
 
       <div class="content-block" id="blockGuestbook">
         <div class="gb-head">
-          <div class="gb-title px">CHEERS &amp; WISHES</div>
+          <div class="gb-title px">CHEERS</div>
           <p class="gb-desc" id="gbDesc">'응원하기' 버튼을 클릭하시면<br>두 사람의 결혼을 응원하는 메시지를 작성할 수 있습니다.</p>
         </div>
 
         <div class="gb-side gb-side-home" id="gbSideHome" data-side="home" hidden>
-          <div class="gb-side-label px">신부팀 관중석</div>
+          <div class="gb-side-label px">신부팀 응원석</div>
           <div class="stand stand-home" id="standHome"></div>
         </div>
         <div class="gb-side gb-side-away" id="gbSideAway" data-side="away" hidden>
-          <div class="gb-side-label px">신랑팀 관중석</div>
+          <div class="gb-side-label px">신랑팀 응원석</div>
           <div class="stand stand-away" id="standAway"></div>
         </div>
 
