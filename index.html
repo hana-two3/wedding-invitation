@@ -2059,35 +2059,64 @@
   if(accTabGroom) accTabGroom.addEventListener('click', () => showAccTab('groom'));
   if(accTabBride) accTabBride.addEventListener('click', () => showAccTab('bride'));
 
-  /* ===== D-Day 스코어보드 카운트다운 애니메이션 ===== */
+  /* ===== D-Day 스코어보드 카운트다운 애니메이션 =====
+     주의: #content 섹션은 팀을 선택하기 전까지 hidden(display:none) 상태이므로,
+     페이지 로드 즉시 애니메이션을 실행하면 화면에 보이지도 않는 채로 끝나버린다.
+     따라서 #content가 실제로 화면에 노출되는 시점(팀 선택 또는 상단 탭 클릭)까지 기다렸다가 재생한다. */
   (function(){
     const WEDDING_DATE = new Date(2027, 4, 22); // 2027-05-22
     const badge = $('#ddayBadge');
     if(!badge) return;
-    const today = new Date();
-    const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const b = new Date(WEDDING_DATE.getFullYear(), WEDDING_DATE.getMonth(), WEDDING_DATE.getDate());
-    const diffDays = Math.round((b - a) / 86400000);
-    const finalText = diffDays === 0 ? 'D-DAY' : (diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`);
 
-    if(diffDays > 0){
-      // 야구장 전광판처럼 숫자가 다라락 넘어가다 최종 값에서 멈추는 효과: 9단계, 총 0.8초
-      const steps = 9;
-      const startVal = diffDays + steps;
-      const stepDuration = 800 / steps;
-      let i = 0;
-      const timer = setInterval(() => {
-        i++;
-        const val = startVal - i;
-        if(val <= diffDays){
-          badge.textContent = finalText;
-          clearInterval(timer);
-        } else {
-          badge.textContent = `D-${val}`;
-        }
-      }, stepDuration);
+    function computeFinal(){
+      const today = new Date();
+      const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const b = new Date(WEDDING_DATE.getFullYear(), WEDDING_DATE.getMonth(), WEDDING_DATE.getDate());
+      const diffDays = Math.round((b - a) / 86400000);
+      const text = diffDays === 0 ? 'D-DAY' : (diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`);
+      return { diffDays, text };
+    }
+
+    let played = false;
+    function playCountdown(){
+      if(played) return;
+      played = true;
+      const { diffDays, text: finalText } = computeFinal();
+
+      if(diffDays > 0){
+        // 야구장 전광판처럼 숫자가 다라락 넘어가다 최종 값에서 멈추는 효과: 9단계, 총 0.8초
+        const steps = 9;
+        const startVal = diffDays + steps;
+        const stepDuration = 800 / steps;
+        let i = 0;
+        const timer = setInterval(() => {
+          i++;
+          const val = startVal - i;
+          if(val <= diffDays){
+            badge.textContent = finalText;
+            clearInterval(timer);
+          } else {
+            badge.textContent = `D-${val}`;
+          }
+        }, stepDuration);
+      } else {
+        badge.textContent = finalText;
+      }
+    }
+
+    const content = document.getElementById('content');
+    if(!content || !content.hidden){
+      // #content 요소가 없거나 이미 보이는 상태라면 즉시 재생
+      playCountdown();
     } else {
-      badge.textContent = finalText;
+      // hidden 속성이 풀리는 순간(팀 선택/탭 클릭)을 감지해 그때 재생
+      const observer = new MutationObserver(() => {
+        if(!content.hidden){
+          playCountdown();
+          observer.disconnect();
+        }
+      });
+      observer.observe(content, { attributes: true, attributeFilter: ['hidden'] });
     }
   })();
 
