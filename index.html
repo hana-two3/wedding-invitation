@@ -698,6 +698,7 @@
     padding:20px 12px 18px;
   }
   .gb-all-title{
+    flex-shrink:0;
     display:table;
     margin:0 auto 14px;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -712,6 +713,22 @@
     padding:48px 8px 10px;
     gap:60px 8px;
     min-height:260px;
+  }
+  /* '전체 응원석' 모달 전용: 모달 박스 자체는 뷰포트를 넘지 않는 고정 프레임으로 두고
+     (상단 타이틀/닫기(X) 버튼이 항상 보이도록), 좌석 그리드(.gb-all-stand)만 내부에서
+     스크롤되도록 한다. 기존에는 .gb-modal-box 전체가 스크롤되어, 좌석이 많아지면
+     absolute로 떠 있는 닫기 버튼이 화면 위쪽으로 같이 밀려 올라가 눌리지 않는 문제가 있었다. */
+  .gb-modal-box.gb-all-box{
+    display:flex;
+    flex-direction:column;
+    max-height:min(85vh, calc(100vh - 80px));
+    overflow:hidden;
+  }
+  .gb-modal-box.gb-all-box .gb-all-stand{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
   .gb-all-stand .seat-card{ width:calc(25% - 6px); min-width:0; }
   .gb-all-stand .seat-card .seat-name,
@@ -1361,9 +1378,9 @@
     letter-spacing:normal;
     color:#6b5a49; /* 본문보다 살짝 차분한 브라운/그레이 톤 — 과한 강조 없이 단정하게 */
     text-align:center;
+    line-height:1.7;
     margin:44px 4px 0; /* 식순 영역과의 간격을 넉넉하게 확대 */
   }
-  .tl-venue-sep{ margin:0 10px; }
   @media (max-width:360px){
     .tl-h-box{ width:30px; height:30px; font-size:13.5px; }
     .tl-h-time{ font-size:10.5px; }
@@ -1376,7 +1393,7 @@
   /* Noti & Event */
   .noti-box{ text-align:center; }
   .noti-box p{ font-size:14px; color:#5a3e2b; margin-bottom:36px; line-height:1.7; }
-  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#F2D98A; color:#5a3e2b; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
+  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:var(--theme-acc,#F2D98A); color:#fff; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 var(--theme-acc-dark,#8b5e3c),0 3px 0 var(--theme-acc-dark,#8b5e3c),-3px 0 0 var(--theme-acc-dark,#8b5e3c),3px 0 0 var(--theme-acc-dark,#8b5e3c); }
 
   /* 오시는 길 */
   .cal-box{ background:#FFFDF6; padding:16px; margin-bottom:18px; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
@@ -1588,7 +1605,7 @@
       <button class="tab-btn px" id="navLineup" type="button" data-target="blockLineup">라인업</button>
       <button class="tab-btn px" id="navGallery" type="button" data-target="blockGallery">갤러리</button>
       <button class="tab-btn px" id="navGuestbook" type="button" data-target="blockGuestbook">응원</button>
-      <button class="tab-btn px" id="navSchedule" type="button" data-target="blockTimeline">경기일정</button>
+      <button class="tab-btn px" id="navSchedule" type="button" data-target="blockTimeline">일정</button>
     </div>
   </nav>
 
@@ -1914,7 +1931,7 @@
             </div>
           </div>
         </div>
-        <div class="tl-venue">2027년 5월 22일 토요일 <span class="tl-venue-sep">|</span> 드까르멜릿</div>
+        <div class="tl-venue">2027년 5월 22일 토요일<br>드까르멜릿</div>
       </div>
 
       <div class="content-block" id="blockNoti">
