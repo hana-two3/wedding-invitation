@@ -509,15 +509,35 @@
     row-gap:64px;
     column-gap:10px;
     margin:12px 4px 18px;
-    padding:82px 12px 20px;
+    /* 좌우/상단 여백은 그대로 두되, 하단 여백(그라운드 라인 자리)은 실제 콘텐츠
+       높이에 맞춰 늘어나야 하므로 .stand-rows 쪽으로 옮긴다(아래 참고) */
+    padding:82px 12px 0;
     background:
       repeating-linear-gradient(90deg, rgba(0,0,0,.055) 0 2px, transparent 2px 34px),
       repeating-linear-gradient(180deg, rgba(0,0,0,.05) 0 2px, transparent 2px 28px),
       repeating-linear-gradient(180deg,#CBD0D3 0 28px,#BFC4C8 28px 56px);
     box-shadow:0 -4px 0 #6b7278,0 4px 0 #6b7278,-4px 0 0 #6b7278,4px 0 0 #6b7278,0 8px 0 rgba(60,66,71,.25);
   }
-  /* 스탠드 맨 아래 그라운드(잔디) 라인 */
-  .stand::after{
+  /* 응원석 행(Row)이 많아져 .stand 자체가 내부 스크롤(overflow-y:auto + 고정 max-height)될 때,
+     기존처럼 그라운드 라인을 .stand의 ::after로 두면 "보이는 영역(max-height)의 맨 아래"에
+     고정되어 버려, 행이 늘어나 스크롤하면 그 라인이 화면에 보이는 마지막 행 캐릭터 중간을
+     관통하는 것처럼 보이는 문제가 있었다.
+     → 실제 좌석들을 담는 내부 래퍼(.stand-rows)를 별도로 두고, 그 래퍼는 스크롤 여부와 무관하게
+       항상 "전체 콘텐츠 높이"만큼 auto로 늘어나므로, 그라운드 라인을 이 래퍼의 ::after(bottom:0)로
+       두면 행 수와 관계없이 항상 진짜 마지막 행 바로 아래에 붙는다. */
+  .stand-rows{
+    position:relative;
+    display:flex;
+    flex-wrap:wrap;
+    width:100%;
+    row-gap:64px;
+    column-gap:10px;
+    padding-bottom:20px; /* 마지막 행과 그라운드 라인 사이 여백(기존 .stand 하단 padding과 동일) */
+  }
+  /* 스탠드 맨 아래 그라운드(잔디) 라인: 내부 스크롤이 없는 전체 관중석 통합 보기(.gb-all-stand)는
+     기존처럼 자기 자신의 ::after로, 내부 스크롤이 있는 개별 팀 관중석은 .stand-rows의 ::after로 */
+  .gb-all-stand::after,
+  .stand-rows::after{
     content:'';
     position:absolute;
     left:0; right:0; bottom:0;
@@ -2482,10 +2502,24 @@
       return el;
     }
 
+    // 실제 좌석(행)들을 담는 내부 래퍼(.stand-rows)를 가져오거나, 없으면 새로 만든다.
+    // 이 래퍼는 항상 콘텐츠 전체 높이만큼 auto로 늘어나므로, 그라운드 라인(::after)을
+    // 여기에 두면 .stand가 내부 스크롤 중이어도 항상 "진짜 마지막 행" 바로 아래에 붙는다.
+    function rowsContainerOf(standEl){
+      let rows = standEl.querySelector(':scope > .stand-rows');
+      if(!rows){
+        rows = document.createElement('div');
+        rows.className = 'stand-rows';
+        standEl.appendChild(rows);
+      }
+      return rows;
+    }
+
     // 관중석 맨 아래에 4자리짜리 새 줄을 한 줄 추가
     function addRow(standEl, side){
+      const rows = rowsContainerOf(standEl);
       for(let i=0;i<ROW_SIZE;i++){
-        standEl.appendChild(makeSeat(side));
+        rows.appendChild(makeSeat(side));
       }
     }
 
@@ -2503,10 +2537,13 @@
       if(!card) return;
       const cardH = card.getBoundingClientRect().height;
       if(!cardH) return;
-      const cs = getComputedStyle(standEl);
-      const gap = parseFloat(cs.rowGap || cs.gap) || 10;
-      const padTop = parseFloat(cs.paddingTop) || 0;
-      const padBottom = parseFloat(cs.paddingBottom) || 0;
+      const rows = standEl.querySelector(':scope > .stand-rows');
+      const outerCs = getComputedStyle(standEl);
+      const rowsCs = rows ? getComputedStyle(rows) : outerCs;
+      const gap = parseFloat(rowsCs.rowGap || rowsCs.gap) || 10;
+      const padTop = parseFloat(outerCs.paddingTop) || 0;
+      // 그라운드 라인 여백은 이제 .stand-rows의 하단 padding에 있으므로 그쪽 값을 사용한다.
+      const padBottom = parseFloat(rowsCs.paddingBottom) || 0;
       const maxH = cardH * 4 + gap * 3 + padTop + padBottom;
       standEl.style.maxHeight = maxH + 'px';
       standEl.style.overflowY = 'auto';
@@ -2525,7 +2562,7 @@
     // 마지막 줄(가장 최근에 만들어진 4자리)이 전부 채워졌는지 확인하고,
     // 한 줄이 꽉 찼다면 자동으로 다음 줄을 추가한다. (팀별 관중석마다 독립적으로 동작)
     function maybeExpandRow(standEl, side){
-      const seats = Array.from(standEl.children);
+      const seats = Array.from(rowsContainerOf(standEl).children);
       const total = seats.length;
       if(total === 0 || total % ROW_SIZE !== 0) return;
       const lastRow = seats.slice(total - ROW_SIZE);
