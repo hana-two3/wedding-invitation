@@ -880,6 +880,22 @@
   /* 응원하기 모달: 뒤로/닫기 버튼이 절대 위치로 떠 있으므로, 2단계(성별/닉네임 입력) 진입 시
      첫 입력 박스가 버튼과 겹치지 않도록 상단 여백을 넉넉히 확보 */
   #gbModal .gb-modal-box{ padding-top:50px; }
+  /* 방명록 작성 완료 감사 모달 */
+  .gb-thanks-box{ text-align:center; padding-top:36px; }
+  .gb-thanks-title{
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:14.5px;
+    line-height:1.6;
+    color:#C8102E;
+    margin-bottom:14px;
+  }
+  .gb-thanks-msg{
+    font-size:13.5px;
+    line-height:1.7;
+    color:#5a3e2b;
+    margin-bottom:12px;
+  }
+  .gb-thanks-msg:last-of-type{ margin-bottom:20px; }
   .gb-gender-btns{ display:flex; gap:8px; }
   .gb-gender-btn{
     flex:1;
@@ -1793,6 +1809,19 @@
         </div>
       </div>
 
+      <!-- 방명록 작성 완료 후 뜨는 감사/이벤트 안내 2차 모달 -->
+      <div class="gb-modal-backdrop" id="gbThanksModal" hidden>
+        <div class="gb-modal-box gb-thanks-box">
+          <button class="gb-modal-close" id="gbThanksClose" type="button" aria-label="닫기">×</button>
+          <div class="gb-thanks-title px">♥ 소중한 마음 감사드립니다! ♥</div>
+          <p class="gb-thanks-msg">남겨주신 축하 인사는 저희 두 사람의 마음에 깊이 간직하겠습니다.</p>
+          <p class="gb-thanks-msg">오늘 응원해 주신 분들 중 추첨을 통해 소정의 선물을 전달해 드릴 예정입니다. 🎁<br>기대하며 조금만 기다려 주세요!</p>
+          <button class="gb-cta gb-cta-done" id="gbThanksOkBtn" type="button">
+            <span>확인</span>
+          </button>
+        </div>
+      </div>
+
       <div class="content-block" id="blockTimeline">
         <h2 class="blk-h2">INNING TIMELINE</h2>
         <div class="tl-h-wrap">
@@ -2358,6 +2387,9 @@
     const modal = $$('#gbModal');
     const modalClose = $$('#gbModalClose');
     const backBtn = $$('#gbBackBtn');
+    const thanksModal = $$('#gbThanksModal');
+    const thanksClose = $$('#gbThanksClose');
+    const thanksOkBtn = $$('#gbThanksOkBtn');
     const step2 = $$('#gbStep2');
     const step3 = $$('#gbStep3');
     const catGrid = $$('#gbCatGrid');
@@ -2697,14 +2729,34 @@
       unlockBodyScroll();
     }
 
+    function openThanksModal(){
+      if(!thanksModal) return;
+      thanksModal.hidden = false;
+      lockBodyScroll();
+    }
+
+    function closeThanksModal(){
+      if(!thanksModal) return;
+      thanksModal.hidden = true;
+      unlockBodyScroll();
+    }
+
     sitBtn.addEventListener('click', openModal);
     modalClose.addEventListener('click', closeModal);
     backBtn.addEventListener('click', showStep2);
     modal.addEventListener('click', e => {
       if(e.target === modal) closeModal();
     });
+    if(thanksOkBtn) thanksOkBtn.addEventListener('click', closeThanksModal);
+    if(thanksClose) thanksClose.addEventListener('click', closeThanksModal);
+    if(thanksModal){
+      thanksModal.addEventListener('click', e => {
+        if(e.target === thanksModal) closeThanksModal();
+      });
+    }
     document.addEventListener('keydown', e => {
       if(e.key === 'Escape' && !modal.hidden) closeModal();
+      if(e.key === 'Escape' && thanksModal && !thanksModal.hidden) closeThanksModal();
     });
 
     if(genderBtnsWrap){
@@ -2812,6 +2864,7 @@
           if(error) throw error;
           renderEntry(data, { scroll: true });
           closeModal();
+          openThanksModal();
         } catch(err){
           console.error('[관중석 방명록] 저장 실패:', err);
           const detail = (err && (err.message || err.error_description || err.hint)) || '알 수 없는 오류';
@@ -2821,6 +2874,7 @@
         // Supabase 미설정: 이 브라우저에서만 임시로 표시 (새로고침하면 사라짐)
         renderEntry({ id: `local-${Date.now()}`, ...entry }, { scroll: true });
         closeModal();
+        openThanksModal();
       }
     });
 
