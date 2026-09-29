@@ -529,7 +529,7 @@
     image-rendering:pixelated;
     filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));
   }
-  .seat-card .seat-label{ font-size:8.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); }
+  .seat-card .seat-label{ display:none; }
   .seat-card.filled{
     background:none;
     opacity:1;
@@ -538,7 +538,8 @@
   .seat-card .seat-name{
     font-size:9px;
     color:#fff;
-    text-shadow:0 1px 2px rgba(0,0,0,.4);
+    -webkit-text-stroke:1px #000;
+    text-shadow:0 1px 2px rgba(0,0,0,.4),0 0 3px #000,0 0 3px #000;
     max-width:100%;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -1635,48 +1636,6 @@
         </div>
       </div>
 
-      <div class="content-block" id="blockTimeline">
-        <h2 class="blk-h2">INNING TIMELINE</h2>
-        <div class="tl-h-wrap">
-          <div class="tl-h">
-            <div class="tl-h-item">
-              <div class="tl-h-box px">⚾</div>
-              <div class="tl-h-time px">11:00 AM</div>
-              <div class="tl-h-sub px">Pre-Game</div>
-              <div class="tl-h-detail">식사 선오픈</div>
-            </div>
-            <div class="tl-h-dots"></div>
-            <div class="tl-h-item">
-              <div class="tl-h-box px gold">⚾</div>
-              <div class="tl-h-time px">12:00 PM</div>
-              <div class="tl-h-sub px">Play Ball!</div>
-              <div class="tl-h-detail">1부 예식</div>
-            </div>
-            <div class="tl-h-dots"></div>
-            <div class="tl-h-item">
-              <div class="tl-h-box px gold">⚾</div>
-              <div class="tl-h-time px">12:30 PM</div>
-              <div class="tl-h-sub px">Cleaning Time</div>
-              <div class="tl-h-detail">피로연 식사 및<br>2부 이벤트</div>
-            </div>
-            <div class="tl-h-dots"></div>
-            <div class="tl-h-item">
-              <div class="tl-h-box px">⚾</div>
-              <div class="tl-h-time px">02:30 PM</div>
-              <div class="tl-h-sub px">Game Set</div>
-              <div class="tl-h-detail">하객 환송</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-block" id="blockNoti">
-        <h2 class="blk-h2">Noti &amp; Event</h2>
-        <div class="noti-box">
-          <p>카카오톡 채널을 추가하시면,<br>상세한 일정을 받아보실 수 있습니다.</p>
-          <a class="kakao-btn" id="kakaoCh" href="#" target="_blank" rel="noopener">카카오톡 채널 추가</a>
-        </div>
-      </div>
 
       <div class="content-block" id="blockGallery">
         <h2 class="blk-h2">BEST MOMENTS</h2>
@@ -1770,6 +1729,49 @@
               <span>응원하기</span>
             </button>
           </div>
+        </div>
+      </div>
+
+      <div class="content-block" id="blockTimeline">
+        <h2 class="blk-h2">INNING TIMELINE</h2>
+        <div class="tl-h-wrap">
+          <div class="tl-h">
+            <div class="tl-h-item">
+              <div class="tl-h-box px">⚾</div>
+              <div class="tl-h-time px">11:00 AM</div>
+              <div class="tl-h-sub px">Pre-Game</div>
+              <div class="tl-h-detail">식사 선오픈</div>
+            </div>
+            <div class="tl-h-dots"></div>
+            <div class="tl-h-item">
+              <div class="tl-h-box px gold">⚾</div>
+              <div class="tl-h-time px">12:00 PM</div>
+              <div class="tl-h-sub px">Play Ball!</div>
+              <div class="tl-h-detail">1부 예식</div>
+            </div>
+            <div class="tl-h-dots"></div>
+            <div class="tl-h-item">
+              <div class="tl-h-box px gold">⚾</div>
+              <div class="tl-h-time px">12:30 PM</div>
+              <div class="tl-h-sub px">Cleaning Time</div>
+              <div class="tl-h-detail">식사 및<br>2부 이벤트</div>
+            </div>
+            <div class="tl-h-dots"></div>
+            <div class="tl-h-item">
+              <div class="tl-h-box px">⚾</div>
+              <div class="tl-h-time px">02:30 PM</div>
+              <div class="tl-h-sub px">Game Set</div>
+              <div class="tl-h-detail">하객 환송</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block" id="blockNoti">
+        <h2 class="blk-h2">Noti &amp; Event</h2>
+        <div class="noti-box">
+          <p>카카오톡 채널을 추가하시면,<br>상세한 일정을 받아보실 수 있습니다.</p>
+          <a class="kakao-btn" id="kakaoCh" href="#" target="_blank" rel="noopener">카카오톡 채널 추가</a>
         </div>
       </div>
 
@@ -2166,6 +2168,17 @@
       { cat:'etc', emoji:'✨', label:'기타' }
     ];
 
+    // 모달이 열려 있는 동안 배경(body) 스크롤을 막는다. 여러 모달이 겹쳐 열릴 수 있으므로 카운터로 관리.
+    let __modalLockCount = 0;
+    function lockBodyScroll(){
+      __modalLockCount++;
+      document.body.style.overflow = 'hidden';
+    }
+    function unlockBodyScroll(){
+      __modalLockCount = Math.max(0, __modalLockCount - 1);
+      if(__modalLockCount === 0) document.body.style.overflow = '';
+    }
+
     const $$ = s => document.querySelector(s);
     const sitBtn = $$('#gbSitBtn');
     const allBtn = $$('#gbAllBtn');
@@ -2423,9 +2436,11 @@
     function openAllModal(){
       renderCombinedAll();
       allModal.hidden = false;
+      lockBodyScroll();
     }
     function closeAllModal(){
       allModal.hidden = true;
+      unlockBodyScroll();
     }
     if(allBtn) allBtn.addEventListener('click', openAllModal);
     if(allClose) allClose.addEventListener('click', closeAllModal);
@@ -2501,10 +2516,12 @@
           : '신부와 어디서 알게됐나요?';
       }
       modal.hidden = false;
+      lockBodyScroll();
     }
 
     function closeModal(){
       modal.hidden = true;
+      unlockBodyScroll();
     }
 
     sitBtn.addEventListener('click', openModal);
