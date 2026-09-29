@@ -179,10 +179,11 @@
     font-variant-numeric:tabular-nums;
   }
   .wm-date{
-    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:12px;
-    letter-spacing:.5px;
-    color:#5a3e2b;
+    font-family:inherit; /* 사계절 인삿말(.invite-msg) 본문과 동일한 기본 서체(Pretendard)로 통일 */
+    font-size:13.5px;
+    letter-spacing:normal;
+    line-height:1.6;
+    color:#5a3e2b; /* .invite-msg와 동일한 텍스트 컬러 */
     margin-top:28px;
   }
 
@@ -1497,7 +1498,7 @@
         <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
-        <div class="wm-date px">2027년 5월 22일 토요일 오후 12시 · 드까르멜릿</div>
+        <div class="wm-date">2027년 5월 22일 토요일 오후 12시 · 드까르멜릿</div>
       </div>
 
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
@@ -2084,21 +2085,30 @@
       const { diffDays, text: finalText } = computeFinal();
 
       if(diffDays > 0){
-        // 야구장 전광판처럼 숫자가 다라락 넘어가다 최종 값에서 멈추는 효과: 9단계, 총 0.8초
-        const steps = 9;
+        // 야구장 전광판처럼 숫자가 다라락 넘어가다 최종 값에서 멈추는 효과.
+        // 최종값보다 30 큰 숫자(예: 최종 D-235라면 D-265)에서 시작해 총 30단계로 줄어들며,
+        // 초반 26단계는 빠르게 넘어가고 마지막 4단계는 점점 느려지는 감속(Ease-out) 틱-틱 효과를 준다.
+        // 전체 재생 시간은 약 1.4초.
+        const steps = 30;
         const startVal = diffDays + steps;
-        const stepDuration = 800 / steps;
+        const fastDelay = 32; // 초반 빠른 구간 한 틱당 간격(ms)
+        const slowDelays = [80, 120, 170, 230]; // 마지막 4틱의 점진적 감속 간격(ms)
         let i = 0;
-        const timer = setInterval(() => {
+        function tick(){
           i++;
           const val = startVal - i;
           if(val <= diffDays){
             badge.textContent = finalText;
-            clearInterval(timer);
-          } else {
-            badge.textContent = `D-${val}`;
+            return;
           }
-        }, stepDuration);
+          badge.textContent = `D-${val}`;
+          const remainingTicks = steps - i;
+          const delay = remainingTicks <= slowDelays.length
+            ? slowDelays[slowDelays.length - remainingTicks]
+            : fastDelay;
+          setTimeout(tick, delay);
+        }
+        tick();
       } else {
         badge.textContent = finalText;
       }
