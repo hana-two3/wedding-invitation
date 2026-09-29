@@ -524,12 +524,17 @@
   .seat-card .seat-name{
     font-size:9px;
     color:#ffffff;
+    /* 블러 없는 4방향 픽셀 외곽선: blur 값을 0으로 고정해 뿌옇게 번지지 않고 또렷하게 보이도록 함 */
     text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+    -webkit-font-smoothing:none;
+    font-smoothing:none;
+    line-height:1.5;
     max-width:100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    /* overflow:hidden + text-overflow:ellipsis 조합이 외곽선 가장자리를 잘라내던 원인이었음 →
+       overflow:visible + 여백 확보로 외곽선이 잘리지 않게 함 */
+    overflow:visible;
     white-space:nowrap;
-    padding:0 2px;
+    padding:2px;
   }
   .seat-card .bubble{
     position:absolute;
