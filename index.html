@@ -163,36 +163,27 @@
     font-size:10.5px;
     color:#8b5e3c;
   }
-  /* ---------- 팀 선택 버튼 하단: 카드 없는 타이포그래피 중심 WEDDING MATCH 인트로 ---------- */
+  /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 (D-Day 스코어보드 상단 배치) ---------- */
   .wm-section{
     text-align:center;
-    padding:38px 22px 46px;
+    padding:40px 22px 46px;
   }
-  .wm-tag{
+  .dday-badge{
+    display:block;
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:11px;
-    letter-spacing:2.5px;
-    color:#8b5e3c;
-    margin-bottom:26px;
+    font-size:34px;
+    font-weight:400;
+    letter-spacing:1.5px;
+    color:#4a3b32;
+    margin-bottom:28px;
+    font-variant-numeric:tabular-nums;
   }
   .wm-date{
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
     font-size:12px;
     letter-spacing:.5px;
     color:#5a3e2b;
-    margin-top:30px;
-    margin-bottom:16px;
-  }
-  .dday-badge{
-    display:inline-block;
-    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:28px;
-    font-weight:400;
-    letter-spacing:1px;
-    color:#0E1E3F;
-    background:#FFD84D;
-    padding:8px 24px;
-    box-shadow:0 -3px 0 #0E1E3F,0 3px 0 #0E1E3F,-3px 0 0 #0E1E3F,3px 0 0 #0E1E3F;
+    margin-top:28px;
   }
 
   /* ---------- Hero (배경 + 캐릭터) ---------- */
@@ -1503,11 +1494,10 @@
   <section id="content" class="content" hidden>
     <div class="content-inner">
       <div class="wm-section">
-        <div class="wm-tag px">[WEDDING MATCH]</div>
+        <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
-        <div class="wm-date px">2027년 5월 22일 토요일 오후 12시</div>
-        <div class="dday-badge px" id="ddayBadge">D-DAY</div>
+        <div class="wm-date px">2027년 5월 22일 토요일 오후 12시 · 드까르멜릿</div>
       </div>
 
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
@@ -2069,16 +2059,35 @@
   if(accTabGroom) accTabGroom.addEventListener('click', () => showAccTab('groom'));
   if(accTabBride) accTabBride.addEventListener('click', () => showAccTab('bride'));
 
-  /* ===== 프로필 카드: 썸네일 & D-Day ===== */
+  /* ===== D-Day 스코어보드 카운트다운 애니메이션 ===== */
   (function(){
     const WEDDING_DATE = new Date(2027, 4, 22); // 2027-05-22
     const badge = $('#ddayBadge');
-    if(badge){
-      const today = new Date();
-      const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const b = new Date(WEDDING_DATE.getFullYear(), WEDDING_DATE.getMonth(), WEDDING_DATE.getDate());
-      const diffDays = Math.round((b - a) / 86400000);
-      badge.textContent = diffDays === 0 ? 'D-DAY' : (diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`);
+    if(!badge) return;
+    const today = new Date();
+    const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const b = new Date(WEDDING_DATE.getFullYear(), WEDDING_DATE.getMonth(), WEDDING_DATE.getDate());
+    const diffDays = Math.round((b - a) / 86400000);
+    const finalText = diffDays === 0 ? 'D-DAY' : (diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`);
+
+    if(diffDays > 0){
+      // 야구장 전광판처럼 숫자가 다라락 넘어가다 최종 값에서 멈추는 효과: 9단계, 총 0.8초
+      const steps = 9;
+      const startVal = diffDays + steps;
+      const stepDuration = 800 / steps;
+      let i = 0;
+      const timer = setInterval(() => {
+        i++;
+        const val = startVal - i;
+        if(val <= diffDays){
+          badge.textContent = finalText;
+          clearInterval(timer);
+        } else {
+          badge.textContent = `D-${val}`;
+        }
+      }, stepDuration);
+    } else {
+      badge.textContent = finalText;
     }
   })();
 
