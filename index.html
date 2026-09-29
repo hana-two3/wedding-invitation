@@ -85,9 +85,9 @@
   body{ transition:background-color .35s ease; }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  html{ background:#87CEEB; overscroll-behavior-y:none; }
+  html{ background:#F4F4F5; overscroll-behavior-y:none; }
   body{
-    background:#87CEEB; /* 배경 이미지가 로드되기 전/로드 실패 시 대비한 하늘색(팀 선택 후에는 JS가 테마 배경색으로 갱신) */
+    background:#F4F4F5; /* PC 등 넓은 화면에서 모바일 컨테이너 좌우에 보이는 배경: 차분한 연회색(팀 선택 후에는 JS가 테마 배경색으로 갱신) */
     font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
     overflow-x:hidden;
     overscroll-behavior-y:none; /* 최상단/최하단 바운스 스크롤 시 배경색이 비쳐 보이는 것을 방지 */
@@ -163,40 +163,10 @@
     font-size:10.5px;
     color:#8b5e3c;
   }
-  /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 (D-Day 스코어보드 상단 배치) ---------- */
+  /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 ---------- */
   .wm-section{
     text-align:center;
     padding:40px 22px 80px;
-  }
-  /* 사계절 인삿말 스토리(야구 → 웨이크보드/물결 → 스노우보드/눈꽃)를 표현하는 픽셀 아이콘 순환 */
-  .wm-season-icons{
-    position:relative;
-    height:32px;
-    margin-bottom:8px;
-  }
-  .season-icon{
-    position:absolute;
-    left:50%;
-    top:0;
-    transform:translate(-50%,6px);
-    font-size:26px;
-    line-height:32px;
-    opacity:0;
-    transition:opacity .4s ease, transform .4s ease;
-  }
-  .season-icon.active{
-    opacity:1;
-    transform:translate(-50%,0);
-  }
-  .dday-badge{
-    display:block;
-    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:34px;
-    font-weight:400;
-    letter-spacing:1.5px;
-    color:#4a3b32;
-    margin-bottom:28px;
-    font-variant-numeric:tabular-nums;
   }
   /* 인삿말과 라인업 섹션 사이의 경계를 자연스럽게 이어주는 스크롤 유도 문구.
      구분선은 아래 .content-block::before(전 섹션 공통 픽셀 점선)가 담당하므로 여기서는 중복으로 추가하지 않는다.
@@ -255,6 +225,50 @@
       rgba(0,0,0,.35) 100%
     );
     pointer-events:none;
+  }
+
+  /* 히어로 최상단: 사계절 픽셀 아이콘 + D-Day 스코어보드 (첫 화면 최상단 강조 요소)
+     .hero는 flex-column + justify-content:flex-end로 캐릭터를 하단 정렬하므로,
+     일반 흐름에 두면 이 요소도 하단으로 밀려버린다. 따라서 absolute로 최상단에 고정한다. */
+  .hero-dday-wrap{
+    position:absolute;
+    z-index:2;
+    top:calc(var(--safe-top) + var(--nav-h) + 14px);
+    left:0;
+    right:0;
+    width:100%;
+    text-align:center;
+    padding:0 20px;
+  }
+  .wm-season-icons{
+    position:relative;
+    height:36px;
+    margin-bottom:4px;
+  }
+  .season-icon{
+    position:absolute;
+    left:50%;
+    top:0;
+    transform:translate(-50%,6px);
+    font-size:28px;
+    line-height:36px;
+    opacity:0;
+    transition:opacity .4s ease, transform .4s ease;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.45));
+  }
+  .season-icon.active{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+  .dday-badge{
+    display:block;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:clamp(40px,11vw,54px);
+    font-weight:400;
+    letter-spacing:2px;
+    color:#fff;
+    text-shadow:0 2px 0 rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.5);
+    font-variant-numeric:tabular-nums;
   }
 
   .hero-title{
@@ -446,9 +460,9 @@
 
   /* 가로가 넓은 태블릿/데스크톱에서 배경이 과도하게 늘어나지 않도록 프레임 유지 */
   @media (min-width:481px){
-    body{ background:#e9edf3; }
+    html,body{ background:#F4F4F5; }
     .page{
-      box-shadow:0 0 40px rgba(0,0,0,.15);
+      box-shadow:0 0 0 1px rgba(0,0,0,.06), 0 0 40px rgba(0,0,0,.12);
       margin-top:0;
     }
   }
@@ -1537,6 +1551,15 @@
 
   <section class="hero" id="heroTop">
 
+    <div class="hero-dday-wrap">
+      <div class="wm-season-icons" id="seasonIcons" aria-hidden="true">
+        <span class="season-icon active">⚾</span>
+        <span class="season-icon">🏄</span>
+        <span class="season-icon">❄️</span>
+      </div>
+      <div class="dday-badge px" id="ddayBadge">D-DAY</div>
+    </div>
+
     <div class="character-wrap">
       <div class="hero-bubble hero-bubble-groom" id="bubbleGroom">2027년 5월 22일<br>토요일 12시</div>
       <div class="hero-bubble hero-bubble-bride" id="bubbleBride">최광현 ♥ 박하나<br>저희 결혼합니다!</div>
@@ -1560,12 +1583,6 @@
   <section id="content" class="content" hidden>
     <div class="content-inner">
       <div class="wm-section">
-        <div class="wm-season-icons" id="seasonIcons" aria-hidden="true">
-          <span class="season-icon active">⚾</span>
-          <span class="season-icon">🏄</span>
-          <span class="season-icon">❄️</span>
-        </div>
-        <div class="dday-badge px" id="ddayBadge">D-DAY</div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
         <div class="wm-scroll-cue px" aria-hidden="true">PLAY BALL<br>▼</div>
@@ -1928,11 +1945,15 @@
     document.body.classList.add(team === 'bride' ? 'home-theme' : 'away-theme');
 
     // 팀 테마의 하단 푸터 배경색(--theme-bg)을 body/html에도 동일하게 반영해,
-    // 최상단/최하단 오버스크롤(바운스) 시 다른 색(하늘색 등)이 비쳐 보이지 않도록 한다.
-    const themeBg = getComputedStyle(document.body).getPropertyValue('--theme-bg').trim();
-    if(themeBg){
-      document.body.style.backgroundColor = themeBg;
-      document.documentElement.style.backgroundColor = themeBg;
+    // 최상단/최하단 오버스크롤(바운스) 시 다른 색이 비쳐 보이지 않도록 한다.
+    // 단, 이 인라인 스타일은 데스크톱(PC)에서 모바일 컨테이너 좌우에 보이는 연회색 배경(미디어쿼리)보다
+    // 우선 적용되어 버리므로, 실제 모바일 폭(.page의 max-width:480px 이하)에서만 적용한다.
+    if(window.innerWidth <= 480){
+      const themeBg = getComputedStyle(document.body).getPropertyValue('--theme-bg').trim();
+      if(themeBg){
+        document.body.style.backgroundColor = themeBg;
+        document.documentElement.style.backgroundColor = themeBg;
+      }
     }
 
     const content = document.getElementById('content');
@@ -2146,9 +2167,8 @@
   if(accTabBride) accTabBride.addEventListener('click', () => showAccTab('bride'));
 
   /* ===== D-Day 스코어보드 카운트다운 애니메이션 =====
-     주의: #content 섹션은 팀을 선택하기 전까지 hidden(display:none) 상태이므로,
-     페이지 로드 즉시 애니메이션을 실행하면 화면에 보이지도 않는 채로 끝나버린다.
-     따라서 #content가 실제로 화면에 노출되는 시점(팀 선택 또는 상단 탭 클릭)까지 기다렸다가 재생한다. */
+     D-Day 배지는 이제 항상 노출되는 히어로 섹션 최상단에 위치하므로,
+     페이지 로드 즉시(팀 선택과 무관하게) 바로 재생한다. */
   (function(){
     const WEDDING_DATE = new Date(2027, 4, 22); // 2027-05-22
     const badge = $('#ddayBadge');
@@ -2199,24 +2219,11 @@
       }
     }
 
-    const content = document.getElementById('content');
-    if(!content || !content.hidden){
-      // #content 요소가 없거나 이미 보이는 상태라면 즉시 재생
-      playCountdown();
-    } else {
-      // hidden 속성이 풀리는 순간(팀 선택/탭 클릭)을 감지해 그때 재생
-      const observer = new MutationObserver(() => {
-        if(!content.hidden){
-          playCountdown();
-          observer.disconnect();
-        }
-      });
-      observer.observe(content, { attributes: true, attributeFilter: ['hidden'] });
-    }
+    playCountdown();
   })();
 
   /* ===== 사계절 인삿말 스토리 픽셀 아이콘 순환(야구 → 웨이크보드/물결 → 스노우보드/눈꽃) =====
-     D-Day 카운트다운과 동일하게, #content가 실제로 노출되는 시점에 맞춰 재생을 시작한다.
+     시즌 아이콘도 히어로 섹션 최상단에서 항상 노출되므로 페이지 로드 즉시 재생을 시작한다.
      처음엔 카운트다운과 비슷한 속도로 빠르게 세 아이콘을 훑고, 이후에는 은은하게 계속 순환한다. */
   (function(){
     const icons = Array.from(document.querySelectorAll('#seasonIcons .season-icon'));
@@ -2250,18 +2257,7 @@
       setTimeout(introTick, introDelay);
     }
 
-    const content = document.getElementById('content');
-    if(!content || !content.hidden){
-      playCycle();
-    } else {
-      const observer = new MutationObserver(() => {
-        if(!content.hidden){
-          playCycle();
-          observer.disconnect();
-        }
-      });
-      observer.observe(content, { attributes: true, attributeFilter: ['hidden'] });
-    }
+    playCycle();
   })();
 
   /* ===== 상단 고정 탭 메뉴바: 스크롤 이동 + 활성 탭 표시 ===== */
