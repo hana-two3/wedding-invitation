@@ -178,7 +178,8 @@
     margin-bottom:28px;
     font-variant-numeric:tabular-nums;
   }
-  /* 인삿말과 라인업 섹션 사이의 경계를 자연스럽게 이어주는 스크롤 유도 + 구분선 + 서브 태그 */
+  /* 인삿말과 라인업 섹션 사이의 경계를 자연스럽게 이어주는 스크롤 유도 문구.
+     구분선은 아래 .content-block::before(전 섹션 공통 픽셀 점선)가 담당하므로 여기서는 중복으로 추가하지 않는다. */
   .wm-scroll-cue{
     margin-top:26px;
     font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
@@ -191,19 +192,6 @@
   @keyframes wm-bob{
     0%,100%{ transform:translateY(0); opacity:.7; }
     50%{ transform:translateY(4px); opacity:1; }
-  }
-  .wm-divider{
-    height:1px;
-    margin:6px 28px 22px;
-    background-image:repeating-linear-gradient(to right,#c9b8a0 0 5px,transparent 5px 10px);
-  }
-  .wm-subtag{
-    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
-    font-size:11px;
-    letter-spacing:1.5px;
-    color:#8b5e3c;
-    text-align:center;
-    margin:0 0 22px;
   }
 
   /* ---------- Hero (배경 + 캐릭터) ---------- */
@@ -413,15 +401,14 @@
     scroll-margin-top:calc(var(--nav-h) + var(--safe-top) + 14px);
   }
   .content-block::before{
+    /* 페이지 전체 섹션 구분선을 1px 픽셀 점선(Dashed Line)으로 통일 */
     content:'';
     position:absolute;
     top:0;
     left:0;
     right:0;
-    height:2px;
-    background:linear-gradient(to right, transparent, var(--theme-acc,#c9a37c), transparent);
-    opacity:.5;
-    transition:background-color .35s ease;
+    height:1px;
+    background-image:repeating-linear-gradient(to right,#d1c7bd 0 5px,transparent 5px 10px);
   }
   #heroTop{ scroll-margin-top:calc(var(--nav-h) + var(--safe-top)); }
 
@@ -1143,7 +1130,7 @@
     gap:8px;
     margin-top:16px;
     padding-top:14px;
-    border-top:2px dotted #e8d5b5;
+    border-top:1px dashed #d1c7bd;
     font-family:'Galmuri9','DungGeunMo',monospace;
     font-size:12px;
   }
@@ -1269,12 +1256,12 @@
   .tl-note{ margin:10px 4px 0; font-size:11px; color:#a08662; text-align:center; }
   .tl-venue{
     font-family:inherit; /* 사계절 인삿말 본문과 동일한 서체(Pretendard) */
-    font-size:16.5px;
-    font-weight:600;
-    letter-spacing:.2px;
-    color:#5a3e2b;
+    font-size:13px;
+    font-weight:400;
+    letter-spacing:normal;
+    color:#6b5a49; /* 본문보다 살짝 차분한 브라운/그레이 톤 — 과한 강조 없이 단정하게 */
     text-align:center;
-    margin:22px 4px 0;
+    margin:16px 4px 0;
   }
   @media (max-width:360px){
     .tl-h-box{ width:30px; height:30px; font-size:13.5px; }
@@ -1282,7 +1269,7 @@
     .tl-h-sub{ font-size:9.5px; }
     .tl-h-detail{ font-size:10.5px; }
     .tl-h-dots{ flex-basis:8px; margin-top:15px; }
-    .tl-venue{ font-size:15px; }
+    .tl-venue{ font-size:12px; }
   }
 
   /* Noti & Event */
@@ -1535,9 +1522,7 @@
         <div class="wm-scroll-cue px" aria-hidden="true">SCROLL<br>▼</div>
       </div>
 
-      <div class="wm-divider" aria-hidden="true"></div>
-      <div class="wm-subtag px">[ TODAY'S LINEUP ]</div>
-
+      <!-- 섹션 구분선은 .content-block::before(전 섹션 공통 픽셀 점선)가 담당 -->
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
       <div class="content-block" id="blockLineup">
         <h2 class="blk-h2">PLAYER LINEUP</h2>
