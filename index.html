@@ -1425,31 +1425,50 @@
     padding:8px 6px;
   }
 
-  /* Fan Club Support (계좌) */
-  .fan-acc{ margin:0 0 20px; }
-  .fan-h{ width:100%; display:flex; justify-content:space-between; align-items:center; padding:12px 14px; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; border:0; cursor:pointer; }
-  .fan-acc.groom .fan-h{ background:#EC1C24; color:#fff; }
-  .fan-acc.bride .fan-h{ background:#181818; color:#fff; }
-  .fan-b{ max-height:0; overflow:hidden; transition:max-height .3s steps(6); background:#FFFDF6; margin:0 4px; }
-  .fan-acc.open .fan-b{ max-height:420px; box-shadow:-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c,0 3px 0 #8b5e3c; margin-top:2px; }
-  .fan-b>div{ padding:12px 14px; }
-  .fan-row{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:9px 0; border-bottom:2px dotted #e8d5b5; }
-  .fan-row:last-child{ border:0; }
-  .fan-row small{ display:block; color:#b39572; font-size:11.5px; }
-  .fan-row span{ font-size:13.5px; color:#5a3e2b; }
-  .fan-copy{ font-size:12.5px; line-height:1.6; padding:6px 10px; background:#fff; color:#5a3e2b; border:0; cursor:pointer; font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace; box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; }
-  .fan-copy:active{ box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; transform:translateY(1px); }
-  .fan-ic{ transition:.2s; }
-  .fan-ic{
-    display:inline-block;
-    width:0; height:0;
-    border-top:5px solid transparent;
-    border-bottom:5px solid transparent;
-    border-left:7px solid currentColor;
-    flex-shrink:0;
-    transition:transform .2s;
+  /* 계좌 안내: 신랑측/신부측 탭 구분형 UI */
+  .acc-tabs{ display:flex; gap:8px; margin-bottom:16px; }
+  .acc-tab{
+    flex:1;
+    font-family:'NeoDunggeunmo','Galmuri9',monospace;
+    font-size:14px;
+    line-height:1.6;
+    padding:12px 4px;
+    cursor:pointer;
+    border:0;
+    background:#FFFDF6;
+    color:#8b5e3c;
+    box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
+    transition:transform .05s;
   }
-  .fan-acc.open .fan-ic{ transform:rotate(90deg); }
+  .acc-tab:active{ transform:translateY(2px); }
+  .acc-tab.groom.active{ background:#EC1C24; color:#fff; box-shadow:0 -3px 0 #000,0 3px 0 #000,-3px 0 0 #000,3px 0 0 #000; }
+  .acc-tab.bride.active{ background:#181818; color:#fff; box-shadow:0 -3px 0 #000,0 3px 0 #000,-3px 0 0 #000,3px 0 0 #000; }
+  .acc-panel[hidden]{ display:none; }
+
+  .acc-card{
+    background:#FFFDF6;
+    padding:16px;
+    box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
+    margin-bottom:12px;
+  }
+  .acc-card:last-child{ margin-bottom:0; }
+  .acc-card-who{ font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:14px; line-height:1.6; color:#5a3e2b; margin-bottom:10px; }
+  .acc-card-info{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .acc-card-bank{ font-size:12.5px; color:#8b5e3c; }
+  .acc-card-no{ font-size:14.5px; color:#5a3e2b; font-weight:600; margin-top:3px; }
+  .acc-copy-btn{
+    flex:none;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:12.5px;
+    line-height:1.6;
+    padding:9px 14px;
+    background:#fff;
+    color:#5a3e2b;
+    border:0;
+    cursor:pointer;
+    box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
+  }
+  .acc-copy-btn:active{ transform:translateY(1px); }
 
   .inv-footer{ padding:56px 20px 10px; text-align:center; font-family:'Galmuri9'; font-size:12px; color:#8b5e3c; }
   .inv-credit{ margin-top:10px; text-align:center; font-family:'Pretendard',sans-serif; font-size:10.5px; color:#b8a68c; letter-spacing:.2px; }
@@ -1468,9 +1487,9 @@
     <div class="site-nav-tabs">
       <button class="tab-btn px" id="navHome" type="button" data-target="heroTop">HOME</button>
       <button class="tab-btn px" id="navLineup" type="button" data-target="blockLineup">라인업</button>
-      <button class="tab-btn px" id="navSchedule" type="button" data-target="blockTimeline">경기일정</button>
       <button class="tab-btn px" id="navGallery" type="button" data-target="blockGallery">갤러리</button>
       <button class="tab-btn px" id="navGuestbook" type="button" data-target="blockGuestbook">응원석 &amp; 축하</button>
+      <button class="tab-btn px" id="navSchedule" type="button" data-target="blockTimeline">경기일정</button>
     </div>
   </nav>
 
@@ -1795,14 +1814,12 @@
 
       <div class="content-block" id="blockAccount" style="margin-bottom:64px;">
         <h2 class="blk-h2">SENDING YOUR WISHES</h2>
-        <div class="fan-acc groom" id="accGroom">
-          <button class="fan-h" type="button" aria-expanded="false">신랑측 계좌번호 <span class="fan-ic"></span></button>
-          <div class="fan-b"><div id="listGroom"></div></div>
+        <div class="acc-tabs">
+          <button class="acc-tab groom active px" id="accTabGroom" type="button">신랑측</button>
+          <button class="acc-tab bride px" id="accTabBride" type="button">신부측</button>
         </div>
-        <div class="fan-acc bride" id="accBride">
-          <button class="fan-h" type="button" aria-expanded="false">신부측 계좌번호 <span class="fan-ic"></span></button>
-          <div class="fan-b"><div id="listBride"></div></div>
-        </div>
+        <div class="acc-panel" id="accPanelGroom"><div id="listGroom"></div></div>
+        <div class="acc-panel" id="accPanelBride" hidden><div id="listBride"></div></div>
       </div>
 
       <div class="inv-footer">최광현 ♥ 박하나<br>2027. 05. 22 — GAME START!</div>
@@ -1835,8 +1852,8 @@
     gallery1:[],   // 예: ['img/w1.jpg', ...] 최대 9장 (비어 있으면 픽셀 플레이스홀더)
     gallery2:[],
     accounts:{
-      groom:[{who:'신랑 최광현',bank:'은행명',no:'000-0000-000000'},{who:'아버지 최정',bank:'은행명',no:'000-0000-000000'},{who:'어머니 마은아',bank:'은행명',no:'000-0000-000000'}],
-      bride:[{who:'신부 박하나',bank:'은행명',no:'000-0000-000000'},{who:'아버지 박종관',bank:'은행명',no:'000-0000-000000'},{who:'어머니 전정희',bank:'은행명',no:'000-0000-000000'}]
+      groom:[{who:'신랑 최광현',bank:'은행명',no:'000-0000-000000'}],
+      bride:[{who:'신부 박하나',bank:'은행명',no:'000-0000-000000'}]
     }
   };
 
@@ -1872,17 +1889,10 @@
   document.getElementById('pickGroom').addEventListener('click', () => selectTeam('groom'));
   document.getElementById('pickBride').addEventListener('click', () => selectTeam('bride'));
 
-  /* ===== 팀 선택에 따른 본문 반영 (라인업 순서 / 계좌 아코디언) ===== */
+  /* ===== 팀 선택에 따른 본문 반영 (라인업 순서 / 계좌 탭) ===== */
   function applyTeamContent(team){
     // VS 매치업은 좌(HOME)/우(AWAY) 위치가 고정이며, 신랑팀/신부팀 모두 항상 선명하게 표시한다(흐림 처리 없음).
-    const gAcc = $('#accGroom'), bAcc = $('#accBride');
-    if(gAcc && bAcc){
-      gAcc.classList.remove('open');
-      bAcc.classList.remove('open');
-      if(team === 'groom') gAcc.classList.add('open');
-      else if(team === 'bride') bAcc.classList.add('open');
-      syncFanAria();
-    }
+    if(team === 'groom' || team === 'bride') showAccTab(team);
   }
 
   /* ===== 카카오 채널 ===== */
@@ -2054,18 +2064,24 @@
     }
   }
   function renderFanList(id, list){
-    $(id).innerHTML = list.map(a => `<div class="fan-row"><div><small>${a.who}</small><span>${a.bank} ${a.no}</span></div><button class="fan-copy" type="button" data-c="${a.bank} ${a.no}">복사하기</button></div>`).join('');
+    $(id).innerHTML = list.map(a => `<div class="acc-card"><div class="acc-card-who">${a.who}</div><div class="acc-card-info"><div><div class="acc-card-bank">${a.bank}</div><div class="acc-card-no">${a.no}</div></div><button class="acc-copy-btn" type="button" data-c="${a.bank} ${a.no}">복사하기</button></div></div>`).join('');
   }
   renderFanList('#listGroom', CONFIG.accounts.groom);
   renderFanList('#listBride', CONFIG.accounts.bride);
-  document.querySelectorAll('.fan-copy').forEach(b => b.addEventListener('click', () => copyAccount(b.dataset.c)));
-  function syncFanAria(){
-    document.querySelectorAll('.fan-acc').forEach(a => a.querySelector('.fan-h').setAttribute('aria-expanded', a.classList.contains('open')));
+  document.querySelectorAll('.acc-copy-btn').forEach(b => b.addEventListener('click', () => copyAccount(b.dataset.c)));
+
+  /* ===== 계좌 안내: 신랑측/신부측 탭 전환 ===== */
+  const accTabGroom = $('#accTabGroom'), accTabBride = $('#accTabBride');
+  const accPanelGroom = $('#accPanelGroom'), accPanelBride = $('#accPanelBride');
+  function showAccTab(team){
+    const isGroom = team === 'groom';
+    if(accTabGroom) accTabGroom.classList.toggle('active', isGroom);
+    if(accTabBride) accTabBride.classList.toggle('active', !isGroom);
+    if(accPanelGroom) accPanelGroom.hidden = !isGroom;
+    if(accPanelBride) accPanelBride.hidden = isGroom;
   }
-  document.querySelectorAll('.fan-h').forEach(h => h.addEventListener('click', () => {
-    h.parentElement.classList.toggle('open');
-    syncFanAria();
-  }));
+  if(accTabGroom) accTabGroom.addEventListener('click', () => showAccTab('groom'));
+  if(accTabBride) accTabBride.addEventListener('click', () => showAccTab('bride'));
 
   /* ===== 프로필 카드: 썸네일 & D-Day ===== */
   (function(){
