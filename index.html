@@ -45,6 +45,17 @@
      교체하면 됩니다.
      =================================================== */
 
+  /* Neo둥근모(NeoDunggeunmo) 픽셀 폰트: fonts/ 폴더의 woff/ttf 파일을 등록해 사용합니다.
+     woff를 우선 시도하고, 지원하지 않는 환경에서는 ttf로 대체됩니다. */
+  @font-face{
+    font-family:'NeoDunggeunmo';
+    src:url('fonts/NeoDunggeunmo.woff') format('woff'),
+        url('fonts/NeoDunggeunmo.ttf') format('truetype');
+    font-weight:normal;
+    font-style:normal;
+    font-display:swap;
+  }
+
   :root{
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -374,9 +385,9 @@
     padding:10px 6px;
     border:0;
     cursor:pointer;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:12.5px;
-    line-height:1.4;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:13.5px;
+    line-height:1.6;
     box-shadow:0 -4px 0 0 #5a3e2b,0 4px 0 0 #5a3e2b,-4px 0 0 0 #5a3e2b,4px 0 0 0 #5a3e2b,0 8px 0 0 rgba(0,0,0,.25);
     transition:transform .05s;
   }
@@ -671,8 +682,9 @@
     color:#fff;
     border:0;
     cursor:pointer;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:14px;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:15px;
+    line-height:1.6;
     box-shadow:0 -4px 0 var(--theme-acc-dark,#5a3e2b),0 4px 0 var(--theme-acc-dark,#5a3e2b),-4px 0 0 var(--theme-acc-dark,#5a3e2b),4px 0 0 var(--theme-acc-dark,#5a3e2b),0 8px 0 rgba(0,0,0,.22);
     transition:transform .05s, background-color .35s ease, box-shadow .35s ease;
   }
@@ -720,8 +732,9 @@
     background:#FFFDF6;
     border:0;
     cursor:pointer;
-    font-family:'Pretendard',sans-serif;
-    font-size:13px;
+    font-family:'NeoDunggeunmo','Galmuri9',monospace;
+    font-size:14px;
+    line-height:1.6;
     color:#5a3e2b;
     box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
     transition:transform .05s;
@@ -863,8 +876,9 @@
     color:#5a3e2b;
     border:0;
     cursor:pointer;
-    font-family:'Pretendard',sans-serif;
-    font-size:13.5px;
+    font-family:'NeoDunggeunmo','Galmuri9',monospace;
+    font-size:14.5px;
+    line-height:1.6;
     box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
     transition:transform .05s;
   }
@@ -875,13 +889,14 @@
   /* ==================================================
      본문 콘텐츠: 라인업 / 식순 / Noti / 오시는 길 / 갤러리 / 계좌
      ================================================== */
-  .px{ font-family:'Galmuri9','DungGeunMo',monospace; }
+  .px{ font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace; }
 
   .blk-h2{
     display:block;
     margin:0 auto 24px;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:17px;
+    font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace;
+    font-size:19px;
+    line-height:1.6;
     font-weight:400;
     color:#5a3e2b;
     text-align:center;
@@ -907,7 +922,8 @@
 
   /* 라인업 */
   .lineup-msg{ text-align:center; font-size:14.5px; color:#5a3e2b; margin-bottom:40px; line-height:1.8; }
-  .invite-msg{ text-align:center; font-size:14.5px; color:#5a3e2b; line-height:1.85; margin:0 6px; padding:0 4px; }
+  .invite-msg{ text-align:center; font-size:14.5px; color:#5a3e2b; line-height:2; margin:0 6px; padding:0 4px; }
+  .invite-msg.invite-msg-2{ margin-top:20px; }
   /* 선발 매치업 (VS) */
   .vs-match{
     display:flex;
@@ -1264,7 +1280,7 @@
   /* Noti & Event */
   .noti-box{ text-align:center; }
   .noti-box p{ font-size:14px; color:#5a3e2b; margin-bottom:18px; line-height:1.7; }
-  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#F2D98A; color:#5a3e2b; font-family:'Galmuri9'; font-size:14px; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
+  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#F2D98A; color:#5a3e2b; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
 
   /* 오시는 길 */
   .cal-box{ background:#FFFDF6; padding:16px; margin-bottom:18px; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
@@ -1298,7 +1314,7 @@
   .guide-notes li{ padding:4px 0 4px 22px; position:relative; font-size:14px; color:#5a3e2b; }
   .guide-notes li::before{ content:'♥'; position:absolute; left:0; color:#C8102E; font-size:11px; top:6px; }
   .maps{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .map-btn{ display:flex; align-items:center; justify-content:center; min-height:48px; background:#FFD166; color:#5a3e2b; font-family:'Galmuri9'; font-size:13px; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
+  .map-btn{ display:flex; align-items:center; justify-content:center; min-height:48px; background:#FFD166; color:#5a3e2b; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:14px; line-height:1.6; text-decoration:none; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
   .map-btn.white{ background:#FAFAFA; }
 
   /* 갤러리 */
@@ -1410,7 +1426,7 @@
 
   /* Fan Club Support (계좌) */
   .fan-acc{ margin:0 0 20px; }
-  .fan-h{ width:100%; display:flex; justify-content:space-between; align-items:center; padding:12px 14px; font-family:'Galmuri9'; font-size:14px; border:0; cursor:pointer; }
+  .fan-h{ width:100%; display:flex; justify-content:space-between; align-items:center; padding:12px 14px; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; border:0; cursor:pointer; }
   .fan-acc.groom .fan-h{ background:#EC1C24; color:#fff; }
   .fan-acc.bride .fan-h{ background:#181818; color:#fff; }
   .fan-b{ max-height:0; overflow:hidden; transition:max-height .3s steps(6); background:#FFFDF6; margin:0 4px; }
@@ -1420,7 +1436,7 @@
   .fan-row:last-child{ border:0; }
   .fan-row small{ display:block; color:#b39572; font-size:11.5px; }
   .fan-row span{ font-size:13.5px; color:#5a3e2b; }
-  .fan-copy{ font-size:11.5px; padding:6px 10px; background:#fff; color:#5a3e2b; border:0; cursor:pointer; font-family:'Galmuri9','DungGeunMo',monospace; box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; }
+  .fan-copy{ font-size:12.5px; line-height:1.6; padding:6px 10px; background:#fff; color:#5a3e2b; border:0; cursor:pointer; font-family:'NeoDunggeunmo','Galmuri9','DungGeunMo',monospace; box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; }
   .fan-copy:active{ box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; transform:translateY(1px); }
   .fan-ic{ transition:.2s; }
   .fan-ic{
@@ -1493,7 +1509,8 @@
         </div>
       </div>
 
-      <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절은<br>매번 빠르게 흘러갔습니다.<br>든든한 단단함과 세심하고 따뜻한 마음으로<br>평생의 계절을 함께 걸어가려 합니다.<br>저희의 첫 걸음에 소중한 분들을 모십니다.</p>
+      <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
+      <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
 
       <!-- 아래 블록 안에 실제 콘텐츠(라인업 / 식순 / 오시는 길 / 갤러리 / 계좌 안내 등)를 이어서 채워 넣으면 됩니다 -->
       <div class="content-block" id="blockLineup">
