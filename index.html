@@ -85,10 +85,12 @@
   body{ transition:background-color .35s ease; }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
+  html{ background:#87CEEB; overscroll-behavior-y:none; }
   body{
-    background:#87CEEB; /* 배경 이미지가 로드되기 전/로드 실패 시 대비한 하늘색 */
+    background:#87CEEB; /* 배경 이미지가 로드되기 전/로드 실패 시 대비한 하늘색(팀 선택 후에는 JS가 테마 배경색으로 갱신) */
     font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
     overflow-x:hidden;
+    overscroll-behavior-y:none; /* 최상단/최하단 바운스 스크롤 시 배경색이 비쳐 보이는 것을 방지 */
   }
 
   /* 모바일 우선: 기기 폭 전체를 쓰되, 데스크톱에서는 모바일 프레임처럼 중앙 정렬 */
@@ -1872,6 +1874,14 @@
     document.body.dataset.team = team;
     document.body.classList.remove('home-theme','away-theme');
     document.body.classList.add(team === 'bride' ? 'home-theme' : 'away-theme');
+
+    // 팀 테마의 하단 푸터 배경색(--theme-bg)을 body/html에도 동일하게 반영해,
+    // 최상단/최하단 오버스크롤(바운스) 시 다른 색(하늘색 등)이 비쳐 보이지 않도록 한다.
+    const themeBg = getComputedStyle(document.body).getPropertyValue('--theme-bg').trim();
+    if(themeBg){
+      document.body.style.backgroundColor = themeBg;
+      document.documentElement.style.backgroundColor = themeBg;
+    }
 
     const content = document.getElementById('content');
     content.hidden = false;
