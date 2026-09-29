@@ -166,7 +166,7 @@
   /* ---------- 팀 선택 버튼 하단: 카드/테두리 없는 타이포그래피 중심 인트로 (D-Day 스코어보드 상단 배치) ---------- */
   .wm-section{
     text-align:center;
-    padding:40px 22px 60px;
+    padding:40px 22px 80px;
   }
   /* 사계절 인삿말 스토리(야구 → 웨이크보드/물결 → 스노우보드/눈꽃)를 표현하는 픽셀 아이콘 순환 */
   .wm-season-icons{
@@ -208,13 +208,12 @@
     font-size:14px;
     letter-spacing:1.5px;
     line-height:1.9;
-    color:#8b5e3c; /* 다른 서브 타이틀과 동일한 브라운 톤으로 시인성 확보 */
+    color:#EC1C24; /* 신랑 라벨과 동일한 레드 포인트 컬러 */
     animation:wm-bob 1.8s ease-in-out infinite;
   }
   #blockLineup::before{ content:none; }
-  /* PLAY BALL ▼ 상하 여백을 1:1 대칭으로 맞추기 위해, 첫 번째 콘텐츠 블록(라인업)만
-     공통 .content-block 여백(margin-top:118px + padding-top:100px) 대신 이 값을 사용한다.
-     (wm-section의 하단 padding 60px + 여기 padding-top 24px = 84px → 위쪽 margin-top:84px와 대칭) */
+  /* PLAY BALL ▼ 아래쪽 여백을 20px 더 확보해 PLAYER LINEUP 섹션과 한 템포 쉬어가도록 조율.
+     (wm-section의 하단 padding 80px + 여기 padding-top 24px = 104px, 위쪽 margin-top 84px보다 20px 더 넓음) */
   #blockLineup{ margin-top:0; padding-top:24px; }
   @keyframes wm-bob{
     0%,100%{ transform:translateY(0); opacity:.7; }
@@ -555,19 +554,20 @@
     animation:seat-pop .35s steps(5) both;
   }
   .seat-card .seat-name{
-    font-size:10px;
-    letter-spacing:.5px; /* 자음/모음 사이 여백을 확보해 픽셀 글자가 선명하게 읽히도록 함 */
-    font-weight:500;
-    color:#1a1a1a; /* 외곽선 없이 단색 짙은 검정으로 또렷하게 표시 */
-    text-shadow:none; /* 외곽선(스트로크) 완전 제거 */
+    /* 방명록 말풍선(.bubble)과 완전히 동일한 폰트 패밀리(body 기본 서체 Pretendard)를 상속받도록
+       .px(픽셀 폰트) 클래스는 더 이상 붙이지 않는다 */
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:400; /* 브라우저가 임의로 굵게 렌더링하지 않도록 normal 고정 */
+    letter-spacing:normal;
+    color:#222222; /* 말풍선 텍스트와 같은 계열의 짙은 브라운/블랙 톤 */
+    text-shadow:none; /* 외곽선(스트로크)·그림자 완전 제거 */
     -webkit-text-stroke:0;
-    -webkit-font-smoothing:none;
-    font-smoothing:none;
-    line-height:1.5;
+    line-height:1.6; /* 위아래가 잘리지 않도록 여유 있는 행간 */
     max-width:100%;
     overflow:visible;
     white-space:nowrap;
-    padding:2px;
+    padding:3px 2px;
   }
   .seat-card .bubble{
     position:absolute;
@@ -659,7 +659,7 @@
   }
   .gb-all-stand .seat-card{ width:calc(25% - 6px); min-width:0; }
   .gb-all-stand .seat-card .seat-label{ font-size:6.5px; }
-  .gb-all-stand .seat-card .seat-name{ font-size:8px; letter-spacing:.3px; }
+  .gb-all-stand .seat-card .seat-name{ font-size:10.5px; }
   .gb-all-stand .seat-card .bubble{ font-size:7.5px; max-width:82px; padding:4px 6px; }
   @media (max-width:360px){
     .gb-all-stand .seat-card{ width:calc(33.333% - 6px); }
@@ -2490,7 +2490,7 @@
       seat.className = seat.className.replace('empty','filled');
       const side = seat.className.includes('side-away') ? 'away' : 'home';
       const bubble = msg ? `<div class="bubble">${escapeHtml(msg)}</div>` : '';
-      seat.innerHTML = `${bubble}<div class="seat-visual"><img class="seat-chair-img" src="${chairSrcOf(side)}" alt="" draggable="false"><img class="seat-char-img" src="${charSrcOf(gender)}" alt="" draggable="false"></div><span class="seat-name px">${escapeHtml(name)}</span>`;
+      seat.innerHTML = `${bubble}<div class="seat-visual"><img class="seat-chair-img" src="${chairSrcOf(side)}" alt="" draggable="false"><img class="seat-char-img" src="${charSrcOf(gender)}" alt="" draggable="false"></div><span class="seat-name">${escapeHtml(name)}</span>`;
     }
 
     function sideOf(record){
