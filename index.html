@@ -313,6 +313,7 @@
     width:100%;
     height:auto;
     display:block;
+    margin-left:20px; /* 캐릭터 원본 여백으로 인해 좌측으로 치우쳐 보이는 것을 보정 */
     image-rendering:-webkit-optimize-contrast; /* 픽셀아트 선명도 유지 */
     filter:drop-shadow(0 14px 18px rgba(0,0,0,.28));
 
@@ -1358,6 +1359,7 @@
     text-align:center;
     margin:44px 4px 0; /* 식순 영역과의 간격을 넉넉하게 확대 */
   }
+  .tl-venue-sep{ margin:0 10px; }
   @media (max-width:360px){
     .tl-h-box{ width:30px; height:30px; font-size:13.5px; }
     .tl-h-time{ font-size:10.5px; }
@@ -1908,7 +1910,7 @@
             </div>
           </div>
         </div>
-        <div class="tl-venue">2027년 5월 22일 토요일 | 드까르멜릿</div>
+        <div class="tl-venue">2027년 5월 22일 토요일 <span class="tl-venue-sep">|</span> 드까르멜릿</div>
       </div>
 
       <div class="content-block" id="blockNoti">
@@ -1919,6 +1921,7 @@
         </div>
       </div>
 
+      <!-- SENDING YOUR WISHES 섹션 임시 숨김 (나중에 주석 해제하면 복원됩니다)
       <div class="content-block" id="blockAccount" style="margin-bottom:116px;">
         <h2 class="blk-h2">SENDING YOUR WISHES</h2>
         <div class="acc-tabs">
@@ -1928,6 +1931,8 @@
         <div class="acc-panel" id="accPanelGroom"><div id="listGroom"></div></div>
         <div class="acc-panel" id="accPanelBride" hidden><div id="listBride"></div></div>
       </div>
+      -->
+      <div style="margin-bottom:116px;"></div>
 
       <div class="inv-footer">최광현 ♥ 박하나<br>2027. 05. 22 — GAME START!</div>
       <div class="inv-credit">Designed &amp; Developed by Hana Park</div>
@@ -2183,7 +2188,9 @@
     }
   }
   function renderFanList(id, list){
-    $(id).innerHTML = list.map(a => `<div class="acc-card"><div class="acc-card-who">${a.who}</div><div class="acc-card-info"><div><div class="acc-card-bank">${a.bank}</div><div class="acc-card-no">${a.no}</div></div><button class="acc-copy-btn" type="button" data-c="${a.bank} ${a.no}">복사하기</button></div></div>`).join('');
+    const el = $(id);
+    if(!el) return;
+    el.innerHTML = list.map(a => `<div class="acc-card"><div class="acc-card-who">${a.who}</div><div class="acc-card-info"><div><div class="acc-card-bank">${a.bank}</div><div class="acc-card-no">${a.no}</div></div><button class="acc-copy-btn" type="button" data-c="${a.bank} ${a.no}">복사하기</button></div></div>`).join('');
   }
   renderFanList('#listGroom', CONFIG.accounts.groom);
   renderFanList('#listBride', CONFIG.accounts.bride);
