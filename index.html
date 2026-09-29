@@ -919,7 +919,7 @@
     font-size:13.5px;
     line-height:1.7;
     color:#5a3e2b;
-    margin-bottom:12px;
+    margin-bottom:22px; /* 두 문단 사이 빈 줄 느낌의 여백 */
   }
   .gb-thanks-msg:last-of-type{ margin-bottom:20px; }
   .gb-gender-btns{ display:flex; gap:8px; }
@@ -1841,10 +1841,9 @@
       <!-- 방명록 작성 완료 후 뜨는 감사/이벤트 안내 2차 모달 -->
       <div class="gb-modal-backdrop" id="gbThanksModal" hidden>
         <div class="gb-modal-box gb-thanks-box">
-          <button class="gb-modal-close" id="gbThanksClose" type="button" aria-label="닫기">×</button>
           <div class="gb-thanks-title px">♥ 소중한 마음 감사드립니다! ♥</div>
-          <p class="gb-thanks-msg">남겨주신 축하 인사는 저희 두 사람의 마음에 깊이 간직하겠습니다.</p>
-          <p class="gb-thanks-msg">오늘 응원해 주신 분들 중 추첨을 통해 소정의 선물을 전달해 드릴 예정입니다. 🎁<br>기대하며 조금만 기다려 주세요!</p>
+          <p class="gb-thanks-msg">남겨주신 축하 인사는<br>저희 두 사람의 마음에 깊이 간직하겠습니다.</p>
+          <p class="gb-thanks-msg">응원해 주신 분들 중 추첨을 통해<br>소정의 선물을 전달해 드릴 예정입니다.</p>
           <button class="gb-cta gb-cta-done" id="gbThanksOkBtn" type="button">
             <span>확인</span>
           </button>
