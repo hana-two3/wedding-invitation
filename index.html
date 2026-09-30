@@ -627,12 +627,14 @@
     bottom:100%;
     transform:translateX(-50%);
     margin-bottom:5px;
+    box-sizing:border-box;
     width:max-content;
-    max-width:132px;
+    /* 말줄임표 포함 최대 12자/줄(GB_LINE_MAX)이 한 줄에 넉넉히 들어가도록 확보 */
+    max-width:168px;
     background:#fff;
     color:#5a3e2b;
     font-size:9px;
-    line-height:1.45;
+    line-height:1.28;
     padding:5px 7px;
     box-shadow:0 -2px 0 #5a3e2b,0 2px 0 #5a3e2b,-2px 0 0 #5a3e2b,2px 0 0 #5a3e2b;
     white-space:pre-line;
@@ -640,12 +642,14 @@
     overflow-wrap:break-word;
     text-align:center;
     z-index:3;
-    /* 미리보기 텍스트는 JS(bubbleHtmlOf)에서 이미 최대 2줄로 줄바꿈 처리되므로,
-       혹시 모를 예외 상황에 대비한 안전장치로만 2줄 제한을 둔다 */
+    /* JS(bubbleHtmlOf)가 항상 정확히 최대 2줄로 만들어 넘기지만, 만에 하나라도
+       3번째 줄이 생기는 예외 상황을 막기 위해 높이를 2줄 분량으로 하드 고정하고
+       그 이상은 잘라낸다(overflow:hidden) */
+    max-height:calc(2 * 1.28em + 10px);
+    overflow:hidden;
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
-    overflow:hidden;
   }
   .seat-card .bubble::after{
     content:'';
@@ -752,7 +756,13 @@
   .gb-all-stand .seat-card{ width:calc(25% - 6px); min-width:0; }
   .gb-all-stand .seat-card .seat-name,
   .gb-all-stand .seat-card .seat-label{ font-size:10.5px; }
-  .gb-all-stand .seat-card .bubble{ font-size:7.5px; max-width:82px; padding:4px 6px; }
+  .gb-all-stand .seat-card .bubble{
+    font-size:7.5px;
+    line-height:1.28;
+    max-width:112px;
+    padding:4px 6px;
+    max-height:calc(2 * 1.28em + 8px);
+  }
   @media (max-width:360px){
     .gb-all-stand .seat-card{ width:calc(33.333% - 6px); }
   }
@@ -2775,28 +2785,37 @@
 
     // 목록(좌석 말풍선)에 노출되는 미리보기 텍스트:
     // - 최대 20자까지만 표시하고, 그 이상은 뒤에 말줄임표(...)를 붙인다.
-    // - 10자를 초과하면 최대 2줄로 나누되, 단어 중간이 끊기지 않도록 공백(띄어쓰기)
-    //   위치 중 정중앙에 가장 가까운 곳에서 잘라 두 줄의 길이가 비슷해지도록 한다.
-    //   (예: "나는 시장에서 사과를 사왔다" → "나는 시장에서" / "사과를 사왔다")
-    // - 공백이 전혀 없는 긴 단어는 예외적으로 글자 수 기준 정중앙에서 나눈다.
+    // - 정확히 최대 2줄만 허용한다(3줄 이상 절대 금지). 이를 위해 개행은 딱 1번만 넣되,
+    //   각 줄이 GB_LINE_MAX 글자를 넘지 않도록 강제해 CSS 자동 줄바꿈으로 3번째 줄이
+    //   생기는 일이 없게 한다(말풍선 폭에 맞춘 글자 수 상한).
+    // - 띄어쓰기가 있으면 정중앙에 가장 가까운 공백에서 자르되, 그 공백이 두 줄 다
+    //   GB_LINE_MAX 이내로 들어오는 범위 안에 있을 때만 사용한다.
+    // - 띄어쓰기가 없거나(혹은 한쪽으로 너무 치우쳐 있어) 조건을 만족하는 공백이 없으면
+    //   전체 길이의 절반 근처에서 글자 수 기준으로 딱 1번만 자른다.
+    //   (예: "긴 내용긴 내용긴 내용..." → "긴 내용긴" / "내용긴 내용...")
     const GB_PREVIEW_MAX = 20;
-    const GB_PREVIEW_BREAK = 10;
+    // 말줄임표(...)까지 포함한 최대 길이(20+3=23자)를 2줄로 나눴을 때 한쪽이 넘지 않도록
+    // 최소 ceil(23/2)=12로 잡는다 → 어떤 경우에도 각 줄이 12자를 넘지 않아 2줄 안에 반드시 들어간다.
+    const GB_LINE_MAX = 12;
     function splitBalancedTwoLines(str){
       const len = str.length;
-      if(len <= GB_PREVIEW_BREAK) return [str];
-      const target = Math.ceil(len / 2);
+      if(len <= GB_LINE_MAX) return [str];
+      // line1은 [len-GB_LINE_MAX, GB_LINE_MAX] 범위 안에서만 골라야 두 줄 다 상한을 넘지 않는다.
+      const lo = Math.max(1, len - GB_LINE_MAX);
+      const hi = Math.min(len - 1, GB_LINE_MAX);
+      const target = Math.min(hi, Math.max(lo, Math.ceil(len / 2)));
       let breakAt = -1; // 이 위치의 공백을 기준으로 자른다(공백 자체는 버림)
-      for(let d = 0; d <= len; d++){
+      for(let d = 0; d <= (hi - lo); d++){
         const before = target - d, after = target + d;
-        if(before >= 0 && str[before] === ' '){ breakAt = before; break; }
-        if(after < len && str[after] === ' '){ breakAt = after; break; }
+        if(before >= lo && before <= hi && str[before] === ' '){ breakAt = before; break; }
+        if(after >= lo && after <= hi && str[after] === ' '){ breakAt = after; break; }
       }
       if(breakAt >= 0){
         const line1 = str.slice(0, breakAt).trim();
         const line2 = str.slice(breakAt + 1).trim();
         if(line1 && line2) return [line1, line2];
       }
-      // 공백을 찾지 못한 경우(공백 없는 긴 단어): 글자 수 기준 정중앙에서 나눈다
+      // 조건을 만족하는 공백이 없는 경우(공백 없는 긴 단어 등): 글자 수 기준으로 딱 1번만 자른다.
       return [str.slice(0, target), str.slice(target)];
     }
     function bubbleHtmlOf(str){
