@@ -1287,6 +1287,7 @@
     gap:8px;
     margin-top:16px;
     padding-top:14px;
+    padding-bottom:4px;
     border-top:1px dashed #d1c7bd;
     font-family:'Galmuri9','DungGeunMo',monospace;
     font-size:12px;
@@ -1307,22 +1308,24 @@
     flex:1 1 0;
     min-width:0;
     text-align:center;
-    padding:10px 16px 6px;
+    padding:10px 8px 6px;
     background:none;
     box-shadow:none;
   }
-  /* 박스 테두리 대신, 두 사람 사이에만 얇은 도트 세로 구분선을 넣는다 */
-  .mbti-card:first-child{ border-right:1.5px dotted #cbb692; }
+  /* 박스 테두리 대신, 두 사람 사이에만 세로 구분선을 넣는다. 얇은 점선(1.5px dotted)은
+     기기/배율에 따라 렌더링이 사라져 보이는 경우가 있어, 폭을 명확히 지정한 실선으로 변경한다. */
+  .mbti-card:first-child{ border-right:1.5px solid #cbb692; }
   .mbti-card-label{
-    display:inline-block;
+    display:block;
     font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:9.5px;
-    color:#fff;
-    padding:3px 10px;
-    margin-bottom:9px;
+    font-size:10px;
+    letter-spacing:.5px;
+    background:none;
+    padding:0;
+    margin-bottom:5px;
   }
-  .mbti-card.groom .mbti-card-label{ background:#EC1C24; }
-  .mbti-card.bride .mbti-card-label{ background:#181818; }
+  .mbti-card.groom .mbti-card-label{ color:#EC1C24; }
+  .mbti-card.bride .mbti-card-label{ color:#181818; }
   .mbti-card-type{
     font-size:21px;
     font-weight:700;
@@ -1332,10 +1335,13 @@
   .mbti-card-nick{
     margin-top:6px;
     font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:11px;
+    /* 좁은 화면에서도 "차분하고 확실한 문제 해결사"가 한 줄로 들어가도록 뷰포트 폭에 맞춰
+       글자 크기를 유동적으로 축소한다(반응형 대응) */
+    font-size:clamp(8px, 2.35vw, 10.5px);
+    letter-spacing:-.3px;
     line-height:1.5;
     color:#5a3e2b;
-    word-break:keep-all;
+    white-space:nowrap;
   }
   .mbti-card-desc{
     margin-top:8px;
@@ -1474,6 +1480,8 @@
   /* 갤러리 */
   .gallery-sub{ font-family:'Galmuri9'; font-size:14px; color:#8b5e3c; margin:0 0 12px; text-align:center; }
   .gal-tabs{ display:flex; gap:8px; margin-bottom:18px; }
+  /* 스카우팅 리포트(취미/MBTI) 탭 전용: 탭 버튼과 아래 타이틀 사이 간격을 더 여유 있게 확보 */
+  .stat-tabs{ margin-bottom:34px; }
   .gal-tab{
     flex:1;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -1783,13 +1791,13 @@
 
             <div class="mbti-card-wrap">
               <div class="mbti-card groom">
-                <div class="mbti-card-label px">신랑 최광현</div>
+                <div class="mbti-card-label px">신랑 ISTP</div>
                 <div class="mbti-card-type px">ISTP</div>
                 <div class="mbti-card-nick">차분하고 확실한 문제 해결사</div>
                 <div class="mbti-card-desc">무심한 듯 놓치는 감정의 빈틈은<br>ESFJ의 다정함으로 채우는 중</div>
               </div>
               <div class="mbti-card bride">
-                <div class="mbti-card-label px">신부 박하나</div>
+                <div class="mbti-card-label px">신부 ESFJ</div>
                 <div class="mbti-card-type px">ESFJ</div>
                 <div class="mbti-card-nick">다정한 보살핌의 아이콘</div>
                 <div class="mbti-card-desc">남 챙기다 지칠 때가 많지만,<br>ISTP의 든든한 해결책에 위로받는 중</div>
@@ -1966,28 +1974,28 @@
         <div class="tl-h-wrap">
           <div class="tl-h">
             <div class="tl-h-item">
-              <div class="tl-h-box px">⚾</div>
+              <div class="tl-h-box px">🍽️</div>
               <div class="tl-h-time px">11:00 AM</div>
               <div class="tl-h-sub px">Pre-Game</div>
               <div class="tl-h-detail">식사 선오픈</div>
             </div>
             <div class="tl-h-dots"></div>
             <div class="tl-h-item">
-              <div class="tl-h-box px gold">⚾</div>
+              <div class="tl-h-box px gold" id="tlPlayBallIcon">🤵🏻</div>
               <div class="tl-h-time px">12:00 PM</div>
               <div class="tl-h-sub px">Play Ball!</div>
               <div class="tl-h-detail">1부 예식</div>
             </div>
             <div class="tl-h-dots"></div>
             <div class="tl-h-item">
-              <div class="tl-h-box px gold">⚾</div>
+              <div class="tl-h-box px gold">🎁</div>
               <div class="tl-h-time px">12:30 PM</div>
               <div class="tl-h-sub px">Cleaning Time</div>
-              <div class="tl-h-detail">식사 및<br>2부 이벤트</div>
+              <div class="tl-h-detail">식사 및 2부</div>
             </div>
             <div class="tl-h-dots"></div>
             <div class="tl-h-item">
-              <div class="tl-h-box px">⚾</div>
+              <div class="tl-h-box px">🎉</div>
               <div class="tl-h-time px">02:30 PM</div>
               <div class="tl-h-sub px">Game Set</div>
               <div class="tl-h-detail">하객 환송</div>
@@ -2118,6 +2126,11 @@
   function applyTeamContent(team){
     // VS 매치업은 좌(HOME)/우(AWAY) 위치가 고정이며, 신랑팀/신부팀 모두 항상 선명하게 표시한다(흐림 처리 없음).
     if(team === 'groom' || team === 'bride') showAccTab(team);
+    // INNING TIMELINE의 'Play Ball!'(12:00 PM, 1부 예식) 아이콘을 선택한 팀에 맞춰 교체
+    const playBallIcon = document.getElementById('tlPlayBallIcon');
+    if(playBallIcon){
+      playBallIcon.textContent = team === 'bride' ? '👰🏻‍♀️' : '🤵🏻';
+    }
   }
 
   /* ===== 카카오 채널 ===== */
