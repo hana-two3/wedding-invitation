@@ -1682,7 +1682,7 @@
   .wm-story-btn{
     display:block;
     width:min(260px, 82%);
-    margin:28px auto 0;
+    margin:58px auto 30px;
     font-family:'Galmuri9','DungGeunMo',monospace;
     font-size:12px;
     color:#fff;
@@ -1749,13 +1749,23 @@
     font-size:14px;
     color:#C8102E;
   }
+  .tl-puzzle-main{
+    text-align:center;
+    margin-top:10px;
+    font-family:'Pretendard',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    line-height:1.55;
+    color:#5a3e2b;
+  }
   .tl-puzzle-desc{
     text-align:center;
     margin-top:8px;
     font-family:'Pretendard',sans-serif;
     font-size:12.5px;
-    line-height:1.6;
-    color:#7a6a5c;
+    line-height:1.7;
+    color:#9c8a7a;
+    white-space:pre-line;
   }
   .tl-puzzle-area{
     display:flex;
@@ -2281,7 +2291,8 @@
       <div class="tl-puzzle-info" id="puzzleInfo">
         <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
         <div class="tl-puzzle-heading px" id="puzzleHeading">첫 만남</div>
-        <div class="tl-puzzle-desc" id="puzzleDesc">우연이 인연이 되어, 서로가 하나가 된 날.</div>
+        <div class="tl-puzzle-main" id="puzzleMain">우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.</div>
+        <div class="tl-puzzle-desc" id="puzzleDesc">이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.</div>
       </div>
 
       <div class="tl-puzzle-area">
@@ -2399,6 +2410,7 @@
     const infoEl = document.getElementById('puzzleInfo');
     const photoEl = document.getElementById('puzzlePhoto');
     const headingEl = document.getElementById('puzzleHeading');
+    const mainEl = document.getElementById('puzzleMain');
     const descEl = document.getElementById('puzzleDesc');
     const grid = document.getElementById('puzzleGrid');
     const piece = document.getElementById('puzzlePiece');
@@ -2408,10 +2420,10 @@
     if(!btn || !modal || !grid || !piece) return;
 
     const STORY_ITEMS = [
-      { title:'첫 만남', desc:'우연이 인연이 되어, 서로가 하나가 된 날.', photoIdx:0 },
-      { title:'함께한 시간', desc:'여행을 좋아하던 우리, 함께한 1825일의 기록.', photoIdx:5 },
-      { title:'5주년', desc:'서로의 곁을 평생 지키기로 다짐합니다.', photoIdx:11 },
-      { title:'Wedding Day', desc:'드디어, 저희는 이 날 부부가 됩니다.', photoIdx:17 },
+      { title:'첫 만남', main:'우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.', comment:'이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.', photoIdx:0 },
+      { title:'1주년', main:'좋아하는 사계절을 함께 건너며 쌓아 올린 우리만의 기록.', comment:'1월에 만나, 봄 여름 가을 겨울, 같은 취미를 함께하다보니 순식간에 지나간 사계절.', photoIdx:5 },
+      { title:'프로포즈', main:'평생을 같은 팀으로 뛰기로 약속했던 그날의 다짐.', comment:'비혼주의였던 마음을 바꿔준 오빠에게\n제가 먼저 프로포즈를 했어요. 500일 이벤트인 척, 깜짝 프로포즈 성공 ㅎㅎ', photoIdx:11 },
+      { title:'Wedding Day', main:'마침내 완성된 우리의 이야기, 이제 하나의 그림으로 출발합니다.', comment:'저희의 결혼을 축하해주셔서 감사합니다!! 행복하게 살게요.', photoIdx:17 },
     ];
     const SLOT_POS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
@@ -2426,7 +2438,8 @@
       photoEl.src = gallery[item.photoIdx] || gallery[0] || '';
       photoEl.alt = item.title;
       headingEl.textContent = item.title;
-      descEl.textContent = item.desc;
+      mainEl.textContent = item.main;
+      descEl.textContent = item.comment;
       piece.style.backgroundPosition = SLOT_POS[step];
       piece.style.opacity = '1';
       piece.classList.remove('placing');
