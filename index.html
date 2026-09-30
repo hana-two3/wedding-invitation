@@ -985,6 +985,26 @@
   .gb-gender-btn:active{ transform:translateY(2px); }
   .gb-gender-btn.picked{ background:var(--theme-acc,#C8102E); color:#fff; }
 
+  /* 방명록 상세 메시지 모달 */
+  .seat-card.seat-clickable{ cursor:pointer; }
+  .gb-msg-detail-box{ text-align:center; padding-top:40px; padding-bottom:26px; }
+  .gb-msg-detail-from{
+    font-size:13.5px;
+    color:#C8102E;
+    margin-bottom:14px;
+  }
+  .gb-msg-detail-body{
+    font-size:14px;
+    line-height:1.7;
+    color:#5a3e2b;
+    white-space:pre-wrap;
+    word-break:break-word;
+    text-align:left;
+    padding:14px 12px;
+    background:#fff;
+    box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
+  }
+
 
   /* ==================================================
      본문 콘텐츠: 라인업 / 식순 / Noti / 오시는 길 / 갤러리 / 계좌
@@ -1518,6 +1538,28 @@
     transition:opacity .15s;
   }
   .lb-x:active{ opacity:.9; }
+  .lb-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.32);
+    border:0;
+    border-radius:50%;
+    color:#fff;
+    font-size:20px;
+    line-height:1;
+    cursor:pointer;
+    opacity:.75;
+    transition:opacity .15s,background .15s;
+  }
+  .lb-arrow:active{ opacity:1; background:rgba(0,0,0,.45); }
+  .lb-arrow-prev{ left:10px; }
+  .lb-arrow-next{ right:10px; }
   .lb-count{
     position:absolute;
     bottom:24px;
@@ -1868,8 +1910,8 @@
             </label>
             <label class="gb-field">
               <span class="gb-field-label px">두 사람에게 전할 말</span>
-              <textarea id="gbMsg" maxlength="30" rows="2" placeholder="소중히 간직하겠습니다"></textarea>
-              <span class="gb-char-counter" id="gbMsgCounter">0 / 30자</span>
+              <textarea id="gbMsg" maxlength="200" rows="3" placeholder="소중히 간직하겠습니다"></textarea>
+              <span class="gb-char-counter" id="gbMsgCounter">0 / 200자</span>
             </label>
             <button class="gb-cta gb-cta-done" id="gbDoneBtn" type="button">
               <span>응원하기</span>
@@ -1887,6 +1929,15 @@
           <button class="gb-cta gb-cta-done" id="gbThanksOkBtn" type="button">
             <span>확인</span>
           </button>
+        </div>
+      </div>
+
+      <!-- 방명록 상세 메시지 모달: 좌석(캐릭터) 클릭 시 전체 메시지 확인 -->
+      <div class="gb-modal-backdrop" id="gbMsgDetailModal" hidden>
+        <div class="gb-modal-box gb-msg-detail-box">
+          <button class="gb-modal-close" id="gbMsgDetailClose" type="button" aria-label="닫기">×</button>
+          <div class="gb-msg-detail-from px" id="gbMsgDetailFrom">From. </div>
+          <p class="gb-msg-detail-body" id="gbMsgDetailBody"></p>
         </div>
       </div>
 
@@ -1958,6 +2009,8 @@
     <div class="lb-in" id="lbIn"></div>
   </div>
   <button class="lb-x" type="button" aria-label="닫기">✕</button>
+  <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진">‹</button>
+  <button class="lb-arrow lb-arrow-next" type="button" aria-label="다음 사진">›</button>
   <div class="lb-count" id="lbCount">1 / 9</div>
 </div>
 <div id="toast"></div>
@@ -2181,6 +2234,8 @@
     bindMore('#galMore2', '#g2');
   })();
   $('#lb .lb-x').addEventListener('click', () => $('#lb').classList.remove('on'));
+  $('#lb .lb-arrow-prev').addEventListener('click', () => stepLightbox(-1));
+  $('#lb .lb-arrow-next').addEventListener('click', () => stepLightbox(1));
   document.addEventListener('keydown', e => {
     if(!$('#lb').classList.contains('on')) return;
     if(e.key === 'Escape') $('#lb').classList.remove('on');
@@ -2667,12 +2722,25 @@
       return seat;
     }
 
+    // 목록에 노출되는 말풍선 미리보기 텍스트: 12자 초과 시 말줄임표(...) 처리
+    const GB_PREVIEW_LEN = 12;
+    function truncateMsg(str){
+      if(!str) return '';
+      return str.length > GB_PREVIEW_LEN ? str.slice(0, GB_PREVIEW_LEN) + '...' : str;
+    }
+
     function fillSeat(seat, {gender, name, msg, category}){
       seat.className = seat.className.replace('empty','filled');
       const side = seat.className.includes('side-away') ? 'away' : 'home';
-      const bubble = msg ? `<div class="bubble">${escapeHtml(msg)}</div>` : '';
+      const bubble = msg ? `<div class="bubble">${escapeHtml(truncateMsg(msg))}</div>` : '';
       const genderClass = gender === 'male' ? 'seat-char-male' : 'seat-char-female';
       seat.innerHTML = `${bubble}<div class="seat-visual"><img class="seat-chair-img" src="${chairSrcOf(side)}" alt="" draggable="false"><img class="seat-char-img ${genderClass}" src="${charSrcOf(gender, category)}" alt="" draggable="false"></div><span class="seat-name">${escapeHtml(name)}</span>`;
+      seat.dataset.fullName = name || '';
+      seat.dataset.fullMsg = msg || '';
+      if(msg){
+        seat.classList.add('seat-clickable');
+        seat.addEventListener('click', () => openMsgDetail(name, msg));
+      }
     }
 
     function sideOf(record){
@@ -2808,6 +2876,33 @@
     }
     document.addEventListener('keydown', e => {
       if(e.key === 'Escape' && allModal && !allModal.hidden) closeAllModal();
+    });
+
+    /* ===== 방명록 상세 메시지 모달: 좌석(캐릭터/카드) 클릭 시 전체 메시지 확인 ===== */
+    const msgDetailModal = $$('#gbMsgDetailModal');
+    const msgDetailClose = $$('#gbMsgDetailClose');
+    const msgDetailFrom = $$('#gbMsgDetailFrom');
+    const msgDetailBody = $$('#gbMsgDetailBody');
+    function openMsgDetail(name, msg){
+      if(!msgDetailModal) return;
+      msgDetailFrom.textContent = `From. ${name || ''}`;
+      msgDetailBody.textContent = msg || '';
+      msgDetailModal.hidden = false;
+      lockBodyScroll();
+    }
+    function closeMsgDetail(){
+      if(!msgDetailModal) return;
+      msgDetailModal.hidden = true;
+      unlockBodyScroll();
+    }
+    if(msgDetailClose) msgDetailClose.addEventListener('click', closeMsgDetail);
+    if(msgDetailModal){
+      msgDetailModal.addEventListener('click', e => {
+        if(e.target === msgDetailModal) closeMsgDetail();
+      });
+    }
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && msgDetailModal && !msgDetailModal.hidden) closeMsgDetail();
     });
 
     function showStep2(){
@@ -2950,10 +3045,10 @@
     function updateMsgCounter(){
       if(!msgCounter) return;
       const len = msgInput.value.length;
-      msgCounter.textContent = `${len} / 30자`;
-      if(len >= 30){
+      msgCounter.textContent = `${len} / 200자`;
+      if(len >= 200){
         msgCounter.classList.add('gb-char-warn');
-        msgCounter.textContent = `${len} / 30자 (글자 수 초과)`;
+        msgCounter.textContent = `${len} / 200자 (글자 수 초과)`;
       }else{
         msgCounter.classList.remove('gb-char-warn');
       }
