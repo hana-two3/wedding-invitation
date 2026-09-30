@@ -535,9 +535,11 @@
     column-gap:10px;
     padding-bottom:20px; /* 마지막 행과 그라운드 라인 사이 여백(기존 .stand 하단 padding과 동일) */
   }
-  /* 스탠드 맨 아래 그라운드(잔디) 라인: 내부 스크롤이 없는 전체 관중석 통합 보기(.gb-all-stand)는
-     기존처럼 자기 자신의 ::after로, 내부 스크롤이 있는 개별 팀 관중석은 .stand-rows의 ::after로 */
-  .gb-all-stand::after,
+  /* 스탠드 맨 아래 그라운드(잔디) 라인: '전체 응원석' 통합 보기(.gb-all-stand)도 이제 자체적으로
+     내부 스크롤(overflow-y:auto)되므로, 개별 팀 관중석과 마찬가지로 그라운드 라인을 실제 좌석을
+     담는 내부 래퍼(.gb-all-rows / .stand-rows)의 ::after로 두어야, 스크롤 시 보이는 뷰포트의
+     바닥에 고정되지 않고 진짜 마지막 행 바로 아래에서 함께 스크롤된다. */
+  .gb-all-rows::after,
   .stand-rows::after{
     content:'';
     position:absolute;
@@ -633,14 +635,15 @@
     line-height:1.45;
     padding:5px 7px;
     box-shadow:0 -2px 0 #5a3e2b,0 2px 0 #5a3e2b,-2px 0 0 #5a3e2b,2px 0 0 #5a3e2b;
-    white-space:normal;
+    white-space:pre-line;
     word-break:break-all;
     overflow-wrap:break-word;
     text-align:center;
     z-index:3;
-    /* 메시지가 길어도 말풍선이 지나치게 높아져 윗줄을 가리지 않도록 최대 3줄로 제한 */
+    /* 미리보기 텍스트는 JS(bubbleHtmlOf)에서 이미 최대 2줄로 줄바꿈 처리되므로,
+       혹시 모를 예외 상황에 대비한 안전장치로만 2줄 제한을 둔다 */
     display:-webkit-box;
-    -webkit-line-clamp:3;
+    -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
     overflow:hidden;
   }
@@ -708,10 +711,21 @@
     box-shadow:0 -3px 0 #5a3e2b,0 3px 0 #5a3e2b,-3px 0 0 #5a3e2b,3px 0 0 #5a3e2b;
   }
   .gb-all-stand{
+    display:block;
     margin:0;
-    padding:48px 8px 10px;
-    gap:60px 8px;
+    padding:48px 8px 0;
     min-height:260px;
+  }
+  /* 실제 좌석들을 담는 내부 래퍼: 항상 콘텐츠 전체 높이만큼 auto로 늘어나므로,
+     그라운드 라인(::after)을 여기에 두면 .gb-all-stand가 내부 스크롤 중이어도
+     항상 "진짜 마지막 행" 바로 아래에 붙는다(팀별 관중석의 .stand-rows와 동일한 패턴). */
+  .gb-all-rows{
+    position:relative;
+    display:flex;
+    flex-wrap:wrap;
+    width:100%;
+    gap:60px 8px;
+    padding-bottom:10px;
   }
   /* '전체 응원석' 모달 전용: 모달 박스 자체는 뷰포트를 넘지 않는 고정 프레임으로 두고
      (상단 타이틀/닫기(X) 버튼이 항상 보이도록), 좌석 그리드(.gb-all-stand)만 내부에서
@@ -720,8 +734,14 @@
   .gb-modal-box.gb-all-box{
     display:flex;
     flex-direction:column;
-    max-height:min(85vh, calc(100vh - 80px));
+    max-height:min(75vh, calc(100vh - 140px)); /* JS(positionAllModalBelowNav)가 열릴 때마다 실제 네비게이션 높이로 다시 계산해 덮어쓴다 */
     overflow:hidden;
+  }
+  /* 상단 고정 네비게이션 바(z-index:80)에 모달 상단(타이틀/X 버튼)이 가려지지 않도록,
+     가운데 정렬 대신 위에서부터 배치하고 실제 여백은 JS가 marginTop으로 부여한다 */
+  .gb-all-backdrop{
+    align-items:flex-start;
+    padding-top:0;
   }
   .gb-modal-box.gb-all-box .gb-all-stand{
     flex:1 1 auto;
@@ -2753,17 +2773,27 @@
       return seat;
     }
 
-    // 목록에 노출되는 말풍선 미리보기 텍스트: 12자 초과 시 말줄임표(...) 처리
-    const GB_PREVIEW_LEN = 12;
-    function truncateMsg(str){
+    // 목록(좌석 말풍선)에 노출되는 미리보기 텍스트:
+    // - 최대 20자까지만 표시하고, 그 이상은 뒤에 말줄임표(...)를 붙인다.
+    // - 10자를 초과하면 10자 직후에 줄바꿈을 넣어 최대 2줄로 보여준다.
+    //   (예: 15자 → 10자+5자, 25자 → 10자+"10자...")
+    const GB_PREVIEW_MAX = 20;
+    const GB_PREVIEW_BREAK = 10;
+    function bubbleHtmlOf(str){
       if(!str) return '';
-      return str.length > GB_PREVIEW_LEN ? str.slice(0, GB_PREVIEW_LEN) + '...' : str;
+      const truncated = str.length > GB_PREVIEW_MAX ? str.slice(0, GB_PREVIEW_MAX) + '...' : str;
+      if(truncated.length > GB_PREVIEW_BREAK){
+        const line1 = truncated.slice(0, GB_PREVIEW_BREAK);
+        const line2 = truncated.slice(GB_PREVIEW_BREAK);
+        return `${escapeHtml(line1)}<br>${escapeHtml(line2)}`;
+      }
+      return escapeHtml(truncated);
     }
 
     function fillSeat(seat, {gender, name, msg, category}){
       seat.className = seat.className.replace('empty','filled');
       const side = seat.className.includes('side-away') ? 'away' : 'home';
-      const bubble = msg ? `<div class="bubble">${escapeHtml(truncateMsg(msg))}</div>` : '';
+      const bubble = msg ? `<div class="bubble">${bubbleHtmlOf(msg)}</div>` : '';
       const genderClass = gender === 'male' ? 'seat-char-male' : 'seat-char-female';
       seat.innerHTML = `${bubble}<div class="seat-visual"><img class="seat-chair-img" src="${chairSrcOf(side)}" alt="" draggable="false"><img class="seat-char-img ${genderClass}" src="${charSrcOf(gender, category)}" alt="" draggable="false"></div><span class="seat-name">${escapeHtml(name)}</span>`;
       seat.dataset.fullName = name || '';
@@ -2876,6 +2906,17 @@
       return frag;
     }
 
+    // 실제 좌석(행)들을 담는 내부 래퍼(.gb-all-rows)를 가져오거나, 없으면 새로 만든다.
+    function gbAllRowsOf(standEl){
+      let rows = standEl.querySelector(':scope > .gb-all-rows');
+      if(!rows){
+        rows = document.createElement('div');
+        rows.className = 'gb-all-rows';
+        standEl.appendChild(rows);
+      }
+      return rows;
+    }
+
     function renderCombinedAll(){
       if(!allStand) return;
       allStand.innerHTML = '';
@@ -2886,12 +2927,30 @@
         allStand.appendChild(note);
         return;
       }
-      allStand.appendChild(buildUnifiedSeatTiles(allRecords));
+      const rows = gbAllRowsOf(allStand);
+      rows.appendChild(buildUnifiedSeatTiles(allRecords));
     }
+
+    // '전체 응원석' 모달이 상단 고정 네비게이션 바에 가려지지 않도록, 열릴 때마다
+    // 실제 네비게이션 높이를 측정해 모달 상단 여백과 최대 높이를 동적으로 맞춘다.
+    function positionAllModalBelowNav(){
+      const nav = document.getElementById('siteNav');
+      const box = allModal ? allModal.querySelector('.gb-all-box') : null;
+      if(!nav || !box) return;
+      const navH = nav.getBoundingClientRect().height;
+      const topGap = 14;
+      const bottomGap = 24;
+      box.style.marginTop = (navH + topGap) + 'px';
+      box.style.maxHeight = `calc(100vh - ${navH + topGap + bottomGap}px)`;
+    }
+    window.addEventListener('resize', () => {
+      if(allModal && !allModal.hidden) positionAllModalBelowNav();
+    });
 
     function openAllModal(){
       renderCombinedAll();
       allModal.hidden = false;
+      positionAllModalBelowNav();
       lockBodyScroll();
     }
     function closeAllModal(){
