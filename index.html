@@ -1678,6 +1678,137 @@
 
   #toast{ position:fixed; bottom:40px; left:50%; transform:translateX(-50%); background:#FFD166; color:#5a3e2b; font-family:'Galmuri9'; padding:10px 16px; z-index:99; display:none; font-size:13px; box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c; }
 
+  /* ===== "1px의 기록들" 스토리 타임라인 버튼 & 모달 ===== */
+  .wm-story-btn{
+    display:block;
+    width:min(260px, 82%);
+    margin:28px auto 0;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:12px;
+    color:#fff;
+    background:var(--theme-acc,#C8102E);
+    padding:13px 10px;
+    cursor:pointer;
+    box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818;
+  }
+  .wm-story-btn:active{ transform:translateY(2px); }
+
+  .tl-story-backdrop{ align-items:flex-start; padding-top:0; }
+  .tl-story-box{
+    display:flex;
+    flex-direction:column;
+    max-width:400px;
+    max-height:min(82vh, calc(100vh - 100px));
+    overflow:hidden;
+    padding:20px 0 0;
+  }
+  .tl-story-title{
+    flex-shrink:0;
+    display:table;
+    margin:0 auto 4px;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:14px;
+    color:#5a3e2b;
+    background:#FFD166;
+    padding:6px 16px;
+    box-shadow:0 -3px 0 #5a3e2b,0 3px 0 #5a3e2b,-3px 0 0 #5a3e2b,3px 0 0 #5a3e2b;
+  }
+  .tl-story-scroll{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:22px 20px 26px;
+  }
+  .tl-story-track{ position:relative; }
+  /* 중앙 세로 연결선 */
+  .tl-story-track::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    top:4px;
+    bottom:4px;
+    width:2px;
+    background:#f4c9d6;
+    transform:translateX(-50%);
+  }
+  /* 스크롤에 따라 선을 따라 부드럽게 내려가는 야구공 아이콘 */
+  .tl-story-ball{
+    position:absolute;
+    left:50%;
+    top:0;
+    font-size:17px;
+    line-height:1;
+    transform:translate(-50%,-50%);
+    transition:top .12s linear;
+    z-index:3;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.22));
+    pointer-events:none;
+  }
+  .tl-story-row{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    min-height:220px;
+    padding:34px 0;
+  }
+  .tl-story-side{ flex:1 1 0; min-width:0; }
+  .tl-story-photo{
+    width:100%;
+    max-width:118px;
+    aspect-ratio:1;
+    overflow:hidden;
+    border-radius:14px;
+    margin:0 auto 0 0; /* 기본: 왼쪽 칸에서는 바깥쪽(좌측) 가장자리에 붙는다 */
+    box-shadow:0 4px 10px rgba(90,62,43,.2);
+    opacity:.3;
+    filter:grayscale(100%);
+    transition:opacity .4s ease, filter .4s ease;
+  }
+  .tl-story-photo.pull-right{ margin:0 0 0 auto; } /* 오른쪽 칸에서는 바깥쪽(우측) 가장자리에 붙는다 */
+  .tl-story-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .tl-story-text{ text-align:left; opacity:.3; transition:opacity .4s ease; }
+  .tl-story-heading{
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:12.5px;
+    color:#e08aa2;
+    margin-bottom:7px;
+  }
+  .tl-story-desc{
+    font-family:'Pretendard',sans-serif;
+    font-size:12px;
+    line-height:1.65;
+    color:#7a6a5c;
+  }
+  /* 스크롤로 화면에 들어온 항목: 흑백/연하게 → 또렷한 컬러로 전환 */
+  .tl-story-row.tl-active .tl-story-photo{ opacity:1; filter:grayscale(0%); }
+  .tl-story-row.tl-active .tl-story-text{ opacity:1; }
+  .tl-story-dot{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#f2abc2;
+    z-index:2;
+  }
+  .tl-story-dot.heart{
+    width:auto;
+    height:auto;
+    background:none;
+    font-size:19px;
+    color:#e8879f;
+  }
+  @media (max-width:360px){
+    .tl-story-photo{ max-width:100px; }
+    .tl-story-heading{ font-size:11.5px; }
+    .tl-story-desc{ font-size:11px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1732,6 +1863,7 @@
         </div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
+        <button class="wm-story-btn px" id="storyBtn" type="button">1px의 기록들 보러가기 ➔</button>
         <div class="wm-scroll-cue px" aria-hidden="true">PLAY BALL<br>▼</div>
       </div>
 
@@ -2055,6 +2187,19 @@
   </section>
 </div>
 
+<!-- "1px의 기록들" 스토리 타임라인 모달 -->
+<div class="gb-modal-backdrop tl-story-backdrop" id="storyModal" hidden>
+  <div class="gb-modal-box tl-story-box">
+    <button class="gb-modal-close" id="storyClose" type="button" aria-label="닫기">×</button>
+    <div class="tl-story-title px">1px의 기록들</div>
+    <div class="tl-story-scroll" id="storyScroll">
+      <div class="tl-story-track" id="storyTrack">
+        <div class="tl-story-ball" id="storyBall" aria-hidden="true">⚾</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="lb">
   <div class="lb-stage">
     <div class="lb-in" id="lbIn"></div>
@@ -2127,6 +2272,98 @@
     if(document.readyState !== 'complete'){
       window.addEventListener('load', kickCharacterFloat, { once:true });
     }
+  })();
+
+  /* ===== "1px의 기록들" 스토리 타임라인 모달 =====
+     버튼 클릭 시 중앙 연결선을 따라 좌우 교차 배치된 사진/문구를 스크롤로 훑어보는
+     타임라인 모달을 띄운다. 스크롤에 따라 야구공 아이콘이 선을 따라 내려가고,
+     각 항목은 화면에 들어오기 전엔 흑백/반투명, 들어오면 컬러/선명하게 전환된다. */
+  (function(){
+    const btn = document.getElementById('storyBtn');
+    const modal = document.getElementById('storyModal');
+    const closeBtn = document.getElementById('storyClose');
+    const scrollEl = document.getElementById('storyScroll');
+    const track = document.getElementById('storyTrack');
+    const ball = document.getElementById('storyBall');
+    if(!btn || !modal || !scrollEl || !track || !ball) return;
+
+    const STORY_ITEMS = [
+      { title:'첫 만남', desc:'우연이 인연이 되어,<br>서로가 하나가 된 날.', photoIdx:0, photoSide:'left' },
+      { title:'함께한 시간', desc:'여행을 좋아하던 우리<br>함께한 1825일의 기록', photoIdx:5, photoSide:'right' },
+      { title:'5주년', desc:'서로의 곁을 평생<br>지키기로 다짐합니다.', photoIdx:11, photoSide:'left' },
+      { title:'Wedding Day', desc:'드디어, 저희는 이 날<br>부부가 됩니다.', photoIdx:17, photoSide:'right' },
+    ];
+
+    let built = false;
+    function buildStoryTimeline(){
+      if(built) return;
+      built = true;
+      const gallery = CONFIG.gallery1 || [];
+      const rowsHtml = STORY_ITEMS.map((it, i) => {
+        const photoSrc = gallery[it.photoIdx] || gallery[0] || '';
+        const photoHtml = `<div class="tl-story-side"><div class="tl-story-photo${it.photoSide === 'right' ? ' pull-right' : ''}"><img src="${photoSrc}" alt="${it.title}" loading="lazy" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div></div>`;
+        const textHtml = `<div class="tl-story-side"><div class="tl-story-text"><div class="tl-story-heading px">${it.title}</div><div class="tl-story-desc">${it.desc}</div></div></div>`;
+        const leftHtml = it.photoSide === 'left' ? photoHtml : textHtml;
+        const rightHtml = it.photoSide === 'left' ? textHtml : photoHtml;
+        const dotHtml = i === 1 ? `<div class="tl-story-dot heart" aria-hidden="true">♥</div>` : `<div class="tl-story-dot" aria-hidden="true"></div>`;
+        return `<div class="tl-story-row" data-story-idx="${i}">${leftHtml}${dotHtml}${rightHtml}</div>`;
+      }).join('');
+      ball.insertAdjacentHTML('afterend', rowsHtml);
+    }
+
+    let observer = null;
+    function setupObserver(){
+      if(observer) observer.disconnect();
+      observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          entry.target.classList.toggle('tl-active', entry.isIntersecting);
+        });
+      }, { root:scrollEl, rootMargin:'-15% 0px -25% 0px', threshold:0 });
+      track.querySelectorAll('.tl-story-row').forEach(row => observer.observe(row));
+    }
+
+    function updateBall(){
+      const maxTop = Math.max(0, track.offsetHeight - 10);
+      const viewportOffset = scrollEl.clientHeight * 0.42;
+      let top = scrollEl.scrollTop + viewportOffset;
+      top = Math.max(10, Math.min(top, maxTop));
+      ball.style.top = top + 'px';
+    }
+
+    // 상단 고정 네비게이션 바에 모달이 가려지지 않도록, 열릴 때마다 실제 네비게이션
+    // 높이를 측정해 모달 상단 여백과 최대 높이를 동적으로 맞춘다('전체 응원석' 모달과 동일한 패턴).
+    const storyBox = modal.querySelector('.tl-story-box');
+    function positionStoryModalBelowNav(){
+      const nav = document.getElementById('siteNav');
+      if(!nav || !storyBox) return;
+      const navH = nav.getBoundingClientRect().height;
+      const topGap = 14;
+      const bottomGap = 24;
+      storyBox.style.marginTop = (navH + topGap) + 'px';
+      storyBox.style.maxHeight = `calc(100vh - ${navH + topGap + bottomGap}px)`;
+    }
+    window.addEventListener('resize', () => {
+      if(modal && !modal.hidden) positionStoryModalBelowNav();
+    });
+
+    function openStory(){
+      buildStoryTimeline();
+      modal.hidden = false;
+      scrollEl.scrollTop = 0;
+      positionStoryModalBelowNav();
+      requestAnimationFrame(() => {
+        setupObserver();
+        updateBall();
+      });
+    }
+    function closeStory(){
+      modal.hidden = true;
+    }
+
+    btn.addEventListener('click', openStory);
+    if(closeBtn) closeBtn.addEventListener('click', closeStory);
+    modal.addEventListener('click', e => { if(e.target === modal) closeStory(); });
+    scrollEl.addEventListener('scroll', updateBall, { passive:true });
   })();
 
   let selectedTeam = null;
