@@ -1332,6 +1332,11 @@
     color:#5a3e2b;
     letter-spacing:1px;
   }
+  .mbti-card.groom .mbti-card-type{ color:#E53935; }
+  .mbti-card.bride .mbti-card-type{ color:#1A1A1A; }
+  /* 중앙 구분선 기준 좌우 콘텐츠가 각자 칸의 중앙에 오도록 미세 정렬 보정 */
+  .mbti-card:first-child{ padding-right:6px; }
+  .mbti-card:last-child{ padding-left:6px; }
   .mbti-card-nick{
     margin-top:6px;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -1403,8 +1408,8 @@
     align-items:center;
     justify-content:center;
     font-size:15px;
-    /* 4개 아이콘 박스 모두 동일한 픽셀 베이지/골드 톤으로 통일 (이전엔 1·4번째만 분홍이라 이질감 있었음) */
-    background:#FFD166;
+    /* 이모지 시인성을 위해 흰색 배경으로 변경(테두리/격자 느낌은 그대로 유지) */
+    background:#FFFFFF;
     box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
   }
   .tl-h-time{ font-family:'Galmuri9'; color:#8b5e3c; font-size:11.5px; margin-top:3px; white-space:nowrap; }
@@ -1413,9 +1418,10 @@
   .tl-h-dots{
     flex:0 1 16px;
     min-width:6px;
-    height:3px;
-    margin-top:17px;
-    background-image:repeating-linear-gradient(to right, #8b5e3c 0 4px, transparent 4px 8px);
+    height:2px;
+    margin-top:16px;
+    background:#8b5e3c;
+    background-image:none;
   }
   .tl-note{ margin:10px 4px 0; font-size:11px; color:#a08662; text-align:center; }
   .tl-venue{
@@ -1559,6 +1565,7 @@
     right:16px;
     width:36px;
     height:36px;
+    z-index:6;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -1578,11 +1585,14 @@
     transform:translateY(-50%);
     width:44px;
     height:56px;
+    z-index:6;
     display:flex;
     align-items:center;
     justify-content:center;
-    background:transparent;
+    background:transparent !important;
     border:0;
+    outline:none;
+    -webkit-tap-highlight-color:transparent;
     color:#fff;
     font-size:36px;
     line-height:1;
@@ -1590,7 +1600,10 @@
     opacity:.6;
     transition:opacity .15s;
   }
-  .lb-arrow:active{ opacity:.9; }
+  .lb-arrow:hover,
+  .lb-arrow:active,
+  .lb-arrow:focus,
+  .lb-arrow:focus-visible{ opacity:1; background:transparent !important; }
   .lb-arrow-prev{ left:10px; }
   .lb-arrow-next{ right:10px; }
   .lb-count{
@@ -1794,13 +1807,13 @@
 
             <div class="mbti-card-wrap">
               <div class="mbti-card groom">
-                <div class="mbti-card-label px">신랑 ISTP</div>
+                <div class="mbti-card-label px">신랑</div>
                 <div class="mbti-card-type px">ISTP</div>
                 <div class="mbti-card-nick">차분하고 확실한 문제 해결사</div>
                 <div class="mbti-card-desc">무심한 듯 놓치는 감정의 빈틈은<br>ESFJ의 다정함으로 채우는 중</div>
               </div>
               <div class="mbti-card bride">
-                <div class="mbti-card-label px">신부 ESFJ</div>
+                <div class="mbti-card-label px">신부</div>
                 <div class="mbti-card-type px">ESFJ</div>
                 <div class="mbti-card-nick">다정한 보살핌의 아이콘</div>
                 <div class="mbti-card-desc">남 챙기다 지칠 때가 많지만,<br>ISTP의 든든한 해결책에 위로받는 중</div>
