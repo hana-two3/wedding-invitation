@@ -318,14 +318,20 @@
     image-rendering:-webkit-optimize-contrast; /* 픽셀아트 선명도 유지 */
     filter:drop-shadow(0 14px 18px rgba(0,0,0,.28));
 
-    /* 레트로 픽셀 느낌의 둥둥 떠 있는 애니메이션 */
+    /* 레트로 픽셀 느낌의 둥둥 떠 있는 애니메이션: 페이지 로드 즉시, 스크롤/클릭 등
+       어떤 이벤트와도 무관하게 무한 반복된다 */
     animation:pixel-float 2.6s steps(6) infinite;
     transform-origin:center bottom;
+    /* 초기 로드 시 리플로우로 애니메이션이 한 박자 늦게 씹히는 것을 막기 위해
+       처음부터 별도의 GPU 합성 레이어로 승격시켜 둔다 */
+    will-change:transform;
+    transform:translateZ(0);
+    backface-visibility:hidden;
   }
 
   @keyframes pixel-float{
-    0%,100%{ transform:translateY(0); }
-    50%    { transform:translateY(-14px); }
+    0%,100%{ transform:translateY(0) translateZ(0); }
+    50%    { transform:translateY(-14px) translateZ(0); }
   }
 
   /* 접근성: 사용자가 모션을 줄이도록 설정했다면 애니메이션 정지 */
@@ -1591,23 +1597,22 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    background:transparent !important;
+    background:transparent;
     border:0;
     outline:none;
     -webkit-tap-highlight-color:transparent;
     color:#fff;
-    font-size:36px;
-    line-height:1;
     cursor:pointer;
     opacity:.6;
-    transition:opacity .15s;
   }
+  /* 클릭/호버/포커스 등 어떤 인터랙션에도 스타일이 변하지 않도록 평상시 상태로 고정 */
   .lb-arrow:hover,
   .lb-arrow:active,
   .lb-arrow:focus,
-  .lb-arrow:focus-visible{ opacity:1; background:transparent !important; }
-  .lb-arrow-prev{ left:10px; }
-  .lb-arrow-next{ right:10px; }
+  .lb-arrow:focus-visible{ opacity:.6; background:transparent; }
+  .lb-arrow svg{ display:block; }
+  .lb-arrow-prev{ left:0; }
+  .lb-arrow-next{ right:0; }
   .lb-count{
     position:absolute;
     bottom:24px;
@@ -2056,8 +2061,8 @@
     <div class="lb-shield" id="lbShield" oncontextmenu="return false;" ondragstart="return false;"></div>
   </div>
   <button class="lb-x" type="button" aria-label="닫기">✕</button>
-  <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진">‹</button>
-  <button class="lb-arrow lb-arrow-next" type="button" aria-label="다음 사진">›</button>
+  <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진"><svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 4L4 16L14 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="lb-arrow lb-arrow-next" type="button" aria-label="다음 사진"><svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L16 16L6 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="lb-count" id="lbCount">1 / 9</div>
 </div>
 <div id="toast"></div>
@@ -2103,6 +2108,25 @@
     const bBride = document.getElementById('bubbleBride');
     if(bGroom) setTimeout(() => bGroom.classList.add('show'), 350);
     if(bBride) setTimeout(() => bBride.classList.add('show'), 350 + 800);
+  })();
+
+  /* ===== 히어로 캐릭터 float 애니메이션 즉시 실행 보장 =====
+     일부 브라우저(특히 모바일 Safari)는 최초 렌더링 시 리플로우 타이밍에 따라
+     페이지 로드 직후 CSS 애니메이션이 한 박자 늦게(스크롤·클릭 등 다음 리페인트 시점에야)
+     시작되는 경우가 있다. 스크롤 위치·이벤트 발생 여부와 무관하게 항상 즉시 시작되도록,
+     로드 시점에 애니메이션을 강제로 한 번 재시작(reflow)시켜 이 문제를 원천 차단한다. */
+  (function(){
+    function kickCharacterFloat(){
+      const el = document.getElementById('character');
+      if(!el) return;
+      el.style.animation = 'none';
+      void el.offsetHeight; // 강제 리플로우
+      el.style.animation = '';
+    }
+    kickCharacterFloat();
+    if(document.readyState !== 'complete'){
+      window.addEventListener('load', kickCharacterFloat, { once:true });
+    }
   })();
 
   let selectedTeam = null;
