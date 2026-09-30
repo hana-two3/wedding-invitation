@@ -1535,7 +1535,11 @@
   .ph-cell{ display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:repeating-conic-gradient(#fbe3c9 0 25%,#fff3e0 0 50%) 0 0/12px 12px; }
   #lb{ position:fixed; inset:0; background:#fff; z-index:9999; display:none; align-items:center; justify-content:center; touch-action:manipulation; -webkit-user-select:none; user-select:none; }
   #lb.on{ display:flex; }
-  .lb-stage{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
+  .lb-stage{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
+  /* 사진 무단 저장 방지: 이미지 위 투명 오버레이(직접 조작/저장 메뉴 호출 차단) */
+  .lb-shield{ position:absolute; inset:0; z-index:5; background:transparent; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; touch-action:manipulation; }
+  /* PC 캡처 시도 감지 시 이미지 일시 차단 */
+  .lb-in.lb-blocked{ filter:blur(24px); transition:filter .15s; }
   #lb .lb-in{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
   #lb .lb-in img{ max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
   /* 사진 확대/저장 방지 + 더블탭·핀치 확대(zoom) 방지: 라이트박스(확대보기) 이미지 */
@@ -1572,19 +1576,18 @@
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    width:34px;
-    height:44px;
+    width:44px;
+    height:56px;
     display:flex;
     align-items:center;
     justify-content:center;
     background:transparent;
     border:0;
     color:#fff;
-    font-size:26px;
+    font-size:36px;
     line-height:1;
     cursor:pointer;
     opacity:.6;
-    text-shadow:0 0 4px rgba(0,0,0,.55),0 0 10px rgba(0,0,0,.35);
     transition:opacity .15s;
   }
   .lb-arrow:active{ opacity:.9; }
@@ -2035,6 +2038,7 @@
 <div id="lb">
   <div class="lb-stage">
     <div class="lb-in" id="lbIn"></div>
+    <div class="lb-shield" id="lbShield" oncontextmenu="return false;" ondragstart="return false;"></div>
   </div>
   <button class="lb-x" type="button" aria-label="닫기">✕</button>
   <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진">‹</button>
@@ -2158,14 +2162,14 @@
     for(let i=0;i<slots;i++){
       const btn = document.createElement('button');
       btn.setAttribute('aria-label', `${label} ${i+1} 확대`);
-      btn.innerHTML = list[i] ? `<img src="${list[i]}" alt="${label} ${i+1}" loading="lazy" draggable="false" oncontextmenu="return false;">` : `<div class="ph-cell">${i+1}</div>`;
+      btn.innerHTML = list[i] ? `<img src="${list[i]}" alt="${label} ${i+1}" loading="lazy" draggable="false" oncontextmenu="return false;" ondragstart="return false;">` : `<div class="ph-cell">${i+1}</div>`;
       btn.addEventListener('click', () => openLightbox(list, i));
       el.appendChild(btn);
     }
   }
   function showLightbox(){
     const src = curGal.list[curGal.i];
-    $('#lbIn').innerHTML = src ? `<img src="${src}" alt="" draggable="false" oncontextmenu="return false;">` : `<div class="ph-cell">${curGal.i+1}</div>`;
+    $('#lbIn').innerHTML = src ? `<img src="${src}" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;">` : `<div class="ph-cell">${curGal.i+1}</div>`;
     $('#lbCount').textContent = `${curGal.i + 1} / ${gallerySlotsFor(curGal.list)}`;
   }
   function openLightbox(list, i){ curGal = { list, i }; showLightbox(); $('#lb').classList.add('on'); }
@@ -2173,13 +2177,57 @@
   buildGalGrid('#g1', CONFIG.gallery1, 'Official Cut');
   buildGalGrid('#g2', CONFIG.gallery2, 'Off-Season');
 
-  /* ===== 갤러리/라이트박스 이미지 저장 방지 (우클릭 · 길게 누르기) ===== */
+  /* ===== 갤러리/라이트박스 이미지 저장 방지 (우클릭 · 길게 누르기 · 드래그) ===== */
   (function(){
-    const blockCtx = e => { e.preventDefault(); return false; };
+    const blockEvt = e => { e.preventDefault(); return false; };
     const galleryBlock = $('#blockGallery');
-    if(galleryBlock) galleryBlock.addEventListener('contextmenu', blockCtx);
+    if(galleryBlock){
+      galleryBlock.addEventListener('contextmenu', blockEvt);
+      galleryBlock.addEventListener('dragstart', blockEvt);
+    }
     const lbStage = $('.lb-stage');
-    if(lbStage) lbStage.addEventListener('contextmenu', blockCtx);
+    if(lbStage){
+      lbStage.addEventListener('contextmenu', blockEvt);
+      lbStage.addEventListener('dragstart', blockEvt);
+    }
+    // 라이트박스 이미지 위 투명 오버레이: 직접 조작/저장 메뉴 호출을 한 겹 더 차단
+    const lbShield = $('#lbShield');
+    if(lbShield){
+      lbShield.addEventListener('contextmenu', blockEvt);
+      lbShield.addEventListener('dragstart', blockEvt);
+    }
+  })();
+
+  /* ===== PC 캡처 시도 감지 (PrintScreen · Ctrl/Cmd+P) =====
+     라이트박스가 열려 있을 때 캡처 관련 키 입력을 감지하면 이미지를 잠시 흐리게 처리하고
+     안내 문구를 띄운다. 단, OS 레벨 스크린샷 단축키(예: macOS Cmd+Shift+4)는 브라우저 JS가
+     원천적으로 감지·차단할 수 없어 이 기능은 어디까지나 최선의 억제 조치임을 참고. */
+  (function(){
+    const lb = $('#lb');
+    const lbIn = $('#lbIn');
+    if(!lb || !lbIn) return;
+    let blockTimer = null;
+    function triggerBlock(){
+      lbIn.classList.add('lb-blocked');
+      showToast('캡처가 제한된 이미지입니다');
+      clearTimeout(blockTimer);
+      blockTimer = setTimeout(() => lbIn.classList.remove('lb-blocked'), 1500);
+    }
+    document.addEventListener('keydown', e => {
+      if(!lb.classList.contains('on')) return;
+      const key = e.key;
+      const isPrintScreen = key === 'PrintScreen' || e.keyCode === 44;
+      const isPrintShortcut = (e.ctrlKey || e.metaKey) && (key === 'p' || key === 'P');
+      const isSnippingShortcut = (e.metaKey && e.shiftKey && ['3','4','5'].includes(key)) || (e.ctrlKey && e.shiftKey && (key === 's' || key === 'S'));
+      if(isPrintScreen || isPrintShortcut || isSnippingShortcut){
+        if(isPrintShortcut) e.preventDefault();
+        triggerBlock();
+      }
+    });
+    document.addEventListener('keyup', e => {
+      if(!lb.classList.contains('on')) return;
+      if(e.key === 'PrintScreen' || e.keyCode === 44) triggerBlock();
+    });
   })();
 
   /* ===== 갤러리 탭 전환 (Official Cut / Off-Season) ===== */
