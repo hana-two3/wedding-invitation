@@ -1543,7 +1543,9 @@
   #lb.on{ display:flex; }
   .lb-stage{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
   /* 사진 무단 저장 방지: 이미지 위 투명 오버레이(직접 조작/저장 메뉴 호출 차단) */
-  .lb-shield{ position:absolute; inset:0; z-index:5; background:transparent; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; touch-action:manipulation; }
+  /* 좌우 화살표·닫기 버튼 영역과 절대 겹치지 않도록 여백을 두어(z-index 계산에만 기대지 않고
+     물리적으로 영역을 분리) 버튼 클릭이 막히는 문제를 원천 차단한다. */
+  .lb-shield{ position:absolute; top:0; bottom:0; left:60px; right:60px; z-index:1; background:transparent; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; touch-action:manipulation; pointer-events:auto; }
   /* PC 캡처 시도 감지 시 이미지 일시 차단 */
   .lb-in.lb-blocked{ filter:blur(24px); transition:filter .15s; }
   #lb .lb-in{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
@@ -2381,8 +2383,11 @@
     lb.addEventListener('dblclick', e => { e.preventDefault(); });
 
     // 더블탭 감지 후 확대 방지: 마지막 탭과의 시간 간격이 짧으면(더블탭) preventDefault
+    // 단, 화살표/닫기 버튼 위에서의 연속 탭까지 막히면 빠르게 넘겨보는 사용성이 깨지므로
+    // 버튼 영역(이동/닫기)에서는 더블탭 방지 로직을 적용하지 않는다.
     let lastTouchEnd = 0;
     lb.addEventListener('touchend', e => {
+      if(e.target.closest('.lb-arrow, .lb-x')) return;
       const now = Date.now();
       if(now - lastTouchEnd <= 300){
         e.preventDefault();
