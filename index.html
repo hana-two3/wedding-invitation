@@ -1697,8 +1697,8 @@
   .tl-story-box{
     display:flex;
     flex-direction:column;
-    max-width:400px;
-    max-height:min(82vh, calc(100vh - 100px));
+    max-width:380px;
+    max-height:min(88vh, calc(100vh - 90px));
     overflow:hidden;
     padding:20px 0 0;
   }
@@ -1713,100 +1713,183 @@
     padding:6px 16px;
     box-shadow:0 -3px 0 #5a3e2b,0 3px 0 #5a3e2b,-3px 0 0 #5a3e2b,3px 0 0 #5a3e2b;
   }
-  .tl-story-scroll{
+
+  /* ---- 픽셀 퍼즐 본문 ---- */
+  .tl-puzzle-body{
     flex:1 1 auto;
     min-height:0;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-    padding:22px 20px 26px;
+    padding:18px 22px 24px;
   }
-  .tl-story-track{ position:relative; }
-  /* 중앙 세로 연결선 */
-  .tl-story-track::before{
-    content:'';
-    position:absolute;
-    left:50%;
-    top:4px;
-    bottom:4px;
-    width:2px;
-    background:#f4c9d6;
-    transform:translateX(-50%);
+  .tl-puzzle-step{
+    text-align:center;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    color:#a08662;
+    margin-bottom:12px;
   }
-  /* 스크롤에 따라 선을 따라 부드럽게 내려가는 야구공 아이콘 */
-  .tl-story-ball{
-    position:absolute;
-    left:50%;
-    top:0;
-    font-size:17px;
-    line-height:1;
-    transform:translate(-50%,-50%);
-    transition:top .12s linear;
-    z-index:3;
-    filter:drop-shadow(0 2px 3px rgba(0,0,0,.22));
-    pointer-events:none;
-  }
-  .tl-story-row{
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
-    min-height:220px;
-    padding:34px 0;
-  }
-  .tl-story-side{ flex:1 1 0; min-width:0; }
-  .tl-story-photo{
+  .tl-puzzle-info{ transition:opacity .2s ease; opacity:1; }
+  .tl-puzzle-info.tl-step-fade{ opacity:0; }
+  .tl-puzzle-photo{
     width:100%;
-    max-width:118px;
+    max-width:190px;
     aspect-ratio:1;
+    margin:0 auto;
     overflow:hidden;
     border-radius:14px;
-    margin:0 auto 0 0; /* 기본: 왼쪽 칸에서는 바깥쪽(좌측) 가장자리에 붙는다 */
-    box-shadow:0 4px 10px rgba(90,62,43,.2);
-    opacity:.3;
-    filter:grayscale(100%);
-    transition:opacity .4s ease, filter .4s ease;
+    box-shadow:0 4px 12px rgba(90,62,43,.22);
   }
-  .tl-story-photo.pull-right{ margin:0 0 0 auto; } /* 오른쪽 칸에서는 바깥쪽(우측) 가장자리에 붙는다 */
-  .tl-story-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .tl-story-text{ text-align:left; opacity:.3; transition:opacity .4s ease; }
-  .tl-story-heading{
+  .tl-puzzle-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .tl-puzzle-heading{
+    text-align:center;
+    margin-top:14px;
     font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:12.5px;
-    color:#e08aa2;
-    margin-bottom:7px;
+    font-size:14px;
+    color:#C8102E;
   }
-  .tl-story-desc{
+  .tl-puzzle-desc{
+    text-align:center;
+    margin-top:8px;
     font-family:'Pretendard',sans-serif;
-    font-size:12px;
-    line-height:1.65;
+    font-size:12.5px;
+    line-height:1.6;
     color:#7a6a5c;
   }
-  /* 스크롤로 화면에 들어온 항목: 흑백/연하게 → 또렷한 컬러로 전환 */
-  .tl-story-row.tl-active .tl-story-photo{ opacity:1; filter:grayscale(0%); }
-  .tl-story-row.tl-active .tl-story-text{ opacity:1; }
-  .tl-story-dot{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:#f2abc2;
-    z-index:2;
+  .tl-puzzle-area{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    margin-top:26px;
   }
-  .tl-story-dot.heart{
-    width:auto;
-    height:auto;
-    background:none;
-    font-size:19px;
-    color:#e8879f;
+  /* 2x2 빈 그리드 판: 픽셀 하트가 조각별로 채워진다 */
+  .tl-puzzle-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    grid-template-rows:repeat(2,1fr);
+    width:96px;
+    height:96px;
+    gap:3px;
+    background:#181818;
+    padding:3px;
+    box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818;
+    flex-shrink:0;
   }
+  .tl-puzzle-slot{
+    background-color:#FFFDF6;
+    background-repeat:no-repeat;
+    background-size:200% 200%;
+    background-image:none;
+  }
+  .tl-puzzle-slot.filled{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='10' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='50' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='10' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='20' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='30' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='10' y='40' width='60' height='10' fill='%23E8536F'/%3E%3Crect x='20' y='50' width='40' height='10' fill='%23E8536F'/%3E%3Crect x='30' y='60' width='20' height='10' fill='%23E8536F'/%3E%3C/svg%3E");
+    animation:tlSlotPop .32s ease;
+  }
+  @keyframes tlSlotPop{
+    0%{ transform:scale(.4); opacity:0; }
+    60%{ transform:scale(1.18); opacity:1; }
+    100%{ transform:scale(1); }
+  }
+  .tl-puzzle-tray{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .tl-puzzle-piece{
+    width:46px;
+    height:46px;
+    background-color:#FFFDF6;
+    background-repeat:no-repeat;
+    background-size:200% 200%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='10' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='50' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='10' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='20' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='30' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='10' y='40' width='60' height='10' fill='%23E8536F'/%3E%3Crect x='20' y='50' width='40' height='10' fill='%23E8536F'/%3E%3Crect x='30' y='60' width='20' height='10' fill='%23E8536F'/%3E%3C/svg%3E");
+    box-shadow:0 -2px 0 #181818,0 2px 0 #181818,-2px 0 0 #181818,2px 0 0 #181818;
+    cursor:pointer;
+    touch-action:none;
+    transition:transform .18s ease, opacity .22s ease;
+  }
+  .tl-puzzle-piece:active{ transform:scale(.9); }
+  .tl-puzzle-piece.placing{ transform:scale(.3); opacity:0; }
+  .tl-puzzle-hint{
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:10px;
+    color:#a08662;
+    text-align:center;
+    line-height:1.5;
+    animation:tlHintBob 1.6s ease-in-out infinite;
+  }
+  @keyframes tlHintBob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(3px); }
+  }
+
+  /* ---- 완성 화면 ---- */
+  .tl-puzzle-complete{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    padding:8px 24px 26px;
+    text-align:center;
+  }
+  .tl-complete-heart{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    grid-template-rows:repeat(2,1fr);
+    width:104px;
+    height:104px;
+    gap:3px;
+    background:#181818;
+    padding:3px;
+    margin:6px auto 18px;
+    box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818;
+    animation:tlHeartShine 1.4s ease-in-out infinite;
+  }
+  .tl-complete-slot{
+    background-color:#FFFDF6;
+    background-repeat:no-repeat;
+    background-size:200% 200%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='10' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='50' y='0' width='20' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='10' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='20' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='0' y='30' width='80' height='10' fill='%23E8536F'/%3E%3Crect x='10' y='40' width='60' height='10' fill='%23E8536F'/%3E%3Crect x='20' y='50' width='40' height='10' fill='%23E8536F'/%3E%3Crect x='30' y='60' width='20' height='10' fill='%23E8536F'/%3E%3C/svg%3E");
+  }
+  .tl-complete-slot:nth-child(1){ background-position:0% 0%; }
+  .tl-complete-slot:nth-child(2){ background-position:100% 0%; }
+  .tl-complete-slot:nth-child(3){ background-position:0% 100%; }
+  .tl-complete-slot:nth-child(4){ background-position:100% 100%; }
+  @keyframes tlHeartShine{
+    0%,100%{ transform:scale(1); filter:brightness(1); }
+    50%{ transform:scale(1.06); filter:brightness(1.15); }
+  }
+  .tl-complete-msg{
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:13px;
+    line-height:1.8;
+    color:#5a3e2b;
+    margin-bottom:20px;
+  }
+  .tl-complete-actions{ display:flex; flex-direction:column; gap:10px; }
+  .tl-complete-btn{
+    display:block;
+    width:100%;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:12px;
+    color:#fff;
+    background:var(--theme-acc,#C8102E);
+    padding:12px 10px;
+    cursor:pointer;
+    box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818;
+  }
+  .tl-complete-btn.alt{
+    color:#5a3e2b;
+    background:#FFFDF6;
+    box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c;
+  }
+  .tl-complete-btn:active{ transform:translateY(2px); }
   @media (max-width:360px){
-    .tl-story-photo{ max-width:100px; }
-    .tl-story-heading{ font-size:11.5px; }
-    .tl-story-desc{ font-size:11px; }
+    .tl-puzzle-photo{ max-width:160px; }
+    .tl-puzzle-area{ gap:18px; }
+    .tl-puzzle-grid{ width:84px; height:84px; }
+    .tl-puzzle-piece{ width:40px; height:40px; }
   }
 
 </style>
@@ -2187,14 +2270,43 @@
   </section>
 </div>
 
-<!-- "1px의 기록들" 스토리 타임라인 모달 -->
+<!-- "1px의 기록들" 픽셀 퍼즐 모달: 사진/문구를 보고 조각을 맞춰 하트를 완성하는 인터랙션 -->
 <div class="gb-modal-backdrop tl-story-backdrop" id="storyModal" hidden>
   <div class="gb-modal-box tl-story-box">
     <button class="gb-modal-close" id="storyClose" type="button" aria-label="닫기">×</button>
     <div class="tl-story-title px">1px의 기록들</div>
-    <div class="tl-story-scroll" id="storyScroll">
-      <div class="tl-story-track" id="storyTrack">
-        <div class="tl-story-ball" id="storyBall" aria-hidden="true">⚾</div>
+
+    <div class="tl-puzzle-body" id="storyBody">
+      <div class="tl-puzzle-step px" id="puzzleStep">STEP 1 / 4</div>
+      <div class="tl-puzzle-info" id="puzzleInfo">
+        <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
+        <div class="tl-puzzle-heading px" id="puzzleHeading">첫 만남</div>
+        <div class="tl-puzzle-desc" id="puzzleDesc">우연이 인연이 되어, 서로가 하나가 된 날.</div>
+      </div>
+
+      <div class="tl-puzzle-area">
+        <div class="tl-puzzle-grid" id="puzzleGrid">
+          <div class="tl-puzzle-slot" data-slot="0"></div>
+          <div class="tl-puzzle-slot" data-slot="1"></div>
+          <div class="tl-puzzle-slot" data-slot="2"></div>
+          <div class="tl-puzzle-slot" data-slot="3"></div>
+        </div>
+        <div class="tl-puzzle-tray">
+          <div class="tl-puzzle-piece" id="puzzlePiece" aria-label="퍼즐 조각, 눌러서 맞추기" role="button" tabindex="0"></div>
+          <div class="tl-puzzle-hint px" id="puzzleHint">조각을 눌러<br>맞춰보세요 ➔</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-puzzle-complete" id="puzzleComplete" hidden>
+      <div class="tl-complete-heart px" id="completeHeart">
+        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
+        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
+      </div>
+      <div class="tl-complete-msg px">그림이 완성되었어요!<br>우리의 이야기를 완성시켜줘서<br>고마워요. 💖</div>
+      <div class="tl-complete-actions">
+        <button class="tl-complete-btn px" id="puzzleRestart" type="button">처음부터 다시보기</button>
+        <button class="tl-complete-btn alt px" id="puzzleDoneClose" type="button">닫기</button>
       </div>
     </div>
   </div>
@@ -2274,61 +2386,130 @@
     }
   })();
 
-  /* ===== "1px의 기록들" 스토리 타임라인 모달 =====
-     버튼 클릭 시 중앙 연결선을 따라 좌우 교차 배치된 사진/문구를 스크롤로 훑어보는
-     타임라인 모달을 띄운다. 스크롤에 따라 야구공 아이콘이 선을 따라 내려가고,
-     각 항목은 화면에 들어오기 전엔 흑백/반투명, 들어오면 컬러/선명하게 전환된다. */
+  /* ===== "1px의 기록들" 픽셀 퍼즐 모달 =====
+     사진+문구를 한 단계씩 보여주고, 하객이 퍼즐 조각을 탭(또는 드래그)해서 2x2 그리드에
+     끼워 넣으면 16비트 픽셀 하트가 한 조각씩 완성된다. 4단계가 모두 채워지면 완성 연출과
+     축하 메시지를 보여준다. */
   (function(){
     const btn = document.getElementById('storyBtn');
     const modal = document.getElementById('storyModal');
     const closeBtn = document.getElementById('storyClose');
-    const scrollEl = document.getElementById('storyScroll');
-    const track = document.getElementById('storyTrack');
-    const ball = document.getElementById('storyBall');
-    if(!btn || !modal || !scrollEl || !track || !ball) return;
+    const bodyEl = document.getElementById('storyBody');
+    const stepEl = document.getElementById('puzzleStep');
+    const infoEl = document.getElementById('puzzleInfo');
+    const photoEl = document.getElementById('puzzlePhoto');
+    const headingEl = document.getElementById('puzzleHeading');
+    const descEl = document.getElementById('puzzleDesc');
+    const grid = document.getElementById('puzzleGrid');
+    const piece = document.getElementById('puzzlePiece');
+    const completeBox = document.getElementById('puzzleComplete');
+    const restartBtn = document.getElementById('puzzleRestart');
+    const doneCloseBtn = document.getElementById('puzzleDoneClose');
+    if(!btn || !modal || !grid || !piece) return;
 
     const STORY_ITEMS = [
-      { title:'첫 만남', desc:'우연이 인연이 되어,<br>서로가 하나가 된 날.', photoIdx:0, photoSide:'left' },
-      { title:'함께한 시간', desc:'여행을 좋아하던 우리<br>함께한 1825일의 기록', photoIdx:5, photoSide:'right' },
-      { title:'5주년', desc:'서로의 곁을 평생<br>지키기로 다짐합니다.', photoIdx:11, photoSide:'left' },
-      { title:'Wedding Day', desc:'드디어, 저희는 이 날<br>부부가 됩니다.', photoIdx:17, photoSide:'right' },
+      { title:'첫 만남', desc:'우연이 인연이 되어, 서로가 하나가 된 날.', photoIdx:0 },
+      { title:'함께한 시간', desc:'여행을 좋아하던 우리, 함께한 1825일의 기록.', photoIdx:5 },
+      { title:'5주년', desc:'서로의 곁을 평생 지키기로 다짐합니다.', photoIdx:11 },
+      { title:'Wedding Day', desc:'드디어, 저희는 이 날 부부가 됩니다.', photoIdx:17 },
     ];
+    const SLOT_POS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
+    const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
 
-    let built = false;
-    function buildStoryTimeline(){
-      if(built) return;
-      built = true;
-      const gallery = CONFIG.gallery1 || [];
-      const rowsHtml = STORY_ITEMS.map((it, i) => {
-        const photoSrc = gallery[it.photoIdx] || gallery[0] || '';
-        const photoHtml = `<div class="tl-story-side"><div class="tl-story-photo${it.photoSide === 'right' ? ' pull-right' : ''}"><img src="${photoSrc}" alt="${it.title}" loading="lazy" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div></div>`;
-        const textHtml = `<div class="tl-story-side"><div class="tl-story-text"><div class="tl-story-heading px">${it.title}</div><div class="tl-story-desc">${it.desc}</div></div></div>`;
-        const leftHtml = it.photoSide === 'left' ? photoHtml : textHtml;
-        const rightHtml = it.photoSide === 'left' ? textHtml : photoHtml;
-        const dotHtml = i === 1 ? `<div class="tl-story-dot heart" aria-hidden="true">♥</div>` : `<div class="tl-story-dot" aria-hidden="true"></div>`;
-        return `<div class="tl-story-row" data-story-idx="${i}">${leftHtml}${dotHtml}${rightHtml}</div>`;
-      }).join('');
-      ball.insertAdjacentHTML('afterend', rowsHtml);
+    let step = 0;
+    let busy = false;
+
+    function renderStep(){
+      const item = STORY_ITEMS[step];
+      stepEl.textContent = `STEP ${step + 1} / ${STORY_ITEMS.length}`;
+      const gallery = (typeof CONFIG !== 'undefined' && CONFIG.gallery1) || [];
+      photoEl.src = gallery[item.photoIdx] || gallery[0] || '';
+      photoEl.alt = item.title;
+      headingEl.textContent = item.title;
+      descEl.textContent = item.desc;
+      piece.style.backgroundPosition = SLOT_POS[step];
+      piece.style.opacity = '1';
+      piece.classList.remove('placing');
     }
 
-    let observer = null;
-    function setupObserver(){
-      if(observer) observer.disconnect();
-      observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          entry.target.classList.toggle('tl-active', entry.isIntersecting);
-        });
-      }, { root:scrollEl, rootMargin:'-15% 0px -25% 0px', threshold:0 });
-      track.querySelectorAll('.tl-story-row').forEach(row => observer.observe(row));
+    function showComplete(){
+      completeBox.hidden = false;
+      bodyEl.hidden = true;
     }
 
-    function updateBall(){
-      const maxTop = Math.max(0, track.offsetHeight - 10);
-      const viewportOffset = scrollEl.clientHeight * 0.42;
-      let top = scrollEl.scrollTop + viewportOffset;
-      top = Math.max(10, Math.min(top, maxTop));
-      ball.style.top = top + 'px';
+    function resetPuzzle(){
+      step = 0;
+      busy = false;
+      slotEls.forEach(s => s.classList.remove('filled'));
+      completeBox.hidden = true;
+      bodyEl.hidden = false;
+      renderStep();
     }
+
+    // 조각을 그리드에 끼워 넣는 동작: 탭/클릭/드래그-릴리즈 모두 이 함수 하나로 처리한다.
+    // 유효한 목표 칸은 항상 하나뿐이므로(순서대로 채움), 어디를 누르거나 놓아도 같은 결과를 준다.
+    function placePiece(){
+      if(busy || step >= STORY_ITEMS.length) return;
+      busy = true;
+      const targetSlot = slotEls[step];
+      targetSlot.style.backgroundPosition = SLOT_POS[step];
+      piece.classList.add('placing');
+      setTimeout(() => {
+        targetSlot.classList.add('filled');
+        step++;
+        if(step >= STORY_ITEMS.length){
+          setTimeout(showComplete, 600);
+          busy = false;
+        } else {
+          infoEl.classList.add('tl-step-fade');
+          setTimeout(() => {
+            renderStep();
+            infoEl.classList.remove('tl-step-fade');
+            busy = false;
+          }, 220);
+        }
+      }, 260);
+    }
+
+    // 클릭/탭: 조각 자체 또는 아직 채워지지 않은 칸 어디를 눌러도 같은 조각이 끼워진다
+    piece.addEventListener('click', placePiece);
+    piece.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); placePiece(); }
+    });
+    slotEls.forEach(s => {
+      s.addEventListener('click', () => { if(!s.classList.contains('filled')) placePiece(); });
+    });
+
+    // 포인터 드래그(마우스/터치 공통): 누르고 있는 동안 조각이 손가락을 따라 움직이고,
+    // 손을 떼면(어디서 떼든) 바로 다음 칸에 끼워진다 — 모바일 네이티브 drag&drop의
+    // 불안정함을 피하면서도 "옮겨서 넣는" 촉각적 피드백을 준다.
+    let dragging = false, startX = 0, startY = 0;
+    piece.addEventListener('pointerdown', e => {
+      if(busy) return;
+      dragging = true;
+      startX = e.clientX; startY = e.clientY;
+      try{ piece.setPointerCapture(e.pointerId); }catch(err){}
+      piece.style.transition = 'none';
+      piece.style.position = 'relative';
+      piece.style.zIndex = '5';
+    });
+    piece.addEventListener('pointermove', e => {
+      if(!dragging) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      piece.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+    function endDrag(){
+      if(!dragging) return;
+      dragging = false;
+      piece.style.transition = '';
+      piece.style.transform = '';
+      placePiece();
+    }
+    piece.addEventListener('pointerup', endDrag);
+    piece.addEventListener('pointercancel', endDrag);
+
+    if(restartBtn) restartBtn.addEventListener('click', resetPuzzle);
+    if(doneCloseBtn) doneCloseBtn.addEventListener('click', closeStory);
 
     // 상단 고정 네비게이션 바에 모달이 가려지지 않도록, 열릴 때마다 실제 네비게이션
     // 높이를 측정해 모달 상단 여백과 최대 높이를 동적으로 맞춘다('전체 응원석' 모달과 동일한 패턴).
@@ -2347,14 +2528,9 @@
     });
 
     function openStory(){
-      buildStoryTimeline();
       modal.hidden = false;
-      scrollEl.scrollTop = 0;
+      resetPuzzle();
       positionStoryModalBelowNav();
-      requestAnimationFrame(() => {
-        setupObserver();
-        updateBall();
-      });
     }
     function closeStory(){
       modal.hidden = true;
@@ -2363,7 +2539,6 @@
     btn.addEventListener('click', openStory);
     if(closeBtn) closeBtn.addEventListener('click', closeStory);
     modal.addEventListener('click', e => { if(e.target === modal) closeStory(); });
-    scrollEl.addEventListener('scroll', updateBall, { passive:true });
   })();
 
   let selectedTeam = null;
