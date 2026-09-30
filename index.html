@@ -1693,7 +1693,6 @@
   }
   .wm-story-btn:active{ transform:translateY(2px); }
 
-  .tl-story-backdrop{ align-items:flex-start; padding-top:0; }
   .tl-story-box{
     display:flex;
     flex-direction:column;
@@ -1704,14 +1703,12 @@
   }
   .tl-story-title{
     flex-shrink:0;
-    display:table;
+    text-align:center;
     margin:0 auto 4px;
     font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:14px;
-    color:#5a3e2b;
-    background:#FFD166;
-    padding:6px 16px;
-    box-shadow:0 -3px 0 #5a3e2b,0 3px 0 #5a3e2b,-3px 0 0 #5a3e2b,3px 0 0 #5a3e2b;
+    font-size:13px;
+    letter-spacing:1px;
+    color:#a08662;
   }
 
   /* ---- 픽셀 퍼즐 본문 ---- */
@@ -1722,33 +1719,26 @@
     -webkit-overflow-scrolling:touch;
     padding:18px 22px 24px;
   }
-  .tl-puzzle-step{
-    text-align:center;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:11px;
-    letter-spacing:1px;
-    color:#a08662;
-    margin-bottom:12px;
-  }
   .tl-puzzle-info{ transition:opacity .2s ease; opacity:1; }
   .tl-puzzle-info.tl-step-fade{ opacity:0; }
+  .tl-puzzle-heading{
+    text-align:center;
+    margin-bottom:12px;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:15px;
+    color:#C8102E;
+  }
   .tl-puzzle-photo{
     width:100%;
     max-width:190px;
     aspect-ratio:1;
     margin:0 auto;
     overflow:hidden;
-    border-radius:14px;
-    box-shadow:0 4px 12px rgba(90,62,43,.22);
+    border-radius:0;
+    border:3px solid #181818;
+    box-sizing:border-box;
   }
   .tl-puzzle-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .tl-puzzle-heading{
-    text-align:center;
-    margin-top:14px;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    font-size:14px;
-    color:#C8102E;
-  }
   .tl-puzzle-main{
     text-align:center;
     margin-top:10px;
@@ -1950,9 +1940,12 @@
     <div class="content-inner">
       <div class="wm-section">
         <div class="wm-season-icons" id="seasonIcons" aria-hidden="true">
-          <span class="season-icon active">⚾</span>
-          <span class="season-icon">🏄</span>
-          <span class="season-icon">❄️</span>
+          <span class="season-icon active">⚾️</span>
+          <span class="season-icon">🏓</span>
+          <span class="season-icon">🏊🏻</span>
+          <span class="season-icon">🏄🏻</span>
+          <span class="season-icon">🏸</span>
+          <span class="season-icon">🏂</span>
         </div>
         <p class="invite-msg">야구장에서 목청 높여 응원하는 날들부터<br>여름의 물살과 겨울의 흰 눈을 함께 가르기까지<br>함께 좋아하는 것들로 가득 채운 사계절.</p>
         <p class="invite-msg invite-msg-2">하나의 픽셀이 모여 하나의 그림이 되듯,<br>섬세한 1px들이 모여 완성한 우리의 이야기.</p>
@@ -2287,24 +2280,23 @@
     <div class="tl-story-title px">1px의 기록들</div>
 
     <div class="tl-puzzle-body" id="storyBody">
-      <div class="tl-puzzle-step px" id="puzzleStep">STEP 1 / 4</div>
       <div class="tl-puzzle-info" id="puzzleInfo">
-        <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
         <div class="tl-puzzle-heading px" id="puzzleHeading">첫 만남</div>
+        <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
         <div class="tl-puzzle-main" id="puzzleMain">우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.</div>
         <div class="tl-puzzle-desc" id="puzzleDesc">이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.</div>
       </div>
 
       <div class="tl-puzzle-area">
+        <div class="tl-puzzle-tray">
+          <div class="tl-puzzle-piece" id="puzzlePiece" aria-label="퍼즐 조각, 드래그해서 맞추기" role="button" tabindex="0"></div>
+          <div class="tl-puzzle-hint px" id="puzzleHint">조각을 드래그해서<br>맞춰보세요 ➔</div>
+        </div>
         <div class="tl-puzzle-grid" id="puzzleGrid">
           <div class="tl-puzzle-slot" data-slot="0"></div>
           <div class="tl-puzzle-slot" data-slot="1"></div>
           <div class="tl-puzzle-slot" data-slot="2"></div>
           <div class="tl-puzzle-slot" data-slot="3"></div>
-        </div>
-        <div class="tl-puzzle-tray">
-          <div class="tl-puzzle-piece" id="puzzlePiece" aria-label="퍼즐 조각, 눌러서 맞추기" role="button" tabindex="0"></div>
-          <div class="tl-puzzle-hint px" id="puzzleHint">조각을 눌러<br>맞춰보세요 ➔</div>
         </div>
       </div>
     </div>
@@ -2406,7 +2398,6 @@
     const modal = document.getElementById('storyModal');
     const closeBtn = document.getElementById('storyClose');
     const bodyEl = document.getElementById('storyBody');
-    const stepEl = document.getElementById('puzzleStep');
     const infoEl = document.getElementById('puzzleInfo');
     const photoEl = document.getElementById('puzzlePhoto');
     const headingEl = document.getElementById('puzzleHeading');
@@ -2433,7 +2424,6 @@
 
     function renderStep(){
       const item = STORY_ITEMS[step];
-      stepEl.textContent = `STEP ${step + 1} / ${STORY_ITEMS.length}`;
       const gallery = (typeof CONFIG !== 'undefined' && CONFIG.gallery1) || [];
       photoEl.src = gallery[item.photoIdx] || gallery[0] || '';
       photoEl.alt = item.title;
@@ -2524,29 +2514,16 @@
     if(restartBtn) restartBtn.addEventListener('click', resetPuzzle);
     if(doneCloseBtn) doneCloseBtn.addEventListener('click', closeStory);
 
-    // 상단 고정 네비게이션 바에 모달이 가려지지 않도록, 열릴 때마다 실제 네비게이션
-    // 높이를 측정해 모달 상단 여백과 최대 높이를 동적으로 맞춘다('전체 응원석' 모달과 동일한 패턴).
-    const storyBox = modal.querySelector('.tl-story-box');
-    function positionStoryModalBelowNav(){
-      const nav = document.getElementById('siteNav');
-      if(!nav || !storyBox) return;
-      const navH = nav.getBoundingClientRect().height;
-      const topGap = 14;
-      const bottomGap = 24;
-      storyBox.style.marginTop = (navH + topGap) + 'px';
-      storyBox.style.maxHeight = `calc(100vh - ${navH + topGap + bottomGap}px)`;
-    }
-    window.addEventListener('resize', () => {
-      if(modal && !modal.hidden) positionStoryModalBelowNav();
-    });
-
+    // 모달은 화면 정중앙에 떠 있고(.gb-modal-backdrop 기본 flex 중앙 정렬),
+    // 열려 있는 동안에는 뒤쪽 본문 스크롤을 잠가 배경이 함께 스크롤되지 않게 한다.
     function openStory(){
       modal.hidden = false;
       resetPuzzle();
-      positionStoryModalBelowNav();
+      document.body.style.overflow = 'hidden';
     }
     function closeStory(){
       modal.hidden = true;
+      document.body.style.overflow = '';
     }
 
     btn.addEventListener('click', openStory);
@@ -2959,7 +2936,7 @@
     playCountdown();
   })();
 
-  /* ===== 사계절 인삿말 스토리 픽셀 아이콘 순환(야구 → 웨이크보드/물결 → 스노우보드/눈꽃) =====
+  /* ===== 인삿말 상단 스포츠 이모지 롤링 순환(⚾️→🏓→🏊🏻→🏄🏻→🏸→🏂) =====
      이 아이콘은 #content 섹션(팀 선택 전까지 hidden) 안에 위치하므로,
      페이지 로드 즉시 재생하면 보이지도 않는 채로 끝나버린다.
      따라서 #content가 실제로 화면에 노출되는 시점(팀 선택)까지 기다렸다가 재생한다. */
