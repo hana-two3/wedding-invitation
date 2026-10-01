@@ -1199,6 +1199,7 @@
     font-size:9px;
     color:#8b5e3c;
     white-space:nowrap;
+    text-align:center;
   }
   .stat-track{
     flex:1;
@@ -1327,8 +1328,18 @@
     box-shadow:none;
   }
   /* 박스 테두리 대신, 두 사람 사이에만 세로 구분선을 넣는다. 얇은 점선(1.5px dotted)은
-     기기/배율에 따라 렌더링이 사라져 보이는 경우가 있어, 폭을 명확히 지정한 실선으로 변경한다. */
-  .mbti-card:first-child{ border-right:1.5px solid #cbb692; }
+     기기/배율에 따라 렌더링이 사라져 보이는 경우가 있어, 폭을 명확히 지정한 실선으로 변경한다.
+     구분선 하단에 여백을 주기 위해 border 대신 ::after 가상요소로 구현한다. */
+  .mbti-card-wrap{ position:relative; }
+  .mbti-card-wrap::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    top:0;
+    bottom:12px;
+    width:1.5px;
+    background:#cbb692;
+  }
   .mbti-card-label{
     display:block;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -1346,27 +1357,17 @@
     color:#5a3e2b;
     letter-spacing:1px;
   }
-  .mbti-card.groom .mbti-card-type{ color:#E53935; }
-  .mbti-card.bride .mbti-card-type{ color:#1A1A1A; }
+  /* 신랑/신부 구분 없이 동일한 색으로 통일 (기존 닉네임 문구 색과 동일) */
+  .mbti-card.groom .mbti-card-type{ color:#5a3e2b; }
+  .mbti-card.bride .mbti-card-type{ color:#5a3e2b; }
   /* 중앙 구분선과 양쪽 텍스트 사이가 답답해 보이지 않도록 구분선에 닿는 안쪽에
      각각 6px씩 여백을 더 확보한다 */
   .mbti-card:first-child{ padding-right:12px; }
   .mbti-card:last-child{ padding-left:12px; }
-  .mbti-card-nick{
-    margin-top:6px;
-    font-family:'Galmuri9','DungGeunMo',monospace;
-    /* 좁은 화면에서도 "차분하고 확실한 문제 해결사"가 한 줄로 들어가도록 뷰포트 폭에 맞춰
-       글자 크기를 유동적으로 축소한다(반응형 대응) */
-    font-size:clamp(8px, 2.35vw, 10.5px);
-    letter-spacing:-.3px;
-    line-height:1.5;
-    color:#5a3e2b;
-    white-space:nowrap;
-  }
   .mbti-card-desc{
     margin-top:8px;
     font-size:10px;
-    color:#8b5e3c;
+    color:#5a3e2b;
     line-height:1.6;
     word-break:keep-all;
   }
@@ -1428,7 +1429,7 @@
     box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
   }
   .tl-h-time{ font-family:'Galmuri9'; color:#8b5e3c; font-size:11.5px; margin-top:3px; white-space:nowrap; }
-  .tl-h-sub{ font-family:'Galmuri9'; font-size:10.5px; color:#800020; white-space:nowrap; }
+  .tl-h-sub{ font-family:'Galmuri9'; font-size:10.5px; color:#8b5e3c; white-space:nowrap; }
   .tl-h-detail{ font-size:11.5px; font-weight:600; color:#5a3e2b; line-height:1.4; word-break:keep-all; padding:0 1px; }
   .tl-h-dots{
     flex:0 1 16px;
@@ -1793,13 +1794,13 @@
     justify-content:center;
     gap:26px;
   }
-  /* 2x2 빈 그리드 판: 픽셀 하트가 조각별로 채워진다 */
+  /* 3x3 빈 그리드 판: 픽셀 하트가 조각별로 채워진다 */
   .tl-puzzle-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    grid-template-rows:repeat(2,1fr);
-    width:96px;
-    height:96px;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(3,1fr);
+    width:114px;
+    height:114px;
     gap:3px;
     background:#181818;
     padding:3px;
@@ -1812,14 +1813,19 @@
     position:relative;
     background-color:#FFFDF6;
     background-repeat:no-repeat;
-    background-size:200% 200%;
+    background-size:300% 300%;
     /* 빈 칸일 때도 완성된 하트 전체 모양이 연하게 비치는 가이드 */
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23E8536F' fill-opacity='.26'%3E%3Crect x='20' y='0' width='20' height='10'/%3E%3Crect x='80' y='0' width='20' height='10'/%3E%3Crect x='10' y='10' width='40' height='10'/%3E%3Crect x='70' y='10' width='40' height='10'/%3E%3Crect x='0' y='20' width='120' height='10'/%3E%3Crect x='0' y='30' width='120' height='10'/%3E%3Crect x='0' y='40' width='120' height='10'/%3E%3Crect x='0' y='50' width='120' height='10'/%3E%3Crect x='10' y='60' width='100' height='10'/%3E%3Crect x='10' y='70' width='100' height='10'/%3E%3Crect x='20' y='80' width='80' height='10'/%3E%3Crect x='30' y='90' width='60' height='10'/%3E%3Crect x='40' y='100' width='40' height='10'/%3E%3Crect x='50' y='110' width='20' height='10'/%3E%3C/g%3E%3C/svg%3E");
   }
   .tl-puzzle-slot:nth-child(1){ background-position:0% 0%; }
-  .tl-puzzle-slot:nth-child(2){ background-position:100% 0%; }
-  .tl-puzzle-slot:nth-child(3){ background-position:0% 100%; }
-  .tl-puzzle-slot:nth-child(4){ background-position:100% 100%; }
+  .tl-puzzle-slot:nth-child(2){ background-position:50% 0%; }
+  .tl-puzzle-slot:nth-child(3){ background-position:100% 0%; }
+  .tl-puzzle-slot:nth-child(4){ background-position:0% 50%; }
+  .tl-puzzle-slot:nth-child(5){ background-position:50% 50%; }
+  .tl-puzzle-slot:nth-child(6){ background-position:100% 50%; }
+  .tl-puzzle-slot:nth-child(7){ background-position:0% 100%; }
+  .tl-puzzle-slot:nth-child(8){ background-position:50% 100%; }
+  .tl-puzzle-slot:nth-child(9){ background-position:100% 100%; }
   .tl-puzzle-slot.filled{
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23E8536F'%3E%3Crect x='20' y='0' width='20' height='10'/%3E%3Crect x='80' y='0' width='20' height='10'/%3E%3Crect x='10' y='10' width='40' height='10'/%3E%3Crect x='70' y='10' width='40' height='10'/%3E%3Crect x='0' y='20' width='120' height='10'/%3E%3Crect x='0' y='30' width='120' height='10'/%3E%3Crect x='0' y='40' width='120' height='10'/%3E%3Crect x='0' y='50' width='120' height='10'/%3E%3Crect x='10' y='60' width='100' height='10'/%3E%3Crect x='10' y='70' width='100' height='10'/%3E%3Crect x='20' y='80' width='80' height='10'/%3E%3Crect x='30' y='90' width='60' height='10'/%3E%3Crect x='40' y='100' width='40' height='10'/%3E%3Crect x='50' y='110' width='20' height='10'/%3E%3C/g%3E%3C/svg%3E");
     animation:tlSlotPop .32s ease;
@@ -1836,11 +1842,11 @@
     gap:10px;
   }
   .tl-puzzle-piece{
-    width:46px;
-    height:46px;
+    width:34px;
+    height:34px;
     background-color:#FFFDF6;
     background-repeat:no-repeat;
-    background-size:200% 200%;
+    background-size:300% 300%;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23E8536F'%3E%3Crect x='20' y='0' width='20' height='10'/%3E%3Crect x='80' y='0' width='20' height='10'/%3E%3Crect x='10' y='10' width='40' height='10'/%3E%3Crect x='70' y='10' width='40' height='10'/%3E%3Crect x='0' y='20' width='120' height='10'/%3E%3Crect x='0' y='30' width='120' height='10'/%3E%3Crect x='0' y='40' width='120' height='10'/%3E%3Crect x='0' y='50' width='120' height='10'/%3E%3Crect x='10' y='60' width='100' height='10'/%3E%3Crect x='10' y='70' width='100' height='10'/%3E%3Crect x='20' y='80' width='80' height='10'/%3E%3Crect x='30' y='90' width='60' height='10'/%3E%3Crect x='40' y='100' width='40' height='10'/%3E%3Crect x='50' y='110' width='20' height='10'/%3E%3C/g%3E%3C/svg%3E");
     box-shadow:0 -2px 0 #181818,0 2px 0 #181818,-2px 0 0 #181818,2px 0 0 #181818;
     cursor:pointer;
@@ -1872,10 +1878,10 @@
   }
   .tl-complete-heart{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    grid-template-rows:repeat(2,1fr);
-    width:104px;
-    height:104px;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(3,1fr);
+    width:126px;
+    height:126px;
     gap:3px;
     background:#181818;
     padding:3px;
@@ -1886,13 +1892,18 @@
   .tl-complete-slot{
     background-color:#FFFDF6;
     background-repeat:no-repeat;
-    background-size:200% 200%;
+    background-size:300% 300%;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23E8536F'%3E%3Crect x='20' y='0' width='20' height='10'/%3E%3Crect x='80' y='0' width='20' height='10'/%3E%3Crect x='10' y='10' width='40' height='10'/%3E%3Crect x='70' y='10' width='40' height='10'/%3E%3Crect x='0' y='20' width='120' height='10'/%3E%3Crect x='0' y='30' width='120' height='10'/%3E%3Crect x='0' y='40' width='120' height='10'/%3E%3Crect x='0' y='50' width='120' height='10'/%3E%3Crect x='10' y='60' width='100' height='10'/%3E%3Crect x='10' y='70' width='100' height='10'/%3E%3Crect x='20' y='80' width='80' height='10'/%3E%3Crect x='30' y='90' width='60' height='10'/%3E%3Crect x='40' y='100' width='40' height='10'/%3E%3Crect x='50' y='110' width='20' height='10'/%3E%3C/g%3E%3C/svg%3E");
   }
   .tl-complete-slot:nth-child(1){ background-position:0% 0%; }
-  .tl-complete-slot:nth-child(2){ background-position:100% 0%; }
-  .tl-complete-slot:nth-child(3){ background-position:0% 100%; }
-  .tl-complete-slot:nth-child(4){ background-position:100% 100%; }
+  .tl-complete-slot:nth-child(2){ background-position:50% 0%; }
+  .tl-complete-slot:nth-child(3){ background-position:100% 0%; }
+  .tl-complete-slot:nth-child(4){ background-position:0% 50%; }
+  .tl-complete-slot:nth-child(5){ background-position:50% 50%; }
+  .tl-complete-slot:nth-child(6){ background-position:100% 50%; }
+  .tl-complete-slot:nth-child(7){ background-position:0% 100%; }
+  .tl-complete-slot:nth-child(8){ background-position:50% 100%; }
+  .tl-complete-slot:nth-child(9){ background-position:100% 100%; }
   @keyframes tlHeartShine{
     0%,100%{ transform:scale(1); filter:brightness(1); }
     50%{ transform:scale(1.06); filter:brightness(1.15); }
@@ -1925,8 +1936,8 @@
   @media (max-width:360px){
     .tl-puzzle-photo{ max-width:160px; }
     .tl-puzzle-area{ gap:18px; }
-    .tl-puzzle-grid{ width:84px; height:84px; }
-    .tl-puzzle-piece{ width:40px; height:40px; }
+    .tl-puzzle-grid{ width:99px; height:99px; }
+    .tl-puzzle-piece{ width:29px; height:29px; }
   }
 
 </style>
@@ -2061,12 +2072,12 @@
 
             <div class="hobby-title px">🏃 러닝 🏃‍♀️</div>
             <div class="stat-row">
-              <div class="stat-side-label away"><span class="stat-val away">95%</span><span class="stat-sub">하프 상위<br>15%</span></div>
+              <div class="stat-side-label away"><span class="stat-val away">95%</span><span class="stat-sub">하프 기록<br>상위 15%</span></div>
               <div class="stat-track">
                 <div class="stat-half l"><div class="stat-fill away" style="width:95%"></div></div>
                 <div class="stat-half r"><div class="stat-fill home" style="width:30%"></div></div>
               </div>
-              <div class="stat-side-label home"><span class="stat-val home">30%</span><span class="stat-sub">왜 나만<br>땀나죠</span></div>
+              <div class="stat-side-label home"><span class="stat-val home">30%</span><span class="stat-sub">왜 나만<br>땀나ㅠ</span></div>
             </div>
 
             <div class="mbti-result">
@@ -2081,13 +2092,11 @@
               <div class="mbti-card groom">
                 <div class="mbti-card-label px">신랑</div>
                 <div class="mbti-card-type px">ISTP</div>
-                <div class="mbti-card-nick">차분하고 확실한 문제 해결사</div>
                 <div class="mbti-card-desc">무심한 듯 놓치는 감정의 빈틈은<br>ESFJ의 다정함으로 채우는 중</div>
               </div>
               <div class="mbti-card bride">
                 <div class="mbti-card-label px">신부</div>
                 <div class="mbti-card-type px">ESFJ</div>
-                <div class="mbti-card-nick">다정한 보살핌의 아이콘</div>
                 <div class="mbti-card-desc">남 챙기느라 바쁜 다정왕,<br>ISTP의 든든함에 여유를 찾는 중</div>
               </div>
             </div>
@@ -2345,6 +2354,11 @@
             <div class="tl-puzzle-slot" data-slot="1"></div>
             <div class="tl-puzzle-slot" data-slot="2"></div>
             <div class="tl-puzzle-slot" data-slot="3"></div>
+            <div class="tl-puzzle-slot" data-slot="4"></div>
+            <div class="tl-puzzle-slot" data-slot="5"></div>
+            <div class="tl-puzzle-slot" data-slot="6"></div>
+            <div class="tl-puzzle-slot" data-slot="7"></div>
+            <div class="tl-puzzle-slot" data-slot="8"></div>
           </div>
         </div>
       </div>
@@ -2352,8 +2366,9 @@
 
     <div class="tl-puzzle-complete" id="puzzleComplete" hidden>
       <div class="tl-complete-heart px" id="completeHeart">
-        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
-        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
+        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
+        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
+        <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
       </div>
       <div class="tl-complete-msg px">그림이 완성되었어요!<br>우리의 이야기를 완성시켜줘서<br>고마워요. 💖</div>
       <div class="tl-complete-actions">
@@ -2499,9 +2514,14 @@
       { title:'첫 만남', main:'우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.', comment:'이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.', photoIdx:0 },
       { title:'1주년', main:'좋아하는 사계절을 함께 건너며 쌓아 올린 우리만의 기록.', comment:'1월에 만나, 봄 여름 가을 겨울,\n같은 취미를 함께하다보니 순식간에 지나간 사계절.', photoIdx:5 },
       { title:'프로포즈', main:'평생을 같은 팀으로 뛰기로 약속했던 그날의 다짐.', comment:'비혼주의였던 마음을 바꿔준 오빠에게\n제가 먼저 프로포즈를 했어요.\n500일 이벤트인 척, 깜짝 프로포즈 성공 ㅎㅎ', photoIdx:11 },
+      { title:'준비중 1', main:'준비중인 이야기입니다.', comment:'곧 업데이트될 예정이에요.', photoIdx:0 },
+      { title:'준비중 2', main:'준비중인 이야기입니다.', comment:'곧 업데이트될 예정이에요.', photoIdx:0 },
+      { title:'준비중 3', main:'준비중인 이야기입니다.', comment:'곧 업데이트될 예정이에요.', photoIdx:0 },
+      { title:'준비중 4', main:'준비중인 이야기입니다.', comment:'곧 업데이트될 예정이에요.', photoIdx:0 },
+      { title:'준비중 5', main:'준비중인 이야기입니다.', comment:'곧 업데이트될 예정이에요.', photoIdx:0 },
       { title:'Wedding Day', main:'마침내 완성된 우리의 이야기, 이제 하나의 그림으로 출발합니다.', comment:'저희의 결혼을 축하해주셔서 감사합니다!!\n행복하게 살게요.', photoIdx:17 },
     ];
-    const SLOT_POS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
+    const SLOT_POS = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
 
     let step = 0;
