@@ -1762,7 +1762,14 @@
     line-height:1.55;
     color:#5a3e2b;
   }
+  /* 문장이 1~3줄을 오가도 모달/퍼즐 카드 위치가 들쑥날쑥해지지 않도록
+     3줄 분량의 높이를 항상 확보하고, 줄 수가 적을 때는 그 안에서 수직 중앙 정렬한다 */
   .tl-puzzle-desc{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:calc(12.5px * 1.7 * 3);
     text-align:center;
     margin-top:4px;
     font-family:'Pretendard',sans-serif;
@@ -1871,7 +1878,7 @@
     gap:3px;
     background:#181818;
     padding:3px;
-    margin:6px auto 18px;
+    margin:10px auto 30px;
     box-shadow:0 -3px 0 #181818,0 3px 0 #181818,-3px 0 0 #181818,3px 0 0 #181818;
     animation:tlHeartShine 1.4s ease-in-out infinite;
   }
@@ -1894,7 +1901,7 @@
     font-size:13px;
     line-height:1.8;
     color:#5a3e2b;
-    margin-bottom:20px;
+    margin-bottom:32px;
   }
   .tl-complete-actions{ display:flex; flex-direction:column; gap:10px; }
   .tl-complete-btn{
@@ -2133,13 +2140,13 @@
 
         <div class="gal-panel" id="galPanel1">
           <div class="gallery-grid limited" id="g1"></div>
-          <button class="gal-more px" id="galMore1" type="button">갤러리 더보기 (+)</button>
+          <button class="gal-more px" id="galMore1" type="button">더보기 +</button>
           <button class="gal-cross px" id="galCross" type="button">일상 사진 보러가기 →</button>
         </div>
 
         <div class="gal-panel" id="galPanel2" hidden>
           <div class="gallery-grid limited" id="g2"></div>
-          <button class="gal-more px" id="galMore2" type="button">갤러리 더보기 (+)</button>
+          <button class="gal-more px" id="galMore2" type="button">더보기 +</button>
           <button class="gal-cross px" id="galCrossToOfficial" type="button">웨딩 사진 보러가기 →</button>
         </div>
       </div>
@@ -2479,9 +2486,9 @@
 
     const STORY_ITEMS = [
       { title:'첫 만남', main:'우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.', comment:'이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.', photoIdx:0 },
-      { title:'1주년', main:'좋아하는 사계절을 함께 건너며 쌓아 올린 우리만의 기록.', comment:'1월에 만나, 봄 여름 가을 겨울, 같은 취미를 함께하다보니 순식간에 지나간 사계절.', photoIdx:5 },
-      { title:'프로포즈', main:'평생을 같은 팀으로 뛰기로 약속했던 그날의 다짐.', comment:'비혼주의였던 마음을 바꿔준 오빠에게\n제가 먼저 프로포즈를 했어요. 500일 이벤트인 척, 깜짝 프로포즈 성공 ㅎㅎ', photoIdx:11 },
-      { title:'Wedding Day', main:'마침내 완성된 우리의 이야기, 이제 하나의 그림으로 출발합니다.', comment:'저희의 결혼을 축하해주셔서 감사합니다!! 행복하게 살게요.', photoIdx:17 },
+      { title:'1주년', main:'좋아하는 사계절을 함께 건너며 쌓아 올린 우리만의 기록.', comment:'1월에 만나, 봄 여름 가을 겨울,\n같은 취미를 함께하다보니 순식간에 지나간 사계절.', photoIdx:5 },
+      { title:'프로포즈', main:'평생을 같은 팀으로 뛰기로 약속했던 그날의 다짐.', comment:'비혼주의였던 마음을 바꿔준 오빠에게\n제가 먼저 프로포즈를 했어요.\n500일 이벤트인 척, 깜짝 프로포즈 성공 ㅎㅎ', photoIdx:11 },
+      { title:'Wedding Day', main:'마침내 완성된 우리의 이야기, 이제 하나의 그림으로 출발합니다.', comment:'저희의 결혼을 축하해주셔서 감사합니다!!\n행복하게 살게요.', photoIdx:17 },
     ];
     const SLOT_POS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
