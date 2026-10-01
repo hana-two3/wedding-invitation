@@ -1348,9 +1348,10 @@
   }
   .mbti-card.groom .mbti-card-type{ color:#E53935; }
   .mbti-card.bride .mbti-card-type{ color:#1A1A1A; }
-  /* 중앙 구분선 기준 좌우 콘텐츠가 각자 칸의 중앙에 오도록 미세 정렬 보정 */
-  .mbti-card:first-child{ padding-right:6px; }
-  .mbti-card:last-child{ padding-left:6px; }
+  /* 중앙 구분선과 양쪽 텍스트 사이가 답답해 보이지 않도록 구분선에 닿는 안쪽에
+     각각 6px씩 여백을 더 확보한다 */
+  .mbti-card:first-child{ padding-right:12px; }
+  .mbti-card:last-child{ padding-left:12px; }
   .mbti-card-nick{
     margin-top:6px;
     font-family:'Galmuri9','DungGeunMo',monospace;
@@ -2069,7 +2070,7 @@
                 <div class="mbti-card-label px">신부</div>
                 <div class="mbti-card-type px">ESFJ</div>
                 <div class="mbti-card-nick">다정한 보살핌의 아이콘</div>
-                <div class="mbti-card-desc">남 챙기다 지칠 때가 많지만,<br>ISTP의 든든한 해결책에 위로받는 중</div>
+                <div class="mbti-card-desc">남 챙기느라 바쁜 다정왕,<br>ISTP의 든든함에 여유를 찾는 중</div>
               </div>
             </div>
 
@@ -2126,20 +2127,20 @@
         <h2 class="blk-h2">BEST MOMENTS</h2>
 
         <div class="gal-tabs">
-          <button class="gal-tab active px" id="galTab1" type="button">Official Cut</button>
-          <button class="gal-tab px" id="galTab2" type="button">Off-Season</button>
+          <button class="gal-tab active px" id="galTab1" type="button">Wedding</button>
+          <button class="gal-tab px" id="galTab2" type="button">Daily</button>
         </div>
 
         <div class="gal-panel" id="galPanel1">
           <div class="gallery-grid limited" id="g1"></div>
           <button class="gal-more px" id="galMore1" type="button">갤러리 더보기 (+)</button>
-          <button class="gal-cross px" id="galCross" type="button">비하인드 스토리 보러가기 ➔</button>
+          <button class="gal-cross px" id="galCross" type="button">일상 사진 보러가기 →</button>
         </div>
 
         <div class="gal-panel" id="galPanel2" hidden>
           <div class="gallery-grid limited" id="g2"></div>
           <button class="gal-more px" id="galMore2" type="button">갤러리 더보기 (+)</button>
-          <button class="gal-cross px" id="galCrossToOfficial" type="button">웨딩사진 보러가기 ➔</button>
+          <button class="gal-cross px" id="galCrossToOfficial" type="button">웨딩 사진 보러가기 →</button>
         </div>
       </div>
 
@@ -2681,8 +2682,8 @@
   }
   function openLightbox(list, i){ curGal = { list, i }; showLightbox(); $('#lb').classList.add('on'); }
   function stepLightbox(n){ const slots = gallerySlotsFor(curGal.list); curGal.i = (curGal.i + n + slots) % slots; showLightbox(); }
-  buildGalGrid('#g1', CONFIG.gallery1, 'Official Cut');
-  buildGalGrid('#g2', CONFIG.gallery2, 'Off-Season');
+  buildGalGrid('#g1', CONFIG.gallery1, 'Wedding');
+  buildGalGrid('#g2', CONFIG.gallery2, 'Daily');
 
   /* ===== 갤러리/라이트박스 이미지 저장 방지 (우클릭 · 길게 누르기 · 드래그) ===== */
   (function(){
