@@ -493,7 +493,7 @@
   }
   .gb-head{
     text-align:center;
-    margin-bottom:36px;
+    margin-bottom:56px;
   }
   .gb-title{
     display:block;
@@ -502,7 +502,7 @@
     font-weight:400;
     color:#5a3e2b;
     letter-spacing:1px;
-    margin-bottom:24px;
+    margin-bottom:44px;
   }
   .gb-title::before{ content:'♥ '; color:var(--theme-acc,#C8102E); }
   .gb-title::after{ content:' ♥'; color:var(--theme-acc,#C8102E); }
@@ -1186,6 +1186,11 @@
     margin:14px 0 3px;
   }
   .hobby-title:first-of-type{ margin-top:2px; }
+  /* 러닝 항목은 좌우 stat-sub가 2줄(예: "하프 기록/상위 15%")로 줄바꿈되어 .stat-row가
+     다른 항목보다 높아지고, stat-track이 그 안에서 세로 중앙 정렬되면서 타이틀-게이지 바
+     간격이 다른 4개 항목보다 넓어 보인다. 다른 항목과 동일한 간격(10.5px)이 되도록
+     늘어난 행 높이의 절반만큼(6.5px) margin-bottom을 미리 당겨둔다. */
+  .hobby-title-running{ margin-bottom:-3.5px; }
   .stat-side-label{
     flex:none;
     width:48px;
@@ -1452,7 +1457,7 @@
   /* Noti & Event */
   .noti-box{ text-align:center; }
   .noti-box p{ font-size:14px; color:#5a3e2b; margin-bottom:36px; line-height:1.7; }
-  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:var(--theme-acc,#F2D98A); color:#fff; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 var(--theme-acc-dark,#8b5e3c),0 3px 0 var(--theme-acc-dark,#8b5e3c),-3px 0 0 var(--theme-acc-dark,#8b5e3c),3px 0 0 var(--theme-acc-dark,#8b5e3c); }
+  .kakao-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; margin-bottom:60px; background:var(--theme-acc,#F2D98A); color:#fff; font-family:'NeoDunggeunmo','Galmuri9',monospace; font-size:15px; line-height:1.6; padding:12px 18px; text-decoration:none; box-shadow:0 -3px 0 var(--theme-acc-dark,#8b5e3c),0 3px 0 var(--theme-acc-dark,#8b5e3c),-3px 0 0 var(--theme-acc-dark,#8b5e3c),3px 0 0 var(--theme-acc-dark,#8b5e3c); }
 
   /* 오시는 길 */
   .cal-box{ background:#FFFDF6; padding:16px; margin-bottom:18px; box-shadow:0 -3px 0 #8b5e3c,0 3px 0 #8b5e3c,-3px 0 0 #8b5e3c,3px 0 0 #8b5e3c; }
@@ -2051,7 +2056,7 @@
               <div class="stat-side-label home"><span class="stat-val home">60%</span><span class="stat-sub">K-POP</span></div>
             </div>
 
-            <div class="hobby-title px">🏃 러닝 🏃‍♀️</div>
+            <div class="hobby-title hobby-title-running px">🏃 러닝 🏃‍♀️</div>
             <div class="stat-row">
               <div class="stat-side-label away"><span class="stat-val away">95%</span><span class="stat-sub">하프 기록<br>상위 15%</span></div>
               <div class="stat-track">
@@ -2062,7 +2067,7 @@
             </div>
 
             <div class="mbti-result">
-              <span class="hobby-result-text">같은 취미가 한가득: 평생 함께할 운동 메이트</span>
+              <span class="hobby-result-text">함께해서 더 즐거운 평생 운동 메이트</span>
             </div>
           </div>
 
@@ -2083,7 +2088,7 @@
             </div>
 
             <div class="mbti-result px">
-              <span class="mbti-result-single">ISTP와 ESFJ는 최고의 배터리 궁합: 완벽한 시너지</span>
+              <span class="mbti-result-single">ISTP와 ESFJ는 최고의 배터리 궁합</span>
             </div>
           </div>
         </div>
@@ -2101,29 +2106,29 @@
         <div class="hc-wrap">
           <div class="hc-col groom">
             <div class="hc-grid">
-              <div class="hc-cell neutral">추진력</div>
-              <div class="hc-cell cold">애정<br>표현</div>
-              <div class="hc-cell hot">결단력</div>
-              <div class="hc-cell hot">이성적</div>
-              <div class="hc-cell cold">잠<br>많음</div>
-              <div class="hc-cell cold">계획성</div>
-              <div class="hc-cell neutral">부지런함</div>
-              <div class="hc-cell hot">무던함</div>
-              <div class="hc-cell hot">다정함</div>
+              <div class="hc-cell hot">조건부<br>추진력</div>
+              <div class="hc-cell hot">만능<br>해결사</div>
+              <div class="hc-cell hot">행동파<br>스윗함</div>
+              <div class="hc-cell neutral">필요할 때만<br>부지런함</div>
+              <div class="hc-cell cold">벼락치기</div>
+              <div class="hc-cell cold">잠 많음</div>
+              <div class="hc-cell hot">결단력<br>있음</div>
+              <div class="hc-cell neutral">무던함</div>
+              <div class="hc-cell cold">애정 표현<br>서툼</div>
             </div>
             <div class="hc-name px">신랑 최광현</div>
           </div>
           <div class="hc-col bride">
             <div class="hc-grid">
-              <div class="hc-cell cold">추진력</div>
-              <div class="hc-cell hot">애정<br>표현</div>
-              <div class="hc-cell cold">결단력</div>
+              <div class="hc-cell hot">부지런함<br>200%</div>
+              <div class="hc-cell cold">남 챙기다<br>과부화</div>
+              <div class="hc-cell hot">세심한<br>센스</div>
+              <div class="hc-cell cold">결정 전<br>주변 눈치</div>
+              <div class="hc-cell hot">계획적임<br>J 100%</div>
+              <div class="hc-cell cold">잔소리<br>많음</div>
               <div class="hc-cell neutral">걱정인형</div>
-              <div class="hc-cell neutral">잔소리<br>많음</div>
-              <div class="hc-cell hot">계획성</div>
-              <div class="hc-cell hot">부지런함</div>
-              <div class="hc-cell hot">세심함</div>
-              <div class="hc-cell cold">외로움<br>잘 탐</div>
+              <div class="hc-cell neutral">자처한<br>바쁨</div>
+              <div class="hc-cell hot">애정 표현<br>풍부</div>
             </div>
             <div class="hc-name px">신부 박하나</div>
           </div>
@@ -2509,12 +2514,12 @@
 
     const STORY_ITEMS = [
       { title:'첫 데이트', main:'낯설고 설레던 우리의 첫 시작.', comment:'사진 찍어주시던 분이 왜 이렇게 어색해하냐고 해서\n“사귄지 이틀 돼서요…” 답하며 수줍게 웃었던 연애 초반..ㅎㅎ', photoIdx:0 },
-      { title:'스키장', main:'실력도 취미도 닮았던 스키장 첫 데이트', comment:'보드 취미부터 실력까지 비슷할 수가?\n이날 이후 커플 보드복도 구매했어요.', photoIdx:9 },
-      { title:'야구 유니버설', main:'첫 해외여행: 야구 유니폼 입고 USJ', comment:'야구에 진심인 우리, 유니폼 입고 유니버설 방문했어요.\n직원분들, 관광객 분들 칭찬 많이 받은 날ㅎㅎ', photoIdx:1 },
+      { title:'스키장', main:'취미도, 실력도 닮았던 첫 스키장 데이트', comment:'보드 취미부터 실력까지 비슷할 수가?\n이날 이후 커플 보드복도 구매했어요.', photoIdx:9 },
+      { title:'야구 유니버설', main:'첫 해외여행', comment:'야구에 진심인 우리, 유니폼 입고 일본 USJ에 방문!\n직원분들, 관광객 분들 칭찬 많이 받은 날ㅎㅎ', photoIdx:1 },
       { title:'야구 마라톤', main:'든든한 페이스메이커와 함께 PB 달성', comment:'유니폼 착장 마라톤 완주 성공!\n든든한 페이스메이커 덕분에 PB 경신!', photoIdx:2 },
-      { title:'오빠 생일', main:'생일 축하 속에 슬며시 담아낸 마음', comment:'‘이 사람이다’ 싶어 생일 케이크로 슬쩍 내비쳤던 마음.\n본격적인 결혼 이야기 전, 혼자만의 수줍은 암시ㅎㅎ', photoIdx:4 },
+      { title:'오빠 생일', main:'생일 축하 속에 슬며시 담아낸 마음', comment:'‘이 사람이다’ 싶어 생일 케이크로 슬쩍 내비쳤던 마음.\n본격적인 결혼 이야기 전, 신부 혼자만의 수줍은 암시ㅎㅎ', photoIdx:4 },
       { title:'1주년', main:'1년, 12달, 365일의 조각들', comment:'1년의 사진들을 직접 오려 붙여 완성한 1주년 액자.\n추억의 조각들로 가득 채운 우리의 첫 1년.', photoIdx:5 },
-      { title:'반지공방', main:'결혼 이야기 후, 첫 커플링을 만들다', comment:'반지를 끼고 다닐 줄 몰랐던 우리가 직접 만든 첫 커플링.\n운동할 때 빼곤 늘 함께하는 중!', photoIdx:6 },
+      { title:'반지공방', main:'직접 만든 첫 커플링', comment:'평소엔 반지도 잘 안 끼던 우리였는데,\n이젠 운동할 때 빼곤 늘 함께하는 중!', photoIdx:6 },
       { title:'프로포즈', main:'신부의 서프라이즈 프로포즈!', comment:'1년 동안 준비 끝에 한 직구 프로포즈!\n신랑의 대답은 Yes! FA 시장 대어 영입 성공적ㅎㅎ', photoIdx:7 },
       { title:'웨딩밴드', main:'서로의 손에 끼워질 특별한 약속', comment:'마침내 완성되어 가는 우리의 이야기.\n설레는 마음으로 알차게 준비 중입니다!', photoIdx:8 },
     ];
