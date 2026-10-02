@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="최광현 ♥ 박하나의 결혼식에 초대합니다">
 <meta property="og:description" content="2027.05.22 SAT 12:00 PM | 드까르멜릿 STADIUM">
-<meta property="og:image" content="https://gh-hn-wedding.vercel.app/og-image.png"> <!-- TODO: 배포 후 절대 경로로 교체 (예: https://your-site.netlify.app/og-image.png) -->
+<meta property="og:image" content="https://gh-hn-wedding.vercel.app/og-image.png?v=20261002"> <!-- TODO: 배포 후 절대 경로로 교체 (예: https://your-site.netlify.app/og-image.png). 이미지 교체 시 ?v= 뒤 날짜를 올려주면 카카오톡 등의 미리보기 캐시를 새로 가져옵니다 -->
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://gh-hn-wedding.vercel.app/"> <!-- TODO: 배포 후 실제 페이지 주소로 교체 -->
@@ -33,7 +33,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="최광현 ♥ 박하나의 결혼식에 초대합니다">
 <meta name="twitter:description" content="2027.05.22 SAT 12:00 PM | 드까르멜릿 STADIUM">
-<meta name="twitter:image" content="https://gh-hn-wedding.vercel.app/og-image.png"> <!-- TODO: 배포 후 절대 경로로 교체 -->
+<meta name="twitter:image" content="https://gh-hn-wedding.vercel.app/og-image.png?v=20261002"> <!-- TODO: 배포 후 절대 경로로 교체 -->
 
 <style>
   /* ===================================================
@@ -3389,7 +3389,7 @@
       capStandHeight(standEl);
     }
 
-    // 관중석을 정확히 4줄(좌석 16개) 높이로 제한하고, 그 이상은 내부 스크롤로 보게 한다
+    // 관중석을 정확히 3줄(좌석 12개) 높이로 제한하고, 그 이상은 내부 스크롤로 보게 한다
     function capStandHeight(standEl){
       if(!standEl) return;
       const card = standEl.querySelector('.seat-card');
@@ -3403,7 +3403,7 @@
       const padTop = parseFloat(outerCs.paddingTop) || 0;
       // 그라운드 라인 여백은 이제 .stand-rows의 하단 padding에 있으므로 그쪽 값을 사용한다.
       const padBottom = parseFloat(rowsCs.paddingBottom) || 0;
-      const maxH = cardH * 4 + gap * 3 + padTop + padBottom;
+      const maxH = cardH * 3 + gap * 2 + padTop + padBottom;
       standEl.style.maxHeight = maxH + 'px';
       standEl.style.overflowY = 'auto';
     }
