@@ -858,7 +858,7 @@
     justify-content:center;
     gap:6px;
     min-height:76px;
-    background:#FFFDF6;
+    background:#fff;
     border:0;
     cursor:pointer;
     font-family:'NeoDunggeunmo','Galmuri9',monospace;
@@ -898,7 +898,7 @@
   .gb-field textarea{
     width:100%;
     border:0;
-    background:#FFFDF6;
+    background:#fff;
     color:#5a3e2b;
     font-family:'Pretendard',sans-serif;
     font-size:14px;
@@ -910,6 +910,10 @@
   .gb-field textarea:focus{
     outline:2px solid #C8102E;
     outline-offset:2px;
+  }
+  .gb-field input::placeholder,
+  .gb-field textarea::placeholder{
+    color:#c8c8c8;
   }
   /* 미입력 필수 항목 에러 강조: 빨간 테두리 + 흔들림 */
   .gb-field-error input,
@@ -1017,7 +1021,7 @@
   .gb-gender-btn{
     flex:1;
     min-height:40px;
-    background:#FFFDF6;
+    background:#fff;
     color:#5a3e2b;
     border:0;
     cursor:pointer;
@@ -1910,7 +1914,7 @@
     font-size:13px;
     line-height:1.4;
     color:#5a3e2b;
-    margin-bottom:32px;
+    margin-bottom:52px;
   }
   .tl-complete-actions{ display:flex; flex-direction:column; gap:10px; }
   .tl-complete-btn{
