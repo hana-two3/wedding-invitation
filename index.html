@@ -1775,7 +1775,7 @@
     margin-top:24px;
     background:#FFFFFF;
     border:1px solid #E5E0D8;
-    border-radius:10px;
+    border-radius:0;
     padding:16px;
   }
   .tl-puzzle-area{
@@ -2528,15 +2528,15 @@
     if(!btn || !modal || !grid || !piece) return;
 
     const STORY_ITEMS = [
-      { title:'첫 데이트', main:'낯설고 설레던 우리의 첫 시작', comment:'사진 찍어 주시던 분이 왜 이렇게 어색해하냐고 하셔서\n“사귄 지 이틀 돼서요…” 답하며 수줍었던 연애 초반..ㅎㅎ', photoIdx:0 },
+      { title:'첫 데이트', main:'낯설고 설레던 우리의 첫 시작', comment:'사진 찍어 주시던 분이 왜 이렇게 어색해하냐고 하셔서\n“사귄 지 이틀 돼서요..” 답하며 수줍었던 연애 초반..ㅎㅎ', photoIdx:0 },
       { title:'스키장', main:'취미도, 실력도 닮았던 첫 스키장 데이트', comment:'보드 취미부터 실력까지 비슷할 수가?\n이날 이후 바로 커플 보드복까지 구매 완료!', photoIdx:9 },
-      { title:'야구 유니버설', main:'첫 해외여행', comment:'야구에 진심인 우리, 유니폼 입고 일본 USJ에 방문!\n지나가는 분들마다 칭찬을 정말 많이 해주셨던 날! ㅎㅎ', photoIdx:1 },
+      { title:'야구 유니버설', main:'첫 해외여행', comment:'야구에 진심인 우리, 유니폼 입고 일본 USJ에 방문!\n지나가는 분들마다 칭찬을 정말 많이 해주셨던 날!', photoIdx:1 },
       { title:'야구 마라톤', main:'든든한 페이스메이커와 함께 PB 달성', comment:'유니폼 착장 마라톤 완주 성공!\n든든한 페이스메이커 덕분에 PB 경신!', photoIdx:2 },
-      { title:'오빠 생일', main:'축하의 탈을 쓴 고백', comment:'‘이 사람이다’ 싶어 생일 케이크로 슬쩍 내비쳤던 마음.\n결혼 이야기를 꺼내기 전, 신부 혼자만의 수줍은 암시ㅎㅎ', photoIdx:4 },
+      { title:'오빠 생일', main:'축하의 탈을 쓴 고백', comment:'평생 함께하고 싶은 마음을 케이크에 슬쩍 내비쳤던 날.\n결혼 이야기를 꺼내기 전, 신부 혼자만의 수줍은 암시 //3//', photoIdx:4 },
       { title:'1주년', main:'1년, 12달, 365일의 조각들', comment:'1년의 사진들을 직접 오려 붙여 완성한 1주년 액자.\n추억의 조각들로 가득 채운 우리의 첫 1년.', photoIdx:5 },
       { title:'반지공방', main:'직접 만든 첫 커플링', comment:'평소엔 반지도 잘 안 끼던 우리였는데,\n이젠 운동할 때 빼곤 늘 함께하는 중!', photoIdx:6 },
-      { title:'프로포즈', main:'신부의 서프라이즈 프로포즈!', comment:'1년 동안 준비 끝에 한 직구 프로포즈, 대답은 YES!\n평생 함께할 동반자 영입 완료! ㅎㅎ', photoIdx:7 },
-      { title:'웨딩밴드', main:'서로의 손에 끼워질 특별한 약속', comment:'마침내 완성되어 가는 우리의 이야기.\n설레는 마음으로 알차게 준비 중입니다!', photoIdx:8 },
+      { title:'프로포즈', main:'신부의 서프라이즈 프로포즈', comment:'1년 동안의 준비 끝에 던진 직구 프로포즈, 대답은 YES!\n평생 함께할 동반자 영입 완료!', photoIdx:7 },
+      { title:'웨딩밴드', main:'서로의 손에 끼워질 특별한 약속', comment:'마침내 완성되어 가는 우리의 이야기.\n설레는 마음으로 알차게 준비 중 :)', photoIdx:8 },
     ];
     const SLOT_POS = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
