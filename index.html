@@ -376,7 +376,7 @@
   .hero-bubble::before{ transform:translateX(-50%); border-top-color:#181818; }
   .hero-bubble::after{ transform:translateX(-50%) translateY(-3px); border-top-color:#fff; }
   .hero-bubble-groom{ left:calc(4% + 30px); top:calc(-13% - 30px); }
-  .hero-bubble-bride{ right:calc(4% + 40px); }
+  .hero-bubble-bride{ right:calc(4% + 34px); }
   .hero-bubble.show{ animation:bubble-pop .5s cubic-bezier(.34,1.56,.64,1) forwards; }
   @keyframes bubble-pop{
     0%{ opacity:0; transform:translateY(12px) scale(.55) translateZ(0); }
@@ -1608,13 +1608,13 @@
     -webkit-tap-highlight-color:transparent;
     color:#fff;
     cursor:pointer;
-    opacity:.5;
+    opacity:.3;
   }
   /* 클릭/호버/포커스 등 어떤 인터랙션에도 스타일이 변하지 않도록 평상시 상태로 고정 */
   .lb-arrow:hover,
   .lb-arrow:active,
   .lb-arrow:focus,
-  .lb-arrow:focus-visible{ opacity:.5; background:transparent; }
+  .lb-arrow:focus-visible{ opacity:.3; background:transparent; }
   .lb-arrow svg{ display:block; }
   .lb-arrow-prev{ left:0; }
   .lb-arrow-next{ right:0; }
@@ -1908,7 +1908,7 @@
   .tl-complete-msg{
     font-family:'Galmuri9','DungGeunMo',monospace;
     font-size:13px;
-    line-height:1.8;
+    line-height:1.4;
     color:#5a3e2b;
     margin-bottom:32px;
   }
@@ -2365,7 +2365,7 @@
         <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
         <div class="tl-complete-slot"></div><div class="tl-complete-slot"></div><div class="tl-complete-slot"></div>
       </div>
-      <div class="tl-complete-msg px">그림이 완성되었어요!<br>퍼즐을 함께 맞추며 우리의 이야기를<br>완성해 주셔서 감사합니다♥</div>
+      <div class="tl-complete-msg px">그림이 완성되었어요!<br>퍼즐을 함께 맞추며 우리의 이야기를<br>완성해 주셔서 감사합니다 ♥</div>
       <div class="tl-complete-actions">
         <button class="tl-complete-btn px" id="puzzleRestart" type="button">처음부터 다시보기</button>
         <button class="tl-complete-btn alt px" id="puzzleDoneClose" type="button">닫기</button>
