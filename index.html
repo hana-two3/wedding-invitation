@@ -1727,10 +1727,11 @@
   .tl-puzzle-info.tl-step-fade{ opacity:0; }
   .tl-puzzle-heading{
     text-align:center;
-    margin-bottom:14px;
+    margin-bottom:16px;
     font-family:'Pretendard',sans-serif;
     font-weight:800;
-    font-size:15px;
+    font-size:14.5px;
+    line-height:1.5;
     color:#4A2E1B;
   }
   .tl-puzzle-photo{
@@ -1744,16 +1745,6 @@
     box-sizing:border-box;
   }
   .tl-puzzle-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  /* 강조 문구 + 보조 설명을 한 그룹으로 느끼도록 둘 사이 간격을 좁힌다 */
-  .tl-puzzle-main{
-    text-align:center;
-    margin-top:16px;
-    font-family:'Pretendard',sans-serif;
-    font-weight:700;
-    font-size:13.5px;
-    line-height:1.55;
-    color:#5a3e2b;
-  }
   /* 문장이 1~3줄을 오가도 모달/퍼즐 카드 위치가 들쑥날쑥해지지 않도록
      3줄 분량의 높이를 항상 확보하고, 줄 수가 적을 때는 그 안에서 수직 중앙 정렬한다 */
   .tl-puzzle-desc{
@@ -1763,7 +1754,7 @@
     align-items:center;
     min-height:calc(12.5px * 1.7 * 3);
     text-align:center;
-    margin-top:4px;
+    margin-top:16px;
     font-family:'Pretendard',sans-serif;
     font-size:12.5px;
     line-height:1.7;
@@ -2326,9 +2317,8 @@
 
     <div class="tl-puzzle-body" id="storyBody">
       <div class="tl-puzzle-info" id="puzzleInfo">
-        <div class="tl-puzzle-heading px" id="puzzleHeading">첫 만남</div>
+        <div class="tl-puzzle-heading px" id="puzzleHeading">우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.</div>
         <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
-        <div class="tl-puzzle-main" id="puzzleMain">우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.</div>
         <div class="tl-puzzle-desc" id="puzzleDesc">이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.</div>
       </div>
 
@@ -2509,7 +2499,6 @@
     const infoEl = document.getElementById('puzzleInfo');
     const photoEl = document.getElementById('puzzlePhoto');
     const headingEl = document.getElementById('puzzleHeading');
-    const mainEl = document.getElementById('puzzleMain');
     const descEl = document.getElementById('puzzleDesc');
     const grid = document.getElementById('puzzleGrid');
     const piece = document.getElementById('puzzlePiece');
@@ -2519,15 +2508,15 @@
     if(!btn || !modal || !grid || !piece) return;
 
     const STORY_ITEMS = [
-      { title:'첫 데이트', main:'어색하지만 설레던 첫 손잡기', comment:'“사귄 지 며칠 안 돼서요…” 촬영 기사님 한마디에 수줍게 웃던, 모든 게 낯설고 설레던 우리의 첫 시작.', photoIdx:0 },
-      { title:'스키장', main:'실력도 취미도 똑 닮았던 스키장 첫 데이트', comment:'보드 취미부터 비슷한 실력까지 통했던 첫 대화! 각자 신나게 라이딩을 즐기고 만날 수 있어 더 완벽했던 날. 이날 이후 커플 보드복 착장 확정!', photoIdx:9 },
-      { title:'야구 유니버설', main:'유니버설 스튜디오도 유니폼 입고 입장!', comment:'야구에 진심인 우리, 유니폼 입고 유니버설 탐방 완료! 현지 직원들의 폭풍 칭찬까지 받은 최고의 플레이.', photoIdx:1 },
-      { title:'야구 마라톤', main:'든든한 페이스메이커와 함께 PB 달성', comment:'유니폼 착장 마라톤 완주 성공! 옆에서 함께 뛰어준 든든한 페이스메이커 덕분에 인생 최고 기록(PB) 경신!', photoIdx:2 },
-      { title:'오빠 생일', main:'생일 케이크에 살짝 얹어본 은밀한 티', comment:'‘이 사람이다’ 싶어 생일 케이크로 슬쩍 내비쳤던 마음. 본격적인 결혼 이야기 전, 혼자만의 수줍은 암시 ㅎㅎ', photoIdx:4 },
-      { title:'1주년', main:'1월부터 12월까지, 1년의 모든 순간', comment:'1월에 처음 만나 쌓아온 12개월의 추억을 꾹꾹 담아 완성한 1주년 액자. 우리의 첫 1년이 빼곡했던 날.', photoIdx:5 },
-      { title:'반지공방', main:'결혼 이야기 후, 첫 커플링을 만들다', comment:'손가락에 반지를 끼고 다닐 줄 몰랐던 우리가 직접 만든 첫 커플링. 운동할 때 빼곤 늘 함께하는 중!', photoIdx:6 },
-      { title:'프로포즈', main:'500일 기념 서프라이즈! 먼저 건넨 프로포즈', comment:'평생 같은 팀으로 뛰고 싶어 준비한 깜짝 프로포즈! 비혼주의였던 마음을 바꾸고 응해준 고마운 사람.', photoIdx:7 },
-      { title:'웨딩밴드', main:'착착 진행되는 결혼 준비, 웨딩밴드 맞춘 날', comment:'마침내 완성되어 가는 우리들의 이야기. 설레는 마음으로 알차게 준비 중입니다!', photoIdx:8 },
+      { title:'첫 데이트', main:'낯설고 설레던 우리의 첫 시작.', comment:'사진 찍어주시던 분이 왜 이렇게 어색해하냐고 해서\n“사귄지 이틀 돼서요…” 답하며 수줍게 웃었던 연애 초반..ㅎㅎ', photoIdx:0 },
+      { title:'스키장', main:'실력도 취미도 닮았던 스키장 첫 데이트', comment:'보드 취미부터 실력까지 비슷할 수가?\n이날 이후 커플 보드복도 구매했어요.', photoIdx:9 },
+      { title:'야구 유니버설', main:'첫 해외여행: 야구 유니폼 입고 USJ', comment:'야구에 진심인 우리, 유니폼 입고 유니버설 방문했어요.\n직원분들, 관광객 분들 칭찬 많이 받은 날ㅎㅎ', photoIdx:1 },
+      { title:'야구 마라톤', main:'든든한 페이스메이커와 함께 PB 달성', comment:'유니폼 착장 마라톤 완주 성공!\n든든한 페이스메이커 덕분에 PB 경신!', photoIdx:2 },
+      { title:'오빠 생일', main:'생일 케이크에 살짝 얹어본 은밀한 티', comment:'‘이 사람이다’ 싶어 생일 케이크로 슬쩍 내비쳤던 마음.\n본격적인 결혼 이야기 전, 혼자만의 수줍은 암시ㅎㅎ', photoIdx:4 },
+      { title:'1주년', main:'1월부터 12월까지, 1년의 모든 순간', comment:'12개월의 추억을 꾹꾹 담아 완성한 1주년 액자.\n우리의 첫 1년이 빼곡했던 날.', photoIdx:5 },
+      { title:'반지공방', main:'결혼 이야기 후, 첫 커플링을 만들다', comment:'반지를 끼고 다닐 줄 몰랐던 우리가 직접 만든 첫 커플링.\n운동할 때 빼곤 늘 함께하는 중!', photoIdx:6 },
+      { title:'프로포즈', main:'서프라이즈 프로포즈 성공적!', comment:'결혼 결심 후 1년 동안 준비 끝에 드디어 프로포즈!\n비혼주의였던 마음을 바꾸고 응해준 고마운 예랑이.', photoIdx:7 },
+      { title:'웨딩밴드', main:'착착 진행되는 결혼 준비, 웨딩밴드 맞춘 날', comment:'마침내 완성되어 가는 우리들의 이야기.\n설레는 마음으로 알차게 준비 중입니다!', photoIdx:8 },
     ];
     const SLOT_POS = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
@@ -2540,8 +2529,7 @@
       const gallery = (typeof CONFIG !== 'undefined' && CONFIG.storyPhotos) || [];
       photoEl.src = gallery[item.photoIdx] || gallery[0] || '';
       photoEl.alt = item.title;
-      headingEl.textContent = item.title;
-      mainEl.textContent = item.main;
+      headingEl.textContent = item.main;
       descEl.textContent = item.comment;
       piece.style.backgroundPosition = SLOT_POS[step];
       piece.style.opacity = '1';
