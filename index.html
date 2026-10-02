@@ -1596,8 +1596,8 @@
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    width:44px;
-    height:56px;
+    width:34px;
+    height:44px;
     z-index:6;
     display:flex;
     align-items:center;
@@ -1608,13 +1608,13 @@
     -webkit-tap-highlight-color:transparent;
     color:#fff;
     cursor:pointer;
-    opacity:.6;
+    opacity:.5;
   }
   /* 클릭/호버/포커스 등 어떤 인터랙션에도 스타일이 변하지 않도록 평상시 상태로 고정 */
   .lb-arrow:hover,
   .lb-arrow:active,
   .lb-arrow:focus,
-  .lb-arrow:focus-visible{ opacity:.6; background:transparent; }
+  .lb-arrow:focus-visible{ opacity:.5; background:transparent; }
   .lb-arrow svg{ display:block; }
   .lb-arrow-prev{ left:0; }
   .lb-arrow-next{ right:0; }
@@ -1821,6 +1821,17 @@
     60%{ transform:scale(1.18); opacity:1; }
     100%{ transform:scale(1); }
   }
+  /* 정답이 아닌 칸에 조각을 놓으려 할 때: 받아들이지 않고 살짝 흔들려 거부감을 준다 */
+  .tl-puzzle-slot.tl-slot-reject{ animation:tlSlotReject .32s ease; }
+  @keyframes tlSlotReject{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-4px); }
+    40%{ transform:translateX(4px); }
+    60%{ transform:translateX(-3px); }
+    80%{ transform:translateX(3px); }
+  }
+  /* 드래그한 조각이 오답 칸에서 튕겨 나가 제자리(트레이)로 돌아가는 동작 */
+  .tl-puzzle-piece.tl-piece-reject{ transition:transform .28s cubic-bezier(.34,1.56,.64,1); }
   .tl-puzzle-tray{
     display:flex;
     flex-direction:column;
@@ -2369,8 +2380,8 @@
     <div class="lb-shield" id="lbShield" oncontextmenu="return false;" ondragstart="return false;"></div>
   </div>
   <button class="lb-x" type="button" aria-label="닫기">✕</button>
-  <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진"><svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 4L4 16L14 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <button class="lb-arrow lb-arrow-next" type="button" aria-label="다음 사진"><svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L16 16L6 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="lb-arrow lb-arrow-prev" type="button" aria-label="이전 사진"><svg width="14" height="22" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 4L4 16L14 28" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="lb-arrow lb-arrow-next" type="button" aria-label="다음 사진"><svg width="14" height="22" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L16 16L6 28" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="lb-count" id="lbCount">1 / 9</div>
 </div>
 <div id="toast"></div>
@@ -2539,6 +2550,10 @@
       piece.style.backgroundPosition = SLOT_POS[step];
       piece.style.opacity = '1';
       piece.classList.remove('placing');
+      // 이번 조각의 정답 칸 ID. 그리드의 각 칸(.tl-puzzle-slot)은 data-slot="0"~"8"로 자신의
+      // 위치 ID(cellId)를 이미 갖고 있으므로, 조각 쪽에도 같은 체계의 정답 ID(targetId)를 부여해
+      // 드롭/클릭 시 piece.targetId === cell.cellId 인 경우에만 성공하도록 비교한다.
+      piece.dataset.targetSlot = String(step);
     }
 
     function showComplete(){
@@ -2580,22 +2595,45 @@
       }, 260);
     }
 
-    // 클릭/탭: 조각 자체 또는 아직 채워지지 않은 칸 어디를 눌러도 같은 조각이 끼워진다
-    piece.addEventListener('click', placePiece);
+    // 칸을 "거부"할 때: 살짝 흔들어 오답임을 알리고, 조각은 원래 자리(트레이)로 튕겨 돌아간다.
+    // 상태(step/필드)는 전혀 바뀌지 않으므로 다시 정답 칸을 눌러보거나 드래그하면 된다.
+    function rejectSlot(s){
+      s.classList.remove('tl-slot-reject');
+      void s.offsetWidth; // 같은 칸을 연속으로 틀려도 애니메이션이 다시 재생되도록 리플로우
+      s.classList.add('tl-slot-reject');
+      setTimeout(() => s.classList.remove('tl-slot-reject'), 340);
+      piece.classList.add('tl-piece-reject');
+      piece.style.transform = '';
+      setTimeout(() => piece.classList.remove('tl-piece-reject'), 300);
+    }
+
+    // 클릭/탭: 조각 자체를 누르면(드래그 없이) 바로 정답 칸에 끼워지는 보조 조작이고,
+    // 그리드의 칸을 직접 누르거나 드래그해서 놓는 경우에는 반드시 그 조각의 정답 칸
+    // (piece.dataset.targetSlot === cell.dataset.slot)일 때만 성공 처리한다.
+    let suppressPieceClick = false;
+    piece.addEventListener('click', () => {
+      if(suppressPieceClick){ suppressPieceClick = false; return; }
+      placePiece();
+    });
     piece.addEventListener('keydown', e => {
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); placePiece(); }
     });
     slotEls.forEach(s => {
-      s.addEventListener('click', () => { if(!s.classList.contains('filled')) placePiece(); });
+      s.addEventListener('click', () => {
+        if(busy || s.classList.contains('filled')) return;
+        if(s.dataset.slot === piece.dataset.targetSlot) placePiece();
+        else rejectSlot(s);
+      });
     });
 
     // 포인터 드래그(마우스/터치 공통): 누르고 있는 동안 조각이 손가락을 따라 움직이고,
-    // 손을 떼면(어디서 떼든) 바로 다음 칸에 끼워진다 — 모바일 네이티브 drag&drop의
-    // 불안정함을 피하면서도 "옮겨서 넣는" 촉각적 피드백을 준다.
+    // 손을 뗀 지점 바로 아래에 있는 칸(cellId)이 조각의 정답 칸(targetId)과 일치할 때만
+    // 끼워지며(snap/lock), 다른 칸이거나 칸 밖이면 거부되어 원래 자리로 되돌아간다.
     let dragging = false, startX = 0, startY = 0;
     piece.addEventListener('pointerdown', e => {
       if(busy) return;
       dragging = true;
+      suppressPieceClick = false;
       startX = e.clientX; startY = e.clientY;
       try{ piece.setPointerCapture(e.pointerId); }catch(err){}
       piece.style.transition = 'none';
@@ -2605,17 +2643,40 @@
     piece.addEventListener('pointermove', e => {
       if(!dragging) return;
       const dx = e.clientX - startX, dy = e.clientY - startY;
+      if(Math.abs(dx) > 4 || Math.abs(dy) > 4) suppressPieceClick = true;
       piece.style.transform = `translate(${dx}px, ${dy}px)`;
     });
-    function endDrag(){
+    function endDrag(e){
       if(!dragging) return;
       dragging = false;
       piece.style.transition = '';
-      piece.style.transform = '';
-      placePiece();
+      // 손을 뗀 지점 바로 아래 요소를 찾되, 조각 자신이 그 지점을 가리고 있으므로
+      // 잠시 포인터 이벤트를 꺼서 진짜 아래에 있는 칸을 찾아낸다.
+      let dropSlot = null;
+      if(e && typeof e.clientX === 'number'){
+        piece.style.pointerEvents = 'none';
+        const under = document.elementFromPoint(e.clientX, e.clientY);
+        piece.style.pointerEvents = '';
+        dropSlot = under ? under.closest('.tl-puzzle-slot') : null;
+      }
+      if(!dropSlot){
+        // 칸 밖에서 손을 뗀 경우: 제자리로 조용히 복귀만 한다.
+        piece.style.transform = '';
+        return;
+      }
+      if(busy || dropSlot.classList.contains('filled')){
+        piece.style.transform = '';
+        return;
+      }
+      if(dropSlot.dataset.slot === piece.dataset.targetSlot){
+        piece.style.transform = '';
+        placePiece();
+      } else {
+        rejectSlot(dropSlot);
+      }
     }
     piece.addEventListener('pointerup', endDrag);
-    piece.addEventListener('pointercancel', endDrag);
+    piece.addEventListener('pointercancel', () => { dragging = false; piece.style.transition = ''; piece.style.transform = ''; });
 
     if(restartBtn) restartBtn.addEventListener('click', resetPuzzle);
     if(doneCloseBtn) doneCloseBtn.addEventListener('click', closeStory);
