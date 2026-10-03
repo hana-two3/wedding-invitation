@@ -119,6 +119,7 @@
     padding-top:var(--safe-top);
   }
   .site-nav-top{
+    position:relative;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -131,6 +132,48 @@
     white-space:nowrap;
     text-align:center;
   }
+  /* 우측 상단 배경음악 토글 버튼: 켜짐=음량바 애니메이션, 꺼짐=재생 아이콘 */
+  .music-toggle-btn{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:22px;
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    color:#fff;
+  }
+  .music-eq{
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:2px;
+    width:18px;
+    height:15px;
+  }
+  .music-eq-bar{
+    width:3px;
+    height:4px;
+    background:#fff;
+    animation:musicEqBounce .9s ease-in-out infinite;
+  }
+  .music-eq-bar:nth-child(1){ animation-delay:0s; }
+  .music-eq-bar:nth-child(2){ animation-delay:.2s; }
+  .music-eq-bar:nth-child(3){ animation-delay:.4s; }
+  .music-eq-bar:nth-child(4){ animation-delay:.1s; }
+  @keyframes musicEqBounce{
+    0%,100%{ height:4px; }
+    50%{ height:15px; }
+  }
+  .music-play-icon{ display:none; }
+  .music-toggle-btn.paused .music-eq{ display:none; }
+  .music-toggle-btn.paused .music-play-icon{ display:block; }
   .site-nav-tabs{
     display:grid;
     grid-template-columns:repeat(5,1fr);
@@ -271,6 +314,25 @@
     color:#fff;
     text-shadow:0 2px 0 rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.5);
     font-variant-numeric:tabular-nums;
+  }
+  /* 첫 접속 시에만 D-Day 바로 아래 노출되는 음악 안내 토스트 */
+  .music-ready-toast{
+    display:inline-block;
+    margin-top:8px;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:11px;
+    color:#5a3e2b;
+    background:#FFD166;
+    padding:7px 12px;
+    box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
+    opacity:0;
+    transform:translateY(-6px);
+    transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;
+  }
+  .music-ready-toast.show{
+    opacity:1;
+    transform:translateY(0);
   }
 
   .hero-title{
@@ -1944,6 +2006,20 @@
   <nav class="site-nav" id="siteNav">
     <div class="site-nav-top">
       <div class="site-nav-title px">광현 ♥ 하나  —  Wedding League</div>
+      <button class="music-toggle-btn" id="musicToggleBtn" type="button" aria-label="배경음악 켜기/끄기" aria-pressed="true">
+        <span class="music-eq" id="musicEq">
+          <span class="music-eq-bar"></span>
+          <span class="music-eq-bar"></span>
+          <span class="music-eq-bar"></span>
+          <span class="music-eq-bar"></span>
+        </span>
+        <svg class="music-play-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+      <audio id="bgMusic" loop preload="none">
+        <source src="music.mp3" type="audio/mpeg">
+      </audio>
     </div>
     <div class="site-nav-tabs">
       <button class="tab-btn px" id="navHome" type="button" data-target="heroTop">HOME</button>
@@ -1958,6 +2034,7 @@
 
     <div class="hero-dday-wrap">
       <div class="dday-badge px" id="ddayBadge">D-DAY</div>
+      <div class="music-ready-toast px" id="musicReadyToast">음악이 준비되어 있습니다.</div>
     </div>
 
     <div class="character-wrap">
@@ -2732,6 +2809,57 @@
 
   document.getElementById('pickGroom').addEventListener('click', () => selectTeam('groom'));
   document.getElementById('pickBride').addEventListener('click', () => selectTeam('bride'));
+
+  /* ===== 배경음악 토글 (우측 상단, 기본 켜짐) ===== */
+  (function(){
+    const btn = document.getElementById('musicToggleBtn');
+    const audio = document.getElementById('bgMusic');
+    if(!btn || !audio) return;
+
+    let musicOn = true; // 디폴트: 켜짐
+
+    function updateBtnUI(){
+      btn.classList.toggle('paused', !musicOn);
+      btn.setAttribute('aria-pressed', musicOn ? 'true' : 'false');
+    }
+
+    function tryPlay(){
+      const p = audio.play();
+      if(p && p.catch) p.catch(() => { /* 브라우저 자동재생 제한: 사용자 제스처 이후 재시도됨 */ });
+    }
+
+    btn.addEventListener('click', () => {
+      musicOn = !musicOn;
+      updateBtnUI();
+      if(musicOn) tryPlay();
+      else audio.pause();
+    });
+
+    // 브라우저 자동재생 정책상 사용자의 첫 제스처(팀 선택 탭) 시점에 재생을 시도한다.
+    // 디폴트가 '켜짐'이므로, 그 사이 꺼두지 않았다면 자동으로 재생되게 한다.
+    function onFirstGesture(){
+      if(musicOn && audio.paused) tryPlay();
+    }
+    document.getElementById('pickGroom').addEventListener('click', onFirstGesture);
+    document.getElementById('pickBride').addEventListener('click', onFirstGesture);
+
+    updateBtnUI();
+  })();
+
+  /* ===== 첫 접속 시에만(새로고침해도 재노출 안 함) D-Day 아래 음악 안내 토스트 ===== */
+  (function(){
+    const toastEl = document.getElementById('musicReadyToast');
+    if(!toastEl) return;
+    const STORAGE_KEY = 'musicToastShownV1';
+    let alreadyShown = false;
+    try { alreadyShown = !!localStorage.getItem(STORAGE_KEY); } catch(e){}
+    if(alreadyShown) return;
+    try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e){}
+    setTimeout(() => {
+      toastEl.classList.add('show');
+      setTimeout(() => { toastEl.classList.remove('show'); }, 2600);
+    }, 700);
+  })();
 
   /* ===== 팀 선택에 따른 본문 반영 (라인업 순서 / 계좌 탭) ===== */
   function applyTeamContent(team){
