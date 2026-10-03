@@ -315,7 +315,7 @@
     text-shadow:0 2px 0 rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.5);
     font-variant-numeric:tabular-nums;
   }
-  /* 첫 접속 시에만 D-Day 바로 아래 노출되는 음악 안내 토스트 */
+  /* 접속(새로고침 포함)할 때마다 D-Day 바로 아래 노출되는 음악 안내 토스트 */
   .music-ready-toast{
     display:inline-block;
     margin-top:8px;
@@ -2846,15 +2846,10 @@
     updateBtnUI();
   })();
 
-  /* ===== 첫 접속 시에만(새로고침해도 재노출 안 함) D-Day 아래 음악 안내 토스트 ===== */
+  /* ===== 접속(새로고침 포함)할 때마다 D-Day 아래에 한 번 노출되는 음악 안내 토스트 ===== */
   (function(){
     const toastEl = document.getElementById('musicReadyToast');
     if(!toastEl) return;
-    const STORAGE_KEY = 'musicToastShownV1';
-    let alreadyShown = false;
-    try { alreadyShown = !!localStorage.getItem(STORAGE_KEY); } catch(e){}
-    if(alreadyShown) return;
-    try { localStorage.setItem(STORAGE_KEY, '1'); } catch(e){}
     setTimeout(() => {
       toastEl.classList.add('show');
       setTimeout(() => { toastEl.classList.remove('show'); }, 2600);
