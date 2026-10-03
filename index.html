@@ -2843,6 +2843,12 @@
     document.getElementById('pickGroom').addEventListener('click', onFirstGesture);
     document.getElementById('pickBride').addEventListener('click', onFirstGesture);
 
+    // 접속(새로고침 포함) 2초 후 자동재생 시도. 일부 브라우저(특히 iOS Safari)는
+    // 사용자 제스처 없는 재생을 막을 수 있어, 이 경우 위 첫 탭 시점에 재생된다.
+    setTimeout(() => {
+      if(musicOn && audio.paused) tryPlay();
+    }, 2000);
+
     updateBtnUI();
   })();
 
