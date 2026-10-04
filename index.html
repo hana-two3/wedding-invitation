@@ -2017,7 +2017,7 @@
           <path d="M8 5v14l11-7z"/>
         </svg>
       </button>
-      <audio id="bgMusic" loop preload="none">
+      <audio id="bgMusic" loop preload="auto" playsinline>
         <source src="music.mp3" type="audio/mpeg">
       </audio>
     </div>
@@ -2810,35 +2810,44 @@
   document.getElementById('pickGroom').addEventListener('click', () => selectTeam('groom'));
   document.getElementById('pickBride').addEventListener('click', () => selectTeam('bride'));
 
-  /* ===== 배경음악 토글 (우측 상단, 기본 켜짐) ===== */
+  /* ===== 배경음악 토글 (우측 상단, 기본 켜짐) =====
+     버튼 아이콘은 musicOn 같은 '의도' 플래그가 아니라 audio 엘리먼트의 실제 play/pause
+     이벤트에 동기화한다. 그래야 자동재생이 브라우저 정책으로 막혔을 때도 버튼이
+     "재생 중"이라고 거짓으로 표시되지 않고, 눌러서 재생할 수 있는 상태로 정확히 보인다. */
   (function(){
     const btn = document.getElementById('musicToggleBtn');
     const audio = document.getElementById('bgMusic');
     if(!btn || !audio) return;
 
-    let musicOn = true; // 디폴트: 켜짐
+    let userPaused = false; // 사용자가 버튼으로 직접 껐는지 여부(자동재생 재시도 방지용)
 
-    function updateBtnUI(){
-      btn.classList.toggle('paused', !musicOn);
-      btn.setAttribute('aria-pressed', musicOn ? 'true' : 'false');
+    function syncBtnUI(){
+      const isPaused = audio.paused;
+      btn.classList.toggle('paused', isPaused);
+      btn.setAttribute('aria-pressed', isPaused ? 'false' : 'true');
     }
+    audio.addEventListener('play', syncBtnUI);
+    audio.addEventListener('pause', syncBtnUI);
 
     function tryPlay(){
       const p = audio.play();
-      if(p && p.catch) p.catch(() => { /* 브라우저 자동재생 제한: 사용자 제스처 이후 재시도됨 */ });
+      if(p && p.catch) p.catch(() => { /* 브라우저 자동재생 제한: 다음 사용자 제스처에서 재시도됨 */ syncBtnUI(); });
     }
 
     btn.addEventListener('click', () => {
-      musicOn = !musicOn;
-      updateBtnUI();
-      if(musicOn) tryPlay();
-      else audio.pause();
+      if(audio.paused){
+        userPaused = false;
+        tryPlay();
+      } else {
+        userPaused = true;
+        audio.pause();
+      }
     });
 
     // 브라우저 자동재생 정책상 사용자의 첫 제스처(팀 선택 탭) 시점에 재생을 시도한다.
-    // 디폴트가 '켜짐'이므로, 그 사이 꺼두지 않았다면 자동으로 재생되게 한다.
+    // 디폴트가 '켜짐'이므로, 그 사이 사용자가 직접 끄지 않았다면 자동으로 재생되게 한다.
     function onFirstGesture(){
-      if(musicOn && audio.paused) tryPlay();
+      if(!userPaused && audio.paused) tryPlay();
     }
     document.getElementById('pickGroom').addEventListener('click', onFirstGesture);
     document.getElementById('pickBride').addEventListener('click', onFirstGesture);
@@ -2846,10 +2855,10 @@
     // 접속(새로고침 포함) 2초 후 자동재생 시도. 일부 브라우저(특히 iOS Safari)는
     // 사용자 제스처 없는 재생을 막을 수 있어, 이 경우 위 첫 탭 시점에 재생된다.
     setTimeout(() => {
-      if(musicOn && audio.paused) tryPlay();
+      if(!userPaused && audio.paused) tryPlay();
     }, 2000);
 
-    updateBtnUI();
+    syncBtnUI();
   })();
 
   /* ===== 접속(새로고침 포함)할 때마다 D-Day 아래에 한 번 노출되는 음악 안내 토스트 ===== */
