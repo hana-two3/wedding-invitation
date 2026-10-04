@@ -2852,11 +2852,11 @@
     document.getElementById('pickGroom').addEventListener('click', onFirstGesture);
     document.getElementById('pickBride').addEventListener('click', onFirstGesture);
 
-    // 접속(새로고침 포함) 2초 후 자동재생 시도. 일부 브라우저(특히 iOS Safari)는
-    // 사용자 제스처 없는 재생을 막을 수 있어, 이 경우 위 첫 탭 시점에 재생된다.
-    setTimeout(() => {
+    // "음악이 준비되어 있습니다" 토스트가 사라진 직후 자동재생을 시도한다.
+    // (일부 브라우저는 사용자 제스처 없는 재생을 막을 수 있어, 그 경우 위 첫 탭 시점에 재생된다.)
+    document.addEventListener('wm:musicToastHidden', () => {
       if(!userPaused && audio.paused) tryPlay();
-    }, 2000);
+    });
 
     syncBtnUI();
   })();
@@ -2867,7 +2867,13 @@
     if(!toastEl) return;
     setTimeout(() => {
       toastEl.classList.add('show');
-      setTimeout(() => { toastEl.classList.remove('show'); }, 2600);
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+        // 토스트의 페이드아웃 트랜지션(.35s)이 끝나 완전히 사라진 뒤 음악 자동재생을 시도한다.
+        setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('wm:musicToastHidden'));
+        }, 350);
+      }, 2600);
     }, 700);
   })();
 
