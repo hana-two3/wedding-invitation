@@ -2354,10 +2354,6 @@
             <button class="gb-cta gb-cta-done" id="gbDoneBtn" type="button">
               <span id="gbDoneBtnLabel">응원하기</span>
             </button>
-            <!-- 수정 모드(비밀번호 없이 본인 글만)에서만 노출되는 삭제 버튼 -->
-            <button class="gb-cta gb-cta-delete" id="gbDeleteBtn" type="button" hidden>
-              <span>삭제하기</span>
-            </button>
           </div>
         </div>
       </div>
@@ -3529,8 +3525,6 @@
     const msgCounter = $$('#gbMsgCounter');
     const doneBtn = $$('#gbDoneBtn');
     const doneBtnLabel = $$('#gbDoneBtnLabel');
-    const deleteBtn = $$('#gbDeleteBtn');
-
     // 팀별(1루/3루) 관중석 요소
     const gbSideHome = $$('#gbSideHome');
     const gbSideAway = $$('#gbSideAway');
@@ -4094,7 +4088,6 @@
       pickedGender = null;
       editingId = null;
       if(doneBtnLabel) doneBtnLabel.textContent = '응원하기';
-      if(deleteBtn) deleteBtn.hidden = true;
       if(backBtn) backBtn.hidden = true;
       nicknameInput.value = '';
       realNameInput.value = '';
@@ -4135,7 +4128,6 @@
       resetModalSteps();
       editingId = String(id);
       if(doneBtnLabel) doneBtnLabel.textContent = '수정 완료';
-      if(deleteBtn) deleteBtn.hidden = false;
 
       const cats = selectedTeam === 'groom' ? GROOM_CATS : BRIDE_CATS;
       const matched = cats.find(c => c.cat === record.category);
@@ -4350,29 +4342,6 @@
         openThanksModal();
       }
     });
-
-    // 수정 모드에서만 노출되는 삭제 버튼: 비밀번호 확인 없이 바로 삭제(확인 팝업만 거침)
-    if(deleteBtn){
-      deleteBtn.addEventListener('click', async () => {
-        if(!editingId) return;
-        const ok = window.confirm('정말 이 응원 메시지를 삭제할까요?\n삭제하면 되돌릴 수 없어요.');
-        if(!ok) return;
-
-        if(sb && !editingId.startsWith('local-')){
-          try{
-            const { error } = await sb.from(TABLE).delete().eq('id', editingId);
-            if(error) throw error;
-          } catch(err){
-            console.error('[관중석 방명록] 삭제 실패:', err);
-            const detail = (err && (err.message || err.error_description || err.hint)) || '알 수 없는 오류';
-            alert('삭제에 실패했어요.\n(' + detail + ')\n잠시 후 다시 시도해주세요.');
-            return;
-          }
-        }
-        removeRenderedEntry(editingId);
-        closeModal();
-      });
-    }
 
     loadGuestbook().then(subscribeRealtime);
     syncGuestbookVisibility();
