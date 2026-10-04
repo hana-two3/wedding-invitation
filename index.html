@@ -2034,7 +2034,7 @@
 
     <div class="hero-dday-wrap">
       <div class="dday-badge px" id="ddayBadge">D-DAY</div>
-      <div class="music-ready-toast px" id="musicReadyToast">음악이 준비되어 있습니다.</div>
+      <div class="music-ready-toast px" id="musicReadyToast">팀을 선택하시면 음악이 재생됩니다.</div>
     </div>
 
     <div class="character-wrap">
@@ -2865,26 +2865,23 @@
       }
     });
 
-    // 브라우저 자동재생 정책상 사용자의 첫 제스처(팀 선택 탭) 시점에 재생을 시도한다.
-    // 디폴트가 '켜짐'이므로, 그 사이 사용자가 직접 끄지 않았다면 자동으로 재생되게 한다.
+    // 브라우저 자동재생 정책상 사용자 제스처가 있어야 재생이 가능하다. 음악 트리거는
+    // (1) 우측 상단 음악 아이콘 직접 클릭, (2) 팀 버튼(신랑측/신부측) 선택, 이 두 가지뿐이며
+    // 둘 다 명확한 사용자 동작이라 플랫폼(iOS/Android) 상관없이 안정적으로 재생된다.
+    // 타이머 기반의 제스처 없는 자동재생 시도는 두지 않는다(아이폰은 거의 항상 막히고,
+    // 안드로이드도 이력이 없는 첫 방문자에겐 보장되지 않음).
     function onFirstGesture(){
       if(!userPaused && audio.paused) tryPlay();
     }
     document.getElementById('pickGroom').addEventListener('click', onFirstGesture);
     document.getElementById('pickBride').addEventListener('click', onFirstGesture);
 
-    // "음악이 준비되어 있습니다" 토스트가 사라진 직후 자동재생을 시도한다.
-    // (일부 브라우저는 사용자 제스처 없는 재생을 막을 수 있어, 그 경우 위 첫 탭 시점에 재생된다.)
-    document.addEventListener('wm:musicToastHidden', () => {
-      if(!userPaused && audio.paused) tryPlay();
-    });
-
     syncBtnUI();
   })();
 
   /* ===== 접속(새로고침 포함)할 때마다 D-Day 아래에 한 번 노출되는 음악 안내 토스트 =====
-     토스트는 그냥 떴다가 자동으로 사라지기만 한다(탭 불가). 음악 재생은 팀 버튼(신랑측/신부측)
-     선택이라는 확실한 사용자 제스처 시점에 시작된다(아래 음악 토글 IIFE의 onFirstGesture). */
+     그냥 떴다가 자동으로 사라지기만 한다(탭 불가, 자동재생 트리거 없음). 음악은 우측 상단
+     아이콘 클릭 또는 팀 버튼 선택 시에만 재생된다. */
   (function(){
     const toastEl = document.getElementById('musicReadyToast');
     if(!toastEl) return;
@@ -2893,12 +2890,6 @@
       toastEl.classList.add('show');
       setTimeout(() => {
         toastEl.classList.remove('show');
-        // 토스트의 페이드아웃 트랜지션(.35s)이 끝나 완전히 사라진 뒤 음악 자동재생을 한 번 더
-        // 시도한다(사용자 제스처가 없는 시도라 브라우저 정책에 막힐 수 있고, 그 경우 팀 버튼을
-        // 선택하는 시점에 재생된다).
-        setTimeout(() => {
-          document.dispatchEvent(new CustomEvent('wm:musicToastHidden'));
-        }, 350);
       }, 2600);
     }, 700);
   })();
