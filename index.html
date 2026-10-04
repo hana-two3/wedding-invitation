@@ -333,6 +333,10 @@
   .music-ready-toast.show{
     opacity:1;
     transform:translateY(0);
+    /* 보이는 동안에는 탭도 가능하게: 모바일 브라우저는 사용자 제스처 없는 오디오 자동재생을
+       막는 경우가 많아, 토스트를 직접 탭하면 그 탭 자체가 재생을 확실히 트리거하게 한다. */
+    pointer-events:auto;
+    cursor:pointer;
   }
 
   .hero-title{
@@ -2886,14 +2890,30 @@
   (function(){
     const toastEl = document.getElementById('musicReadyToast');
     if(!toastEl) return;
+
+    let autoTriggered = false;
+    function triggerMusicStart(){
+      if(autoTriggered) return;
+      autoTriggered = true;
+      document.dispatchEvent(new CustomEvent('wm:musicToastHidden'));
+    }
+
+    // 모바일 브라우저는 사용자 제스처 없는 오디오 자동재생을 막는 경우가 많다.
+    // 토스트가 보이는 동안 사용자가 직접 탭하면, 그 탭 자체가 확실한 사용자 제스처가 되어
+    // 재생이 막힘없이 시작된다(토스트도 즉시 닫힘).
+    toastEl.addEventListener('click', () => {
+      triggerMusicStart();
+      toastEl.classList.remove('show');
+    });
+
     setTimeout(() => {
       toastEl.classList.add('show');
       setTimeout(() => {
         toastEl.classList.remove('show');
         // 토스트의 페이드아웃 트랜지션(.35s)이 끝나 완전히 사라진 뒤 음악 자동재생을 시도한다.
-        setTimeout(() => {
-          document.dispatchEvent(new CustomEvent('wm:musicToastHidden'));
-        }, 350);
+        // (사용자 제스처가 없는 시도이므로 브라우저 정책에 따라 막힐 수 있고, 그 경우
+        // 팀 선택 탭 또는 토스트를 직접 탭하는 시점에 재생된다.)
+        setTimeout(triggerMusicStart, 350);
       }, 2600);
     }, 700);
   })();
