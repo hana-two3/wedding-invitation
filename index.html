@@ -1623,7 +1623,7 @@
 .gal-panel{ transition:opacity .22s ease; opacity:1; }
 .gal-panel.gal-fade{ opacity:0; }
   .gallery-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin:0 0 16px; }
-  .gallery-grid.limited button:nth-child(n+7){ display:none; }
+  .gallery-grid.limited button:nth-child(n+10){ display:none; }
   .gal-more{
     display:block;
     width:100%;
@@ -2265,22 +2265,19 @@
 
 
       <div class="content-block" id="blockGallery">
-        <h2 class="blk-h2">BEST MOMENTS</h2>
+        <h2 class="blk-h2">OUR MOMENTS</h2>
 
+        <!-- Wedding / Daily 탭은 잠시 숨김(웨딩 15장 + 일상 9장을 한 그리드로 합침). 다시 탭을 쓰려면 아래 주석을 풀고
+             #g1/#g2 를 각각 galPanel1/galPanel2 로 나눈 뒤, 아래 buildGalGrid 호출을 gallery1/gallery2 별도 호출로 되돌리면 됨.
         <div class="gal-tabs">
           <button class="gal-tab active px" id="galTab1" type="button">Wedding</button>
           <button class="gal-tab px" id="galTab2" type="button">Daily</button>
         </div>
+        -->
 
         <div class="gal-panel" id="galPanel1">
           <div class="gallery-grid limited" id="g1"></div>
           <button class="gal-more px" id="galMore1" type="button">더보기 +</button>
-          <button class="gal-cross px" id="galCross" type="button">일상 사진 보러가기 →</button>
-        </div>
-
-        <div class="gal-panel" id="galPanel2" hidden>
-          <div class="gallery-grid" id="g2"></div>
-          <button class="gal-cross px" id="galCrossToOfficial" type="button">웨딩 사진 보러가기 →</button>
         </div>
       </div>
 
@@ -3018,8 +3015,8 @@
   }
   function openLightbox(list, i){ curGal = { list, i }; showLightbox(); $('#lb').classList.add('on'); lockGalleryScroll(); }
   function stepLightbox(n){ const slots = gallerySlotsFor(curGal.list); curGal.i = (curGal.i + n + slots) % slots; showLightbox(); }
-  buildGalGrid('#g1', CONFIG.gallery1, 'Wedding');
-  buildGalGrid('#g2', CONFIG.gallery2, 'Daily');
+  // 웨딩(15장) + 일상(9장)을 한 그리드/한 라이트박스 목록으로 이어 붙임 (탭 제거)
+  buildGalGrid('#g1', CONFIG.gallery1.concat(CONFIG.gallery2), 'Moment');
 
   /* ===== 갤러리/라이트박스 이미지 저장 방지 (우클릭 · 길게 누르기 · 드래그) ===== */
   (function(){
@@ -3078,6 +3075,7 @@
   (function(){
     const tab1 = $('#galTab1'), tab2 = $('#galTab2');
     const panel1 = $('#galPanel1'), panel2 = $('#galPanel2');
+    if(!tab1 || !tab2 || !panel1 || !panel2) return; // 탭 제거 상태
     function showPanel(n){
       tab1.classList.toggle('active', n === 1);
       tab2.classList.toggle('active', n === 2);
@@ -3145,7 +3143,7 @@
     tab2.addEventListener('click', () => showStatPanel(2));
   })();
 
-  /* ===== 갤러리 더보기: 2행(6장) → 3행(9장) 펼치기 ===== */
+  /* ===== 갤러리 더보기: 처음 3행(9장) → 전체 펼치기 ===== */
   (function(){
     function bindMore(btnId, gridId){
       const btn = $(btnId), grid = $(gridId);
