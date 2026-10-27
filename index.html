@@ -1623,7 +1623,6 @@
 .gal-panel{ transition:opacity .22s ease; opacity:1; }
 .gal-panel.gal-fade{ opacity:0; }
   .gallery-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin:0 0 16px; }
-  .gallery-grid.limited button:nth-child(n+10){ display:none; }
   .gal-more{
     display:block;
     width:100%;
@@ -1637,6 +1636,20 @@
     box-shadow:0 -2px 0 #8b5e3c,0 2px 0 #8b5e3c,-2px 0 0 #8b5e3c,2px 0 0 #8b5e3c;
   }
   .gal-more[hidden]{ display:none; }
+  /* 접기: 박스 없이 텍스트만 */
+  .gal-fold{
+    display:block;
+    margin:0 auto 12px;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:12px;
+    color:#8b5e3c;
+    background:none;
+    border:0;
+    box-shadow:none;
+    padding:8px 12px;
+    cursor:pointer;
+  }
+  .gal-fold[hidden]{ display:none; }
   .gal-cross{
     display:block;
     width:100%;
@@ -2276,8 +2289,9 @@
         -->
 
         <div class="gal-panel" id="galPanel1">
-          <div class="gallery-grid limited" id="g1"></div>
+          <div class="gallery-grid" id="g1"></div>
           <button class="gal-more px" id="galMore1" type="button">더보기 +</button>
+          <button class="gal-fold px" id="galFold1" type="button" hidden>^ 접기</button>
         </div>
       </div>
 
@@ -3016,7 +3030,26 @@
   function openLightbox(list, i){ curGal = { list, i }; showLightbox(); $('#lb').classList.add('on'); lockGalleryScroll(); }
   function stepLightbox(n){ const slots = gallerySlotsFor(curGal.list); curGal.i = (curGal.i + n + slots) % slots; showLightbox(); }
   // 웨딩(15장) + 일상(9장)을 한 그리드/한 라이트박스 목록으로 이어 붙임 (탭 제거)
-  buildGalGrid('#g1', CONFIG.gallery1.concat(CONFIG.gallery2), 'Moment');
+  // 번호는 gallery1+gallery2 를 이어 붙인 원래 순서(1~24). 펼친 상태의 배치 순서와,
+  // 접힌 상태(기본 3x3)에서 보여줄 사진을 각각 직접 지정한다.
+  const GAL_ALL = CONFIG.gallery1.concat(CONFIG.gallery2);
+  const GAL_FULL_ORDER = [10,11,12, 1,2,3,4,5,6,7,8,9, 13,14,15,16,17,18,19,20,21,22,23,24];
+  const GAL_COLLAPSED  = [10,11,12, 16,17,18, 19,20,21];
+  const GAL_FULL_LIST  = GAL_FULL_ORDER.map(n => GAL_ALL[n-1]);
+  function renderMoments(expanded){
+    const el = $('#g1');
+    el.innerHTML = '';
+    (expanded ? GAL_FULL_ORDER : GAL_COLLAPSED).forEach(n => {
+      const src = GAL_ALL[n-1];
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', `Moment ${n} 확대`);
+      btn.innerHTML = src ? `<img src="${src}" alt="Moment ${n}" loading="lazy" draggable="false" oncontextmenu="return false;" ondragstart="return false;">` : `<div class="ph-cell">${n}</div>`;
+      // 접힌 상태에서도 라이트박스는 펼친 순서 전체(24장)를 기준으로 넘겨볼 수 있게 한다
+      btn.addEventListener('click', () => openLightbox(GAL_FULL_LIST, GAL_FULL_ORDER.indexOf(n)));
+      el.appendChild(btn);
+    });
+  }
+  renderMoments(false);
 
   /* ===== 갤러리/라이트박스 이미지 저장 방지 (우클릭 · 길게 누르기 · 드래그) ===== */
   (function(){
@@ -3143,17 +3176,22 @@
     tab2.addEventListener('click', () => showStatPanel(2));
   })();
 
-  /* ===== 갤러리 더보기: 처음 3행(9장) → 전체 펼치기 ===== */
+  /* ===== 갤러리 더보기 / 접기: 접힌 상태(지정한 9장) ↔ 펼친 상태(전체 24장) ===== */
   (function(){
-    function bindMore(btnId, gridId){
-      const btn = $(btnId), grid = $(gridId);
-      if(!btn || !grid) return;
-      btn.addEventListener('click', () => {
-        grid.classList.remove('limited');
-        btn.hidden = true;
-      });
-    }
-    bindMore('#galMore1', '#g1');
+    const more = $('#galMore1'), fold = $('#galFold1');
+    if(!more || !fold) return;
+    more.addEventListener('click', () => {
+      renderMoments(true);
+      more.hidden = true;
+      fold.hidden = false;
+    });
+    fold.addEventListener('click', () => {
+      renderMoments(false);
+      fold.hidden = true;
+      more.hidden = false;
+      // 접으면 페이지가 짧아져 위치를 잃기 쉬우므로 갤러리 섹션 시작으로 부드럽게 이동
+      $('#blockGallery').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
   })();
   $('#lb .lb-x').addEventListener('click', () => { $('#lb').classList.remove('on'); unlockGalleryScroll(); });
   $('#lb .lb-arrow-prev').addEventListener('click', () => stepLightbox(-1));
