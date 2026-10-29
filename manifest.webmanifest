@@ -1,0 +1,12 @@
+{
+  "name": "광현 ♥ 하나 Wedding League",
+  "short_name": "광현♥하나",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FFFDF6",
+  "theme_color": "#FFFDF6",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
