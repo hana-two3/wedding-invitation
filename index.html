@@ -738,16 +738,21 @@
     overflow-wrap:break-word;
     text-align:center;
     z-index:3;
-    /* JS(bubbleHtmlOf)가 항상 정확히 최대 2줄로 만들어 넘기지만, 만에 하나라도
-       3번째 줄이 생기는 예외 상황을 막기 위해 높이를 2줄 분량으로 하드 고정하고
-       그 이상은 잘라낸다(overflow:hidden) */
-    max-height:calc(2 * 1.28em + 10px);
-    overflow:hidden;
+  }
+  /* 말줄임(line-clamp)은 패딩이 없는 안쪽 .bubble-txt 에 건다.
+     패딩이 있는 요소에 직접 걸면 3번째 줄이 아래쪽 패딩 영역에 걸쳐 보이기 때문.
+     JS(bubbleHtmlOf)가 보통 2줄로 만들어 넘기지만, 줄바꿈이 더 생기는 예외(긴 영문/이모지 등)도
+     여기서 2줄까지만 보이고 나머지는 잘린다. */
+  .seat-card .bubble-txt{
     display:-webkit-box;
-    -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    line-clamp:2;
+    overflow:hidden;
+    max-height:calc(2 * 1.28em);
   }
   .seat-card .bubble::after{
+    display:none; /* 기존에도 overflow:hidden 때문에 화면에 보이지 않던 꼬리 — 모양 유지를 위해 숨김 */
     content:'';
     position:absolute;
     left:50%;
@@ -857,7 +862,6 @@
     line-height:1.28;
     max-width:112px;
     padding:4px 6px;
-    max-height:calc(2 * 1.28em + 8px);
   }
   @media (max-width:360px){
     .gb-all-stand .seat-card{ width:calc(33.333% - 6px); }
@@ -3831,7 +3835,7 @@
     function fillSeat(seat, {id, gender, name, msg, category}){
       seat.className = seat.className.replace('empty','filled');
       const side = seat.className.includes('side-away') ? 'away' : 'home';
-      const bubble = msg ? `<div class="bubble">${bubbleHtmlOf(msg)}</div>` : '';
+      const bubble = msg ? `<div class="bubble"><span class="bubble-txt">${bubbleHtmlOf(msg)}</span></div>` : '';
       const genderClass = gender === 'male' ? 'seat-char-male' : 'seat-char-female';
       seat.innerHTML = `${bubble}<div class="seat-visual"><img class="seat-chair-img" src="${chairSrcOf(side)}" alt="" draggable="false"><img class="seat-char-img ${genderClass}" src="${charSrcOf(gender, category, side)}" alt="" draggable="false"></div><span class="seat-name">${escapeHtml(name)}</span>`;
       seat.dataset.fullName = name || '';
