@@ -520,7 +520,8 @@
   .team-select-btns[hidden]{ display:none; }
   .team-change-btn[hidden]{ display:none; }
   .team-change-btn{
-    display:inline-block;
+    display:block; /* 상태 표시 박스 아래 줄에 따로 놓이도록(폭이 넓은 화면에서 가로로 붙지 않게) */
+    margin:0 auto;
     padding:6px 14px;
     border:0;
     cursor:pointer;
