@@ -1886,6 +1886,27 @@
     box-sizing:border-box;
   }
   .tl-puzzle-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  /* 큰 사진 좌우 화살표(< >) */
+  .tl-photo-row{ display:flex; align-items:center; justify-content:center; gap:8px; }
+  .tl-photo-row .tl-puzzle-photo{ flex:1 1 auto; min-width:0; margin:0; }
+  .tl-photo-nav{
+    flex:0 0 auto;
+    width:32px; height:48px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Galmuri9','DungGeunMo',monospace;
+    font-size:16px; line-height:1;
+    color:#4A2E1B;
+    background:#FFFDF6;
+    border:0; padding:0;
+    box-shadow:0 -2px 0 #4A2E1B,0 2px 0 #4A2E1B,-2px 0 0 #4A2E1B,2px 0 0 #4A2E1B;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .tl-photo-nav:active:not(:disabled){ transform:translateY(2px); }
+  .tl-photo-nav:disabled{ opacity:.28; cursor:not-allowed; box-shadow:0 -2px 0 #b8a994,0 2px 0 #b8a994,-2px 0 0 #b8a994,2px 0 0 #b8a994; }
+  /* 지금 위쪽에 보여주고 있는 이야기에 해당하는 퍼즐 칸 표시 (미리보기만 하는 칸도 동일) */
+  .tl-puzzle-slot{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .tl-puzzle-slot.viewing{ outline:2px solid #EC1C24; outline-offset:-2px; }
   /* 문장이 1~3줄을 오가도 모달/퍼즐 카드 위치가 들쑥날쑥해지지 않도록
      3줄 분량의 높이를 항상 확보하고, 줄 수가 적을 때는 그 안에서 수직 중앙 정렬한다 */
   .tl-puzzle-desc{
@@ -2062,6 +2083,7 @@
   .tl-complete-btn:active{ transform:translateY(2px); }
   @media (max-width:360px){
     .tl-puzzle-photo{ max-width:160px; }
+    .tl-photo-nav{ width:28px; height:44px; }
     .tl-puzzle-area{ gap:18px; }
     .tl-puzzle-grid{ width:99px; height:99px; }
     .tl-puzzle-piece{ width:29px; height:29px; }
@@ -2479,7 +2501,11 @@
     <div class="tl-puzzle-body" id="storyBody">
       <div class="tl-puzzle-info" id="puzzleInfo">
         <div class="tl-puzzle-heading px" id="puzzleHeading">우연히 시작된 하나의 픽셀, 서로가 인연이 된 첫 순간.</div>
-        <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
+        <div class="tl-photo-row">
+          <button class="tl-photo-nav px" id="puzzlePrev" type="button" aria-label="이전 이야기" disabled>&lt;</button>
+          <div class="tl-puzzle-photo"><img id="puzzlePhoto" src="" alt="" draggable="false" oncontextmenu="return false;" ondragstart="return false;"></div>
+          <button class="tl-photo-nav px" id="puzzleNext" type="button" aria-label="다음 이야기" disabled>&gt;</button>
+        </div>
         <div class="tl-puzzle-desc" id="puzzleDesc">이렇게 취미, 가치관 등이 겹칠 수 있나 싶었던 첫 만남.</div>
       </div>
 
@@ -2490,15 +2516,15 @@
             <div class="tl-puzzle-hint px" id="puzzleHint">조각을 드래그해서<br>맞춰보세요 ➔</div>
           </div>
           <div class="tl-puzzle-grid" id="puzzleGrid">
-            <div class="tl-puzzle-slot" data-slot="0"></div>
-            <div class="tl-puzzle-slot" data-slot="1"></div>
-            <div class="tl-puzzle-slot" data-slot="2"></div>
-            <div class="tl-puzzle-slot" data-slot="3"></div>
-            <div class="tl-puzzle-slot" data-slot="4"></div>
-            <div class="tl-puzzle-slot" data-slot="5"></div>
-            <div class="tl-puzzle-slot" data-slot="6"></div>
-            <div class="tl-puzzle-slot" data-slot="7"></div>
-            <div class="tl-puzzle-slot" data-slot="8"></div>
+            <div class="tl-puzzle-slot" data-slot="0" role="button" tabindex="0" aria-label="1번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="1" role="button" tabindex="0" aria-label="2번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="2" role="button" tabindex="0" aria-label="3번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="3" role="button" tabindex="0" aria-label="4번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="4" role="button" tabindex="0" aria-label="5번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="5" role="button" tabindex="0" aria-label="6번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="6" role="button" tabindex="0" aria-label="7번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="7" role="button" tabindex="0" aria-label="8번째 조각 이야기 보기"></div>
+            <div class="tl-puzzle-slot" data-slot="8" role="button" tabindex="0" aria-label="9번째 조각 이야기 보기"></div>
           </div>
         </div>
       </div>
@@ -2703,16 +2729,46 @@
     const SLOT_POS = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
     const slotEls = Array.from(grid.querySelectorAll('.tl-puzzle-slot'));
 
+    const prevBtn = document.getElementById('puzzlePrev');
+    const nextBtn = document.getElementById('puzzleNext');
+
+    // step    : 퍼즐 진행도(다음에 맞출 조각 번호). 조각을 실제로 끼워야만 올라간다.
+    // viewIdx : 지금 위쪽 큰 사진/문구가 보여주는 이야기 번호. 퍼즐 칸이나 화살표로 자유롭게 바뀌지만
+    //           '보기'만 하는 것이므로 칸의 채움(filled) 상태나 step 은 절대 건드리지 않는다.
+    //           → 미리 본 칸도 나중에 조각을 맞추면 정상적으로 해당 조각 이미지가 채워진다.
     let step = 0;
+    let viewIdx = 0;
     let busy = false;
 
-    function renderStep(){
-      const item = STORY_ITEMS[step];
+    function renderView(idx){
+      viewIdx = idx;
+      const item = STORY_ITEMS[idx];
       const gallery = (typeof CONFIG !== 'undefined' && CONFIG.storyPhotos) || [];
       photoEl.src = gallery[item.photoIdx] || gallery[0] || '';
       photoEl.alt = item.title;
       headingEl.textContent = item.main;
       descEl.textContent = item.comment;
+      slotEls.forEach((s, i) => s.classList.toggle('viewing', i === idx));
+      // 이전(<): 첫 이야기가 아니면 항상 가능.
+      // 다음(>): 지금 보는 이야기의 조각을 이미 맞춘(filled) 경우에만 가능. 못 맞춘 조각 화면이면 비활성화.
+      if(prevBtn) prevBtn.disabled = idx <= 0;
+      if(nextBtn) nextBtn.disabled = !(slotEls[idx].classList.contains('filled') && idx < STORY_ITEMS.length - 1);
+    }
+
+    // 큰 사진/문구를 부드럽게 다른 이야기로 전환 (조각 맞출 때 쓰던 페이드와 동일)
+    function goView(idx){
+      if(busy || idx < 0 || idx >= STORY_ITEMS.length || idx === viewIdx) return;
+      busy = true;
+      infoEl.classList.add('tl-step-fade');
+      setTimeout(() => {
+        renderView(idx);
+        infoEl.classList.remove('tl-step-fade');
+        busy = false;
+      }, 180);
+    }
+
+    function renderStep(){
+      renderView(step);
       piece.style.backgroundPosition = SLOT_POS[step];
       piece.style.opacity = '1';
       piece.classList.remove('placing');
@@ -2729,6 +2785,7 @@
 
     function resetPuzzle(){
       step = 0;
+      viewIdx = 0;
       busy = false;
       slotEls.forEach(s => s.classList.remove('filled'));
       completeBox.hidden = true;
@@ -2784,13 +2841,16 @@
     piece.addEventListener('keydown', e => {
       if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); placePiece(); }
     });
+    // 퍼즐 칸을 누르면(맞춘 칸이든 아직 못 맞춘 칸이든) 그 칸에 해당하는 이야기 화면을 보여준다.
+    // 조각을 끼우는 동작은 조각 탭 또는 드래그로만 하므로, 칸 탭은 '보기' 전용이다.
     slotEls.forEach(s => {
-      s.addEventListener('click', () => {
-        if(busy || s.classList.contains('filled')) return;
-        if(s.dataset.slot === piece.dataset.targetSlot) placePiece();
-        else rejectSlot(s);
+      s.addEventListener('click', () => goView(Number(s.dataset.slot)));
+      s.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goView(Number(s.dataset.slot)); }
       });
     });
+    if(prevBtn) prevBtn.addEventListener('click', () => goView(viewIdx - 1));
+    if(nextBtn) nextBtn.addEventListener('click', () => { if(!nextBtn.disabled) goView(viewIdx + 1); });
 
     // 포인터 드래그(마우스/터치 공통): 누르고 있는 동안 조각이 손가락을 따라 움직이고,
     // 손을 뗀 지점 바로 아래에 있는 칸(cellId)이 조각의 정답 칸(targetId)과 일치할 때만
