@@ -613,7 +613,8 @@
     margin:12px 4px 18px;
     /* 좌우/상단 여백은 그대로 두되, 하단 여백(그라운드 라인 자리)은 실제 콘텐츠
        높이에 맞춰 늘어나야 하므로 .stand-rows 쪽으로 옮긴다(아래 참고) */
-    padding:82px 12px 0;
+    /* 상단 82px → 68px(-14px): 첫 줄 캐릭터와 응원석 상단 사이 간격을 좁힘. 첫 줄 말풍선(2줄 약 38px)이 들어갈 자리는 충분히 남김 */
+    padding:68px 12px 0;
     background:
       repeating-linear-gradient(90deg, rgba(0,0,0,.055) 0 2px, transparent 2px 34px),
       repeating-linear-gradient(180deg, rgba(0,0,0,.05) 0 2px, transparent 2px 28px),
@@ -730,8 +731,8 @@
     margin-bottom:5px;
     box-sizing:border-box;
     width:max-content;
-    /* 말줄임표 포함 최대 12자/줄(GB_LINE_MAX)이 한 줄에 넉넉히 들어가도록 확보 */
-    max-width:168px;
+    /* 이웃 좌석 말풍선과 겹치거나 스탠드 가장자리에서 잘리지 않도록 폭을 제한(한 줄 약 12글자, 2줄 약 24글자) */
+    max-width:122px;
     background:#fff;
     color:#5a3e2b;
     font-size:9px;
@@ -744,17 +745,19 @@
     text-align:center;
     z-index:3;
   }
-  /* 말줄임(line-clamp)은 패딩이 없는 안쪽 .bubble-txt 에 건다.
-     패딩이 있는 요소에 직접 걸면 3번째 줄이 아래쪽 패딩 영역에 걸쳐 보이기 때문.
-     JS(bubbleHtmlOf)가 보통 2줄로 만들어 넘기지만, 줄바꿈이 더 생기는 예외(긴 영문/이모지 등)도
-     여기서 2줄까지만 보이고 나머지는 잘린다. */
+  /* 말줄임(line-clamp)은 패딩이 없는 안쪽 .bubble-txt 에 건다(패딩이 있는 요소에 직접 걸면 3번째 줄이
+     아래 패딩 영역에 걸쳐 보임). 글자 수를 JS로 자르지 않고, 2줄이 꽉 찬 뒤 넘칠 때만 ... 가 붙는다.
+     word-break:break-all 로 줄 끝까지 글자를 채워 2줄 공간을 알차게 쓴다. */
   .seat-card .bubble-txt{
     display:-webkit-box;
     -webkit-box-orient:vertical;
     -webkit-line-clamp:2;
     line-clamp:2;
     overflow:hidden;
-    max-height:calc(2 * 1.28em);
+    line-height:1.3;
+    max-height:calc(2 * 1.3em);
+    word-break:break-all;
+    overflow-wrap:anywhere;
   }
   .seat-card .bubble::after{
     display:none; /* 기존에도 overflow:hidden 때문에 화면에 보이지 않던 꼬리 — 모양 유지를 위해 숨김 */
@@ -3856,45 +3859,10 @@
       return seat;
     }
 
-    // 목록(좌석 말풍선)에 노출되는 미리보기 텍스트:
-    // - 최대 20자까지만 표시하고, 그 이상은 뒤에 말줄임표(...)를 붙인다.
-    // - 정확히 최대 2줄만 허용한다(3줄 이상 절대 금지). 이를 위해 개행은 딱 1번만 넣되,
-    //   각 줄이 GB_LINE_MAX 글자를 넘지 않도록 강제해 CSS 자동 줄바꿈으로 3번째 줄이
-    //   생기는 일이 없게 한다(말풍선 폭에 맞춘 글자 수 상한).
-    // - 띄어쓰기가 있으면 정중앙에 가장 가까운 공백에서 자르되, 그 공백이 두 줄 다
-    //   GB_LINE_MAX 이내로 들어오는 범위 안에 있을 때만 사용한다.
-    // - 띄어쓰기가 없거나(혹은 한쪽으로 너무 치우쳐 있어) 조건을 만족하는 공백이 없으면
-    //   전체 길이의 절반 근처에서 글자 수 기준으로 딱 1번만 자른다.
-    //   (예: "긴 내용긴 내용긴 내용..." → "긴 내용긴" / "내용긴 내용...")
-    const GB_PREVIEW_MAX = 20;
-    // 말줄임표(...)까지 포함한 최대 길이(20+3=23자)를 2줄로 나눴을 때 한쪽이 넘지 않도록
-    // 최소 ceil(23/2)=12로 잡는다 → 어떤 경우에도 각 줄이 12자를 넘지 않아 2줄 안에 반드시 들어간다.
-    const GB_LINE_MAX = 12;
-    function splitBalancedTwoLines(str){
-      const len = str.length;
-      if(len <= GB_LINE_MAX) return [str];
-      // line1은 [len-GB_LINE_MAX, GB_LINE_MAX] 범위 안에서만 골라야 두 줄 다 상한을 넘지 않는다.
-      const lo = Math.max(1, len - GB_LINE_MAX);
-      const hi = Math.min(len - 1, GB_LINE_MAX);
-      const target = Math.min(hi, Math.max(lo, Math.ceil(len / 2)));
-      let breakAt = -1; // 이 위치의 공백을 기준으로 자른다(공백 자체는 버림)
-      for(let d = 0; d <= (hi - lo); d++){
-        const before = target - d, after = target + d;
-        if(before >= lo && before <= hi && str[before] === ' '){ breakAt = before; break; }
-        if(after >= lo && after <= hi && str[after] === ' '){ breakAt = after; break; }
-      }
-      if(breakAt >= 0){
-        const line1 = str.slice(0, breakAt).trim();
-        const line2 = str.slice(breakAt + 1).trim();
-        if(line1 && line2) return [line1, line2];
-      }
-      // 조건을 만족하는 공백이 없는 경우(공백 없는 긴 단어 등): 글자 수 기준으로 딱 1번만 자른다.
-      return [str.slice(0, target), str.slice(target)];
-    }
+    // 목록(좌석 말풍선)에 노출되는 미리보기 텍스트: 글자 수로 자르거나 줄바꿈을 넣지 않고 원문 그대로 넘긴다.
+    // 2줄까지만 보이고 넘치면 말줄임표(...)로 끝나는 처리는 CSS(.bubble-txt 의 line-clamp)가 담당한다.
     function bubbleHtmlOf(str){
-      if(!str) return '';
-      const truncated = str.length > GB_PREVIEW_MAX ? str.slice(0, GB_PREVIEW_MAX) + '...' : str;
-      return splitBalancedTwoLines(truncated).map(escapeHtml).join('<br>');
+      return str ? escapeHtml(str) : '';
     }
 
     function fillSeat(seat, {id, gender, name, msg, category}){
